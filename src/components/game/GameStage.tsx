@@ -165,6 +165,7 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
                 hp={enemy.hp}
                 maxHp={enemy.maxHp}
                 hitFlash={enemy.hitFlash}
+                shake={enemy.shake}
               />
             ))}
 
@@ -178,8 +179,45 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
               height={PLAYER_H}
               blinking={view.blinking}
             />
+
+            {view.projectiles.map((p) => (
+              <span
+                key={p.id}
+                className="stage-projectile"
+                style={{
+                  left: p.x - p.r,
+                  top: p.y - p.r,
+                  width: p.r * 2,
+                  height: p.r * 2,
+                  '--proj-color': p.color,
+                } as React.CSSProperties}
+              />
+            ))}
+
+            {view.particles.map((part) => (
+              <span
+                key={part.id}
+                className={`stage-particle stage-particle-${part.kind}`}
+                style={{
+                  left: part.x,
+                  top: part.y,
+                  opacity: part.alpha,
+                  transform: `translate(-50%, -50%) scale(${part.scale})`,
+                  color: part.color,
+                  '--spark-color': part.color,
+                } as React.CSSProperties}
+              >
+                {part.text}
+              </span>
+            ))}
           </div>
         </div>
+
+        {phase === 'playing' && !view.hasFired && (
+          <div className="stage-hint" role="status">
+            <strong>J</strong> ou <strong>✦</strong> lança sua onda para restaurar os problemas à distância!
+          </div>
+        )}
       </div>
 
       <HUD
@@ -214,9 +252,12 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
             <ul className="stage-controls-help">
               <li><strong>← →</strong> ou <strong>A / D</strong> mover</li>
               <li><strong>Espaço</strong> pular</li>
-              <li><strong>J</strong> {stage.attackVerb}</li>
-              <li><strong>K</strong> {stage.specialVerb} (responda a pergunta!)</li>
+              <li><strong>J</strong> lançar onda de {stage.attackVerb.toLowerCase()} (ataca à distância!)</li>
+              <li><strong>K</strong> {stage.specialVerb} — responda à pergunta para o golpe forte</li>
             </ul>
+            <p className="stage-overlay-tip">
+              💡 Atinja os problemas com a onda antes que eles cheguem até você. Encostar neles tira sua vida!
+            </p>
             <button className="btn-primary btn-large" onClick={() => setPhase('playing')}>
               Começar missão
             </button>

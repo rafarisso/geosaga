@@ -94,7 +94,7 @@ export const CHARACTERS: Record<RegionId, CharacterData> = {
     originalAsset: 'src/assets/characters/jequi/jequi-pose-sheet-original.png',
     processedAsset: jequiProcessed,
     guardianType: 'Guardião da mata e das cidades',
-    spriteFaces: 'left',
+    spriteFaces: 'right',
     stats: { vida: 110, velocidade: 225, pulo: 705, ataque: 18, poderEspecial: 47 },
     sheet: { width: 1774, height: 887, frameCount: 5, approximateFrameWidth: 355 },
     animationFrames,

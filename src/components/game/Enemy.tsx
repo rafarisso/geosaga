@@ -10,6 +10,8 @@ interface EnemyProps {
   maxHp: number;
   /** > 0 logo após ser atingido (flash branco). */
   hitFlash: number;
+  /** > 0 logo após ser atingido (tremor). */
+  shake: number;
 }
 
 /**
@@ -17,13 +19,15 @@ interface EnemyProps {
  * com barra de vida. Estrutura pronta para receber sprites: substitua o emoji
  * por uma imagem/spritesheet usando `problem` quando a arte existir.
  */
-export function Enemy({ problem, x, feetY, size, hp, maxHp, hitFlash }: EnemyProps) {
+export function Enemy({ problem, x, feetY, size, hp, maxHp, hitFlash, shake }: EnemyProps) {
   const ratio = Math.max(0, hp / maxHp);
+  const offset = shake > 0 ? Math.sin(shake * 60) * 5 : 0;
   const style: CSSProperties = {
     left: x,
     top: feetY - size,
     width: size,
     height: size,
+    transform: `translateX(${offset}px)`,
     '--enemy-color': problem.color,
     filter: hitFlash > 0 ? 'brightness(2.4) saturate(0.4)' : undefined,
   } as CSSProperties;
