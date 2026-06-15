@@ -36,7 +36,9 @@ export function Player({ region, state, facing, x, feetY, width, height, blinkin
     backgroundImage: `url(${character.processedAsset})`,
     backgroundSize: `${character.sheet.frameCount * 100}% auto`,
     backgroundPosition: `${position}% center`,
-    transform: `scaleX(${facing})`,
+    // A arte-base aponta para a esquerda; invertemos para o sprite olhar
+    // sempre na direção do movimento (facing 1 = direita).
+    transform: `scaleX(${-facing})`,
     opacity: blinking ? 0.45 : 1,
   };
 
