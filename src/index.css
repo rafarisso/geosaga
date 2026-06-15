@@ -510,12 +510,17 @@ button:focus-visible {
   padding: 0.72rem 0.8rem;
   border-radius: 0.75rem;
   color: #092a2d;
-  background: var(--region-accent);
+  background: #55ddc0;
   font-size: 0.78rem;
 }
 
 .region-card.completed {
   box-shadow: 0 0 0 1px rgba(255, 226, 107, 0.4), 0 16px 44px rgba(0, 0, 0, 0.3);
+}
+
+.region-card.completed .btn-region {
+  color: #493411;
+  background: #ffe26b;
 }
 
 .badge-trail {
