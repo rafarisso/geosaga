@@ -108,7 +108,7 @@ export const CHARACTERS: Record<RegionId, CharacterData> = {
     originalAsset: 'src/assets/characters/arauca/arauca-pose-sheet-original.png',
     processedAsset: araucaProcessed,
     guardianType: 'Guardião dos pampas e araucárias',
-    spriteFaces: 'left',
+    spriteFaces: 'right',
     stats: { vida: 115, velocidade: 215, pulo: 700, ataque: 19, poderEspecial: 47 },
     sheet: { width: 1916, height: 821, frameCount: 5, approximateFrameWidth: 383 },
     animationFrames,

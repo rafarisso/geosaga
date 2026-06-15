@@ -1113,8 +1113,27 @@ button:focus-visible {
   position: absolute;
   background-repeat: no-repeat;
   filter: drop-shadow(0 12px 8px rgba(0, 0, 0, 0.32)) saturate(1.06);
+  transform: scaleX(var(--player-flip, 1));
   transition: opacity 60ms linear;
   pointer-events: none;
+}
+
+.stage-player-walk {
+  animation: player-walk-bob 0.42s ease-in-out infinite;
+}
+
+.stage-player-jump {
+  animation: player-jump-lean 0.55s ease-out infinite alternate;
+}
+
+@keyframes player-walk-bob {
+  0%, 100% { transform: scaleX(var(--player-flip, 1)) translateY(0) rotate(0deg); }
+  50% { transform: scaleX(var(--player-flip, 1)) translateY(-5px) rotate(1.5deg); }
+}
+
+@keyframes player-jump-lean {
+  from { transform: scaleX(var(--player-flip, 1)) translateY(0) rotate(-1deg); }
+  to { transform: scaleX(var(--player-flip, 1)) translateY(-3px) rotate(1deg); }
 }
 
 .stage-player::after {
