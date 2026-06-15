@@ -12,6 +12,7 @@ interface BossProps {
  */
 export function Boss({ boss }: BossProps) {
   const offset = boss.shake > 0 ? Math.sin(boss.shake * 70) * 7 : 0;
+  const visual = boss.visual ?? 'default';
   const style: CSSProperties = {
     left: boss.x,
     top: boss.feetY - BOSS_H,
@@ -23,7 +24,8 @@ export function Boss({ boss }: BossProps) {
   } as CSSProperties;
 
   return (
-    <div className="stage-boss" style={style} role="img" aria-label={boss.name}>
+    <div className={`stage-boss stage-boss-${visual}`} style={style} role="img" aria-label={boss.name}>
+      <span className="stage-boss-core" aria-hidden />
       <span className="stage-boss-emoji" aria-hidden>{boss.emoji}</span>
     </div>
   );

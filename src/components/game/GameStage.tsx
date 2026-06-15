@@ -247,12 +247,12 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
 
             {view.hazards.map((hz) => (
               <div
-                key={hz.x}
-                className={`stage-hazard stage-hazard-${hz.kind}`}
+                key={hz.id ?? hz.x}
+                className={`stage-hazard stage-hazard-${hz.kind} ${hz.restored ? 'stage-hazard-restored' : ''}`}
                 style={{ left: hz.x, top: GROUND_Y, width: hz.width }}
               >
-                <span aria-hidden>{HAZARD_EMOJI[hz.kind]}</span>
-                <small>{hz.label}</small>
+                <span aria-hidden>{hz.restored ? '✓' : HAZARD_EMOJI[hz.kind]}</span>
+                <small>{hz.restored ? hz.restoredLabel ?? 'Área recuperada' : hz.label}</small>
               </div>
             ))}
 

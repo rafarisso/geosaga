@@ -37,6 +37,7 @@ const PROJECTILE_SPEED = 660;
 const PROJECTILE_LIFE = 0.72;
 const PROJECTILE_R = 30;
 const ENEMY_APPROACH_SPEED = 34;
+const ENEMY_ATTACK_RANGE = 440;
 const ENEMY_PROJ_SPEED = 250;
 const ENEMY_PROJ_R = 19;
 const ENEMY_ATTACK_INTERVAL = 3;
@@ -146,6 +147,7 @@ export interface BossView {
   name: string;
   emoji: string;
   color: string;
+  visual?: BossDefinition['visual'];
   x: number;
   feetY: number;
   hp: number;
@@ -153,6 +155,8 @@ export interface BossView {
   hitFlash: number;
   shake: number;
 }
+
+type HazardView = HazardDef & { restored: boolean };
 
 export interface View {
   px: number;
@@ -185,7 +189,7 @@ export interface View {
   projectiles: ProjectileView[];
   particles: ParticleView[];
   platforms: PlatformDef[];
-  hazards: HazardDef[];
+  hazards: HazardView[];
 }
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
@@ -217,6 +221,7 @@ export class StageEngine {
   private readonly platforms: PlatformDef[];
   private readonly hazards: HazardDef[];
   private readonly movement: (typeof STAGES)[RegionId]['movement'];
+  private readonly restoredHazards = new Set<string>();
 
   constructor(region: RegionId) {
     const character = CHARACTERS[region];
@@ -344,6 +349,24 @@ export class StageEngine {
     });
   }
 
+  private isHazardRestored(hazard: HazardDef): boolean {
+    return Boolean(hazard.id && this.restoredHazards.has(hazard.id));
+  }
+
+  private restoreHazardsFor(problemId: string): void {
+    for (const hazard of this.hazards) {
+      if (!hazard.id || hazard.restoreWith !== problemId || this.restoredHazards.has(hazard.id)) continue;
+      this.restoredHazards.add(hazard.id);
+      this.score += 80;
+      this.spawnText(
+        hazard.x + hazard.width / 2,
+        GROUND_Y - 52,
+        hazard.restoredLabel ?? 'Área recuperada',
+        this.accent,
+      );
+    }
+  }
+
   private damageEnemy(enemy: EnemyWorld, amount: number, knock: number): void {
     enemy.hp -= amount;
     enemy.hitFlash = 0.18;
@@ -356,6 +379,7 @@ export class StageEngine {
       enemy.alive = false;
       this.score += 100;
       this.spawnText(cx, cy - 10, 'Restaurado!', this.accent);
+      this.restoreHazardsFor(enemy.problem.id);
       this.player.energy = Math.min(MAX_ENERGY, this.player.energy + ENERGY_ON_KILL);
     } else {
       enemy.baseX = clamp(enemy.baseX + knock * 16, 120, STAGE_WIDTH - ENEMY_SIZE);
@@ -565,7 +589,11 @@ export class StageEngine {
     if (input.right) move += 1;
     if (player.invuln <= 0 || player.state !== 'hit') {
       const center = player.x + PLAYER_W / 2;
-      const terrain = this.hazards.find((hazard) => center > hazard.x && center < hazard.x + hazard.width);
+      const terrain = this.hazards.find((hazard) => (
+        !this.isHazardRestored(hazard)
+        && center > hazard.x
+        && center < hazard.x + hazard.width
+      ));
       const maxSpeed = this.stats.velocidade * (terrain?.speedMultiplier ?? 1);
       const targetSpeed = move * maxSpeed;
       const control = player.onGround ? 1 : this.movement.airControl;
@@ -611,6 +639,7 @@ export class StageEngine {
     if (player.feetY >= GROUND_Y - 6) {
       const cx = player.x + PLAYER_W / 2;
       for (const hz of this.hazards) {
+        if (this.isHazardRestored(hz)) continue;
         if (cx > hz.x && cx < hz.x + hz.width) {
           if (hz.push) {
             player.x = clamp(player.x + hz.push * dt, 0, STAGE_WIDTH - PLAYER_W);
@@ -677,7 +706,7 @@ export class StageEngine {
 
       // Ataca o jogador quando está por perto
       enemy.attackTimer -= dt;
-      if (enemy.attackTimer <= 0 && Math.abs(dx) < 640) {
+      if (enemy.attackTimer <= 0 && Math.abs(dx) < ENEMY_ATTACK_RANGE) {
         enemy.attackTimer = ENEMY_ATTACK_INTERVAL;
         this.fireEnemyShot(
           enemy.x + ENEMY_SIZE / 2,
@@ -728,6 +757,10 @@ export class StageEngine {
         this.fireEnemyShot(fromX, fromY, Math.round(boss.contactDamage * 0.72), boss.def.color, -115, 0.92);
         this.fireEnemyShot(fromX, fromY, Math.round(boss.contactDamage * 0.72), boss.def.color, 0, 0.96);
         this.fireEnemyShot(fromX, fromY, Math.round(boss.contactDamage * 0.72), boss.def.color, 115, 0.92);
+      } else if (boss.def.attackPattern === 'barrage') {
+        this.fireEnemyShot(fromX, fromY - 12, Math.round(boss.contactDamage * 0.78), boss.def.color, -92, 1.1);
+        this.fireEnemyShot(fromX, fromY, Math.round(boss.contactDamage * 0.72), boss.def.color, 0, 1.18);
+        this.fireEnemyShot(fromX, fromY + 16, Math.round(boss.contactDamage * 0.66), boss.def.color, 86, 1.02);
       } else {
         this.fireEnemyShot(fromX, fromY, boss.contactDamage, boss.def.color);
         this.fireEnemyShot(fromX, fromY - 18, Math.round(boss.contactDamage * 0.8), boss.def.color, 70);
@@ -779,6 +812,7 @@ export class StageEngine {
             name: this.boss.def.name,
             emoji: this.boss.def.emoji,
             color: this.boss.def.color,
+            visual: this.boss.def.visual,
             x: this.boss.x,
             feetY: this.boss.feetY,
             hp: this.boss.hp,
@@ -806,7 +840,10 @@ export class StageEngine {
         scale: p.kind === 'spark' ? 1 + (1 - p.life / p.maxLife) * 1.6 : 1,
       })),
       platforms: this.platforms,
-      hazards: this.hazards,
+      hazards: this.hazards.map((hazard) => ({
+        ...hazard,
+        restored: this.isHazardRestored(hazard),
+      })),
     };
   }
 }

@@ -22,6 +22,7 @@ interface EnemyProps {
 export function Enemy({ problem, x, feetY, size, hp, maxHp, hitFlash, shake }: EnemyProps) {
   const ratio = Math.max(0, hp / maxHp);
   const offset = shake > 0 ? Math.sin(shake * 60) * 5 : 0;
+  const visual = problem.visual ?? 'default';
   const style: CSSProperties = {
     left: x,
     top: feetY - size,
@@ -33,11 +34,12 @@ export function Enemy({ problem, x, feetY, size, hp, maxHp, hitFlash, shake }: E
   } as CSSProperties;
 
   return (
-    <div className="stage-enemy" style={style} role="img" aria-label={problem.name}>
+    <div className={`stage-enemy stage-enemy-visual-${visual} stage-problem-${problem.id}`} style={style} role="img" aria-label={problem.name}>
       <div className="stage-enemy-healthbar">
         <span style={{ width: `${ratio * 100}%` }} />
       </div>
       <div className="stage-enemy-body">
+        <span className="stage-enemy-core" aria-hidden />
         <span className="stage-enemy-emoji" aria-hidden>{problem.emoji}</span>
       </div>
       <span className="stage-enemy-label">{problem.name}</span>

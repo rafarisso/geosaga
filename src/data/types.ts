@@ -80,6 +80,8 @@ export interface RegionalProblem {
   name: string;
   /** Placeholder visual enquanto não há arte final. */
   emoji: string;
+  /** Visual CSS dedicado quando a fase tem inimigos mais elaborados. */
+  visual?: 'default' | 'polluted-canal' | 'drainage-pump' | 'heat-island' | 'smog-stack';
   description: string;
   /** Pontos de vida do problema. */
   hp: number;
@@ -94,6 +96,8 @@ export interface BossDefinition {
   name: string;
   emoji: string;
   color: string;
+  /** Visual CSS dedicado para chefes com silhueta propria. */
+  visual?: 'default' | 'pollution-master';
   /** Vida do chefe (antes da escala por região). */
   hp: number;
   /** Dano por contato com o chefe. */
@@ -101,7 +105,7 @@ export interface BossDefinition {
   /** Intervalo, em segundos, entre os ataques do chefe. */
   attackInterval: number;
   /** Padrão dos projéteis disparados pelo chefe. */
-  attackPattern: 'single' | 'double' | 'spread';
+  attackPattern: 'single' | 'double' | 'spread' | 'barrage';
   /** Fala exibida quando o chefe aparece. */
   taunt: string;
 }
@@ -120,10 +124,15 @@ export type HazardKind = 'fogo' | 'agua' | 'gelo' | 'fumaca';
 
 /** Zona de perigo temática que causa dano ao jogador. */
 export interface HazardDef {
+  id?: string;
   x: number;
   width: number;
   kind: HazardKind;
   label: string;
+  /** Id do problema que neutraliza este perigo ao ser derrotado. */
+  restoreWith?: string;
+  /** Texto exibido depois que o perigo for neutralizado. */
+  restoredLabel?: string;
   /** Dano por contato. */
   damage?: number;
   /** Força horizontal aplicada enquanto o jogador está na área. */
@@ -141,6 +150,13 @@ export type SceneryDecorationKind =
   | 'wetland'
   | 'skyline'
   | 'factory'
+  | 'serra-mar'
+  | 'rio-mountain'
+  | 'sao-paulo-bridge'
+  | 'urban-rail'
+  | 'atlantic-forest'
+  | 'graffiti-wall'
+  | 'drainage-gate'
   | 'araucaria'
   | 'pampas';
 
