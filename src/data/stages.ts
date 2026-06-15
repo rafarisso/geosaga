@@ -59,7 +59,12 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       'Buriti apagou o fogo! O cerrado respira e o Pantanal volta a florescer.',
     goalIcon: '🦜',
     goalLabel: 'Pantanal salvo',
-    enemyIds: ['centro-oeste-incendio', 'centro-oeste-fumaca', 'centro-oeste-animal-perigo'],
+    enemyIds: [
+      'centro-oeste-incendio',
+      'centro-oeste-fumaca',
+      'centro-oeste-area-degradada',
+      'centro-oeste-animal-perigo',
+    ],
     scenery: {
       skyTop: '#caa53a',
       skyBottom: '#efd06a',
