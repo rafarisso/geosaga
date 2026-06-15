@@ -9,13 +9,19 @@ interface MobileControlsProps {
 }
 
 /**
- * Botões virtuais para toque. Direcionais usam press/release; ações (pulo,
- * ataque, especial) disparam no toque. Também funcionam com mouse para teste.
+ * Controles de toque para o celular (paisagem). Direcionais grandes à esquerda
+ * (press/release), botão de ataque em destaque e ações à direita, dentro da
+ * área segura. Pensado para os polegares — não imita teclas de teclado.
  */
 export function MobileControls({ setButton, attackVerb, specialVerb, specialReady }: MobileControlsProps) {
   const hold = (button: GameButton) => ({
     onPointerDown: (event: PointerEvent) => {
       event.preventDefault();
+      try {
+        (event.target as HTMLElement).setPointerCapture?.(event.pointerId);
+      } catch {
+        // Alguns navegadores podem rejeitar a captura; o controle segue funcionando.
+      }
       setButton(button, true);
     },
     onPointerUp: (event: PointerEvent) => {
@@ -34,24 +40,25 @@ export function MobileControls({ setButton, attackVerb, specialVerb, specialRead
   });
 
   return (
-    <div className="stage-mobile-controls" aria-hidden={false}>
-      <div className="stage-pad-left">
-        <button className="stage-pad-btn" aria-label="Mover para a esquerda" {...hold('left')}>◀</button>
-        <button className="stage-pad-btn" aria-label="Mover para a direita" {...hold('right')}>▶</button>
+    <div className="stage-touch" aria-label="Controles de toque">
+      <div className="stage-touch-dpad">
+        <button className="touch-btn touch-dir" aria-label="Mover para a esquerda" {...hold('left')}>◀</button>
+        <button className="touch-btn touch-dir" aria-label="Mover para a direita" {...hold('right')}>▶</button>
       </div>
-      <div className="stage-pad-right">
-        <button className="stage-action-btn stage-action-jump" aria-label="Pular" {...tap('jump')}>
-          ⤴<small>Pular</small>
+
+      <div className="stage-touch-actions">
+        <button className="touch-btn touch-jump" aria-label="Pular" {...tap('jump')}>
+          <span aria-hidden>⤴</span><small>Pular</small>
         </button>
-        <button className="stage-action-btn stage-action-attack" aria-label={attackVerb} {...tap('attack')}>
-          ✦<small>{attackVerb}</small>
+        <button className="touch-btn touch-attack" aria-label={attackVerb} {...tap('attack')}>
+          <span aria-hidden>🌊</span><small>{attackVerb}</small>
         </button>
         <button
-          className={`stage-action-btn stage-action-special ${specialReady ? 'ready' : 'locked'}`}
+          className={`touch-btn touch-special ${specialReady ? 'ready' : 'locked'}`}
           aria-label={specialVerb}
           {...tap('special')}
         >
-          ★<small>{specialVerb}</small>
+          <span aria-hidden>⭐</span><small>{specialVerb}</small>
         </button>
       </div>
     </div>

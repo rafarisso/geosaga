@@ -4,6 +4,7 @@ import { REGIONS } from '../../data/regions';
 import { STAGES } from '../../data/stages';
 import type { Question, RegionId } from '../../data/types';
 import { fetchQuestions } from '../../services/questionService';
+import { useDeviceMode } from '../../hooks/useDeviceMode';
 import { useGameLoop } from '../../hooks/useGameLoop';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
 import { Enemy } from './Enemy';
@@ -47,7 +48,12 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
   const [special, setSpecial] = useState<Question | null>(null);
   const victorySavedRef = useRef(false);
 
-  const { inputRef, setButton } = useKeyboardControls(phase === 'playing');
+  const { isTouch, isPortrait } = useDeviceMode();
+  // No celular, a fase lateral só faz sentido em paisagem.
+  const needsRotate = isTouch && isPortrait;
+  const active = phase === 'playing' && !needsRotate;
+
+  const { inputRef, setButton } = useKeyboardControls(active);
 
   // Carrega as perguntas da região para alimentar o golpe especial.
   useEffect(() => {
@@ -111,7 +117,7 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
     setView(engine.view());
   }
 
-  useGameLoop(handleStep, phase === 'playing');
+  useGameLoop(handleStep, active);
 
   const specialReady = view.energy >= MAX_ENERGY;
 
@@ -236,12 +242,25 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
         onExit={onExit}
       />
 
-      <MobileControls
-        setButton={setButton}
-        attackVerb={stage.attackVerb}
-        specialVerb={stage.specialVerb}
-        specialReady={specialReady}
-      />
+      {isTouch && !needsRotate && (
+        <MobileControls
+          setButton={setButton}
+          attackVerb={stage.attackVerb}
+          specialVerb={stage.specialVerb}
+          specialReady={specialReady}
+        />
+      )}
+
+      {needsRotate && (
+        <div className="stage-rotate" role="alertdialog" aria-label="Gire o celular">
+          <div className="stage-rotate-card">
+            <span className="stage-rotate-icon" aria-hidden>📱↻</span>
+            <h2>Gire o celular</h2>
+            <p>A fase de aventura é jogada na horizontal. Vire o aparelho para o modo paisagem para começar.</p>
+            <button className="btn-secondary" onClick={onExit}>Voltar ao mapa</button>
+          </div>
+        </div>
+      )}
 
       {phase === 'intro' && (
         <div className="stage-overlay">
