@@ -2,6 +2,9 @@
 
 GeoSaga é um jogo educativo de Geografia do Brasil com estética de aventura 2D. O jogador enfrenta os guardiões das cinco regiões brasileiras, responde a desafios didáticos e conquista selos regionais.
 
+- Jogo publicado: https://geosaga-brasil.netlify.app
+- Repositório: https://github.com/rafarisso/geosaga
+
 Este repositório contém o MVP web em React, TypeScript, Vite e Phaser. A interface atual usa React; o Phaser permanece preparado para futuras cenas de plataforma, exploração e luta.
 
 ## Recursos do MVP
