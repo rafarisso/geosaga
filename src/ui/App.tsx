@@ -34,7 +34,7 @@ export default function App() {
         <GameStage
           region={stageRegion}
           onExit={() => { setStageRegion(null); setScreen('regions'); }}
-          onVictory={(score) => completeStage({ region: stageRegion, score, victory: true })}
+          onVictory={(score, stars) => completeStage({ region: stageRegion, score, victory: true, stars })}
         />
       </div>
     );

@@ -31,7 +31,16 @@ Cada região tem uma fase de plataforma/combate simbólico, jogável pelo botão
 - **Golpe especial:** `K` — quando a barra de conhecimento enche, abre uma **pergunta da região**. Acertar libera um golpe forte em área; errar mostra a explicação didática e o golpe sai fraco.
 - **Mobile:** botões virtuais na tela (direcionais à esquerda, ações à direita).
 
-O combate é simbólico e educativo: os inimigos são **problemas socioambientais** da região (rio poluído, desmatamento, seca, queimada, poluição urbana, geada etc.), modelados como placeholders (emoji + bloco colorido) prontos para troca por arte real. Ao derrotar todos os problemas, libera-se o **objetivo final** da fase (totem brilhante); alcançá-lo conclui a missão, salva o progresso e concede o selo da região.
+O combate é simbólico e educativo: os inimigos são **problemas socioambientais** da região (rio poluído, desmatamento, seca, queimada, poluição urbana, geada etc.), modelados como placeholders (emoji + bloco colorido) prontos para troca por arte real.
+
+### Desafio e progressão
+
+- **Inimigos que atacam:** os problemas avançam e lançam projéteis; é preciso desviar (pular/mover), o que dá uso real ao pulo.
+- **Plataformas e perigos temáticos:** cada fase tem plataformas e uma zona de perigo (queimada, enchente, geada…) que dá dano — atravesse pulando.
+- **Chefe regional:** ao limpar os problemas, surge o "problema-mor" da região (ex.: *Maré Negra*, *Fúria das Chamas*, *Rei do Gelo*). O chefe **resiste à onda comum e só é derrotado com o golpe especial** — ou seja, **acertando o quiz**. Isso torna o conhecimento de Geografia a arma decisiva.
+- **Dificuldade crescente** do Norte ao Sul (vida e dano escalam por região).
+- **Avaliação por estrelas (0–3):** vencer (1) + manter a vida acima da metade (1) + bom desempenho no quiz (1). As estrelas e o título **Mestre do Brasil** (zerar as cinco fases) aparecem na seleção de regiões.
+- **Som e game feel:** efeitos sonoros sintetizados (Web Audio, sem arquivos), tremor de tela e partículas de dano. Há um botão de **mudo** no HUD.
 
 ### Arquitetura do modo jogável
 

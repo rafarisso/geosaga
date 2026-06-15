@@ -1,9 +1,17 @@
-import type { RegionId, StageDefinition } from './types';
+import type { PlatformDef, RegionId, StageDefinition } from './types';
+
+/** Plataformas padrão da fase (verticalidade + travessia dos perigos). */
+const PLATFORMS: PlatformDef[] = [
+  { x: 470, y: 362, width: 150 },
+  { x: 980, y: 320, width: 160 },
+  { x: 1500, y: 352, width: 150 },
+  { x: 2060, y: 322, width: 160 },
+];
 
 /**
- * Definição das fases jogáveis por região. O MVP entrega a fase Norte (Iarê)
- * totalmente jogável; as demais já têm objetivo, inimigos e cenário definidos
- * e são liberadas pelo mesmo motor de fase.
+ * Definição das fases jogáveis por região. Cada fase tem problemas regionais,
+ * um chefe (só derrotado com o quiz), plataformas, uma zona de perigo temática
+ * e um multiplicador de dificuldade crescente do Norte ao Sul.
  */
 export const STAGES: Record<RegionId, StageDefinition> = {
   norte: {
@@ -17,6 +25,18 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     goalIcon: '🌳',
     goalLabel: 'Floresta protegida',
     enemyIds: ['norte-rio-poluido', 'norte-desmatamento', 'norte-queimada'],
+    boss: {
+      name: 'Maré Negra',
+      emoji: '🛢️',
+      color: '#3b3b2a',
+      hp: 320,
+      contactDamage: 14,
+      attackInterval: 2.2,
+      taunt: 'Vou envenenar todos os rios da Amazônia!',
+    },
+    platforms: PLATFORMS,
+    hazards: [{ x: 1340, width: 200, kind: 'fogo', label: 'Queimada' }],
+    difficulty: 1,
     scenery: {
       skyTop: '#0d6e8c',
       skyBottom: '#1ea88a',
@@ -41,6 +61,18 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       'nordeste-erosao',
       'nordeste-mandacaru-corrompido',
     ],
+    boss: {
+      name: 'Senhor da Seca',
+      emoji: '☀️',
+      color: '#b5651d',
+      hp: 360,
+      contactDamage: 15,
+      attackInterval: 2.1,
+      taunt: 'O sertão vai rachar e nada vai brotar!',
+    },
+    platforms: PLATFORMS,
+    hazards: [{ x: 1340, width: 210, kind: 'fogo', label: 'Chão escaldante' }],
+    difficulty: 1.12,
     scenery: {
       skyTop: '#e7a33c',
       skyBottom: '#f4cd6a',
@@ -65,6 +97,18 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       'centro-oeste-area-degradada',
       'centro-oeste-animal-perigo',
     ],
+    boss: {
+      name: 'Fúria das Chamas',
+      emoji: '🔥',
+      color: '#c0392b',
+      hp: 400,
+      contactDamage: 16,
+      attackInterval: 1.9,
+      taunt: 'Vou consumir o cerrado e o Pantanal em fogo!',
+    },
+    platforms: PLATFORMS,
+    hazards: [{ x: 1320, width: 230, kind: 'fogo', label: 'Foco de incêndio' }],
+    difficulty: 1.24,
     scenery: {
       skyTop: '#caa53a',
       skyBottom: '#efd06a',
@@ -89,6 +133,18 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       'sudeste-concreto',
       'sudeste-fumaca-industrial',
     ],
+    boss: {
+      name: 'Névoa Industrial',
+      emoji: '🏭',
+      color: '#5d6d7e',
+      hp: 440,
+      contactDamage: 17,
+      attackInterval: 1.8,
+      taunt: 'A cidade vai sufocar sob o concreto e a fumaça!',
+    },
+    platforms: PLATFORMS,
+    hazards: [{ x: 1320, width: 240, kind: 'agua', label: 'Enchente' }],
+    difficulty: 1.36,
     scenery: {
       skyTop: '#3f6f9c',
       skyBottom: '#70a6c8',
@@ -113,6 +169,18 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       'sul-erosao-pampas',
       'sul-araucaria-ameacada',
     ],
+    boss: {
+      name: 'Rei do Gelo',
+      emoji: '🧊',
+      color: '#5dade2',
+      hp: 480,
+      contactDamage: 18,
+      attackInterval: 1.7,
+      taunt: 'A geada vai congelar araucárias e pampas!',
+    },
+    platforms: PLATFORMS,
+    hazards: [{ x: 1320, width: 240, kind: 'gelo', label: 'Geada' }],
+    difficulty: 1.5,
     scenery: {
       skyTop: '#5e8fb0',
       skyBottom: '#a9d2e6',

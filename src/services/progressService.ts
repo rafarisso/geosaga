@@ -10,7 +10,11 @@ export const EMPTY_PROGRESS: GameProgress = {
   lastRegion: null,
   completedStages: [],
   stageScores: {},
+  stageStars: {},
+  masterOfBrazil: false,
 };
+
+const ALL_REGIONS: RegionId[] = ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'];
 
 function isRegionId(value: unknown): value is RegionId {
   return ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'].includes(String(value));
@@ -26,6 +30,7 @@ export function loadProgress(): GameProgress {
     const bestScores = parsed.bestScores ?? {};
     const completedStages = (parsed.completedStages ?? []).filter(isRegionId);
     const stageScores = parsed.stageScores ?? {};
+    const stageStars = parsed.stageStars ?? {};
     const totalScore =
       Object.values(bestScores).reduce((sum, score) => sum + (score ?? 0), 0) +
       Object.values(stageScores).reduce((sum, score) => sum + (score ?? 0), 0);
@@ -38,6 +43,8 @@ export function loadProgress(): GameProgress {
       lastRegion: isRegionId(parsed.lastRegion) ? parsed.lastRegion : null,
       completedStages,
       stageScores,
+      stageStars,
+      masterOfBrazil: parsed.masterOfBrazil === true,
     };
   } catch {
     return EMPTY_PROGRESS;
@@ -98,6 +105,12 @@ export function registerStageResult(progress: GameProgress, result: StageResult)
   const badges = result.victory
     ? Array.from(new Set([...progress.badges, result.region]))
     : progress.badges;
+  const stageStars = {
+    ...progress.stageStars,
+    [result.region]: Math.max(progress.stageStars[result.region] ?? 0, result.stars),
+  };
+  const masterOfBrazil =
+    progress.masterOfBrazil || ALL_REGIONS.every((id) => completedStages.includes(id));
 
   const nextProgress: GameProgress = {
     ...progress,
@@ -105,6 +118,8 @@ export function registerStageResult(progress: GameProgress, result: StageResult)
     badges,
     completedStages,
     stageScores,
+    stageStars,
+    masterOfBrazil,
     totalScore: sumScores(progress.bestScores, stageScores),
     lastRegion: result.region,
   };
