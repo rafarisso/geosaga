@@ -83,7 +83,12 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       'Jequi limpou o ar e devolveu o verde às cidades! A Mata Atlântica respira de novo.',
     goalIcon: '🌆',
     goalLabel: 'Cidade verde',
-    enemyIds: ['sudeste-poluicao-urbana', 'sudeste-enchente', 'sudeste-fumaca-industrial'],
+    enemyIds: [
+      'sudeste-poluicao-urbana',
+      'sudeste-enchente',
+      'sudeste-concreto',
+      'sudeste-fumaca-industrial',
+    ],
     scenery: {
       skyTop: '#3f6f9c',
       skyBottom: '#70a6c8',
@@ -102,7 +107,12 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       'Araucá protegeu as araucárias e os campos! O Sul resiste ao frio com vida.',
     goalIcon: '🌲',
     goalLabel: 'Araucárias salvas',
-    enemyIds: ['sul-vento-gelado', 'sul-araucaria-ameacada', 'sul-geada'],
+    enemyIds: [
+      'sul-vento-gelado',
+      'sul-geada',
+      'sul-erosao-pampas',
+      'sul-araucaria-ameacada',
+    ],
     scenery: {
       skyTop: '#5e8fb0',
       skyBottom: '#a9d2e6',
