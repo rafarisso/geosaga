@@ -53,6 +53,10 @@ export interface GameProgress {
   completedStages: RegionId[];
   /** Melhor pontuação obtida na fase jogável de cada região. */
   stageScores: Partial<Record<RegionId, number>>;
+  /** Melhor avaliação por estrelas (0–3) na fase jogável de cada região. */
+  stageStars: Partial<Record<RegionId, number>>;
+  /** Verdadeiro quando o jogador venceu o Desafio Brasil (todas as regiões). */
+  masterOfBrazil: boolean;
 }
 
 /** Atributos de gameplay de cada guardião controlável. */
@@ -85,6 +89,39 @@ export interface RegionalProblem {
   color: string;
 }
 
+/** Chefe regional: o "problema-mor" da região, só derrotado com o quiz. */
+export interface BossDefinition {
+  name: string;
+  emoji: string;
+  color: string;
+  /** Vida do chefe (antes da escala por região). */
+  hp: number;
+  /** Dano por contato com o chefe. */
+  contactDamage: number;
+  /** Intervalo, em segundos, entre os ataques do chefe. */
+  attackInterval: number;
+  /** Fala exibida quando o chefe aparece. */
+  taunt: string;
+}
+
+/** Plataforma estática (one-way) onde o jogador pode pousar. */
+export interface PlatformDef {
+  x: number;
+  /** Altura do topo da plataforma (coordenada Y do mundo). */
+  y: number;
+  width: number;
+}
+
+export type HazardKind = 'fogo' | 'agua' | 'gelo' | 'fumaca';
+
+/** Zona de perigo temática que causa dano ao jogador. */
+export interface HazardDef {
+  x: number;
+  width: number;
+  kind: HazardKind;
+  label: string;
+}
+
 /** Definição de uma fase jogável de uma região. */
 export interface StageDefinition {
   region: RegionId;
@@ -103,6 +140,14 @@ export interface StageDefinition {
   goalLabel: string;
   /** Lista de ids de problemas regionais que aparecem na fase. */
   enemyIds: string[];
+  /** Chefe regional enfrentado após limpar os problemas. */
+  boss: BossDefinition;
+  /** Plataformas da fase (verticalidade). */
+  platforms: PlatformDef[];
+  /** Zonas de perigo temáticas. */
+  hazards: HazardDef[];
+  /** Multiplicador de dificuldade (vida/dano dos inimigos e do chefe). */
+  difficulty: number;
   /** Tema visual do cenário lateral. */
   scenery: {
     skyTop: string;
@@ -117,5 +162,7 @@ export interface StageResult {
   region: RegionId;
   score: number;
   victory: boolean;
+  /** Estrelas conquistadas (0–3) conforme desempenho. */
+  stars: number;
 }
 

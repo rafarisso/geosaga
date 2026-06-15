@@ -29,6 +29,7 @@ export function RegionSelectScreen({ progress, onQuiz, onPlayStage, onBack }: Re
           const completed = progress.completedRegions.includes(region.id);
           const stageDone = progress.completedStages.includes(region.id);
           const score = progress.bestScores[region.id] ?? 0;
+          const starCount = progress.stageStars[region.id] ?? 0;
           return (
             <article
               className={`region-card region-${region.id} ${completed ? 'completed' : ''}`}
@@ -40,6 +41,13 @@ export function RegionSelectScreen({ progress, onQuiz, onPlayStage, onBack }: Re
                 {stageDone
                   ? <span className="badge-earned">Fase vencida</span>
                   : completed && <span className="badge-earned">Selo do quiz</span>}
+                {stageDone && (
+                  <span className="card-stars" aria-label={`${starCount} de 3 estrelas`}>
+                    {[1, 2, 3].map((n) => (
+                      <span key={n} className={n <= starCount ? 'on' : ''}>★</span>
+                    ))}
+                  </span>
+                )}
                 <GuardianSprite region={region.id} state={completed ? 'victory' : 'idle'} />
               </div>
               <div className="region-card-content">
@@ -63,6 +71,12 @@ export function RegionSelectScreen({ progress, onQuiz, onPlayStage, onBack }: Re
           );
         })}
       </section>
+
+      {progress.masterOfBrazil && (
+        <div className="master-banner" role="status">
+          🏆 Você venceu as cinco regiões e é <strong>Mestre do Brasil</strong>!
+        </div>
+      )}
 
       <div className="badge-trail" aria-label="Progresso de regiões">
         {REGION_LIST.map((region) => (

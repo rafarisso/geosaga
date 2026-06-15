@@ -4,9 +4,11 @@ import { REGIONS } from '../../data/regions';
 import { STAGES } from '../../data/stages';
 import type { Question, RegionId } from '../../data/types';
 import { fetchQuestions } from '../../services/questionService';
+import { isMuted, playSound, setMuted } from '../../game/soundEngine';
 import { useDeviceMode } from '../../hooks/useDeviceMode';
 import { useGameLoop } from '../../hooks/useGameLoop';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
+import { Boss } from './Boss';
 import { Enemy } from './Enemy';
 import { HUD } from './HUD';
 import { MobileControls } from './MobileControls';
@@ -14,7 +16,6 @@ import { Player } from './Player';
 import { SpecialQuizModal } from './SpecialQuizModal';
 import {
   ENEMY_SIZE,
-  GOAL_X,
   GROUND_Y,
   MAX_ENERGY,
   PLAYER_H,
@@ -28,11 +29,13 @@ import {
 
 type Phase = 'intro' | 'playing' | 'quiz' | 'victory' | 'defeat';
 
+const HAZARD_EMOJI: Record<string, string> = { fogo: '🔥', agua: '🌊', gelo: '❄️', fumaca: '💨' };
+
 interface GameStageProps {
   region: RegionId;
   onExit: () => void;
   /** Chamado uma vez quando a fase é vencida, para persistir o progresso. */
-  onVictory: (score: number) => void;
+  onVictory: (score: number, stars: number) => void;
 }
 
 export function GameStage({ region, onExit, onVictory }: GameStageProps) {
@@ -46,16 +49,19 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
   const [view, setView] = useState<View>(() => engine.view());
   const [phase, setPhase] = useState<Phase>('intro');
   const [special, setSpecial] = useState<Question | null>(null);
+  const [stars, setStars] = useState(0);
+  const [muted, setMutedState] = useState(isMuted());
   const victorySavedRef = useRef(false);
 
+  // Estado anterior para disparar efeitos sonoros por diferença.
+  const sfx = useRef({ hp: engine.view().hp, enemies: engine.totalEnemies, proj: 0, boss: false });
+
   const { isTouch, isPortrait } = useDeviceMode();
-  // No celular, a fase lateral só faz sentido em paisagem.
   const needsRotate = isTouch && isPortrait;
   const active = phase === 'playing' && !needsRotate;
 
   const { inputRef, setButton } = useKeyboardControls(active);
 
-  // Carrega as perguntas da região para alimentar o golpe especial.
   useEffect(() => {
     let cancelled = false;
     fetchQuestions({ region, count: 5 })
@@ -64,7 +70,6 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
     return () => { cancelled = true; };
   }, [region]);
 
-  // Escala o palco lógico (960x540) para preencher o contêiner.
   const viewportRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   useEffect(() => {
@@ -80,41 +85,58 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
     return () => observer.disconnect();
   }, []);
 
-  // Persiste a vitória uma única vez.
   useEffect(() => {
     if (phase === 'victory' && !victorySavedRef.current) {
       victorySavedRef.current = true;
-      onVictory(engine.currentScore);
+      onVictory(engine.currentScore, engine.starsEarned());
     }
   }, [phase, onVictory, engine]);
 
+  function emitSfx(v: View) {
+    const playerProj = v.projectiles.filter((p) => p.team === 'player').length;
+    if (playerProj > sfx.current.proj) playSound('attack');
+    if (v.hp < sfx.current.hp) playSound('hurt');
+    if (v.enemiesRemaining < sfx.current.enemies) playSound('defeatEnemy');
+    if (v.bossActive && !sfx.current.boss) playSound('bossAppear');
+    sfx.current = { hp: v.hp, enemies: v.enemiesRemaining, proj: playerProj, boss: v.bossActive };
+  }
+
   function resolveSpecial(correct: boolean) {
+    const hadBoss = engine.view().bossActive;
     engine.applySpecial(correct);
-    setView(engine.view());
+    playSound(hadBoss ? 'bossHit' : 'special');
+    const v = engine.view();
+    sfx.current.boss = v.bossActive;
+    setView(v);
     setSpecial(null);
     setPhase('playing');
   }
 
   function handleStep(dt: number) {
     const outcome = engine.step(dt, inputRef.current);
+    const v = engine.view();
+    emitSfx(v);
     if (outcome === 'requestSpecial') {
       const bank = questionsRef.current;
       if (bank.length > 0) {
         setSpecial(bank[Math.floor(Math.random() * bank.length)]);
-        setView(engine.view());
+        setView(v);
         setPhase('quiz');
         return;
       }
     } else if (outcome === 'victory') {
-      setView(engine.view());
+      setStars(engine.starsEarned());
+      playSound('victory');
+      setView(v);
       setPhase('victory');
       return;
     } else if (outcome === 'defeat') {
-      setView(engine.view());
+      playSound('gameover');
+      setView(v);
       setPhase('defeat');
       return;
     }
-    setView(engine.view());
+    setView(v);
   }
 
   useGameLoop(handleStep, active);
@@ -130,9 +152,17 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
     const fresh = new StageEngine(region);
     setEngine(fresh);
     victorySavedRef.current = false;
+    sfx.current = { hp: fresh.view().hp, enemies: fresh.totalEnemies, proj: 0, boss: false };
     setView(fresh.view());
     setSpecial(null);
+    setStars(0);
     setPhase('intro');
+  }
+
+  function toggleMute() {
+    const next = !muted;
+    setMuted(next);
+    setMutedState(next);
   }
 
   return (
@@ -149,17 +179,28 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
     >
       <div className="stage-viewport" ref={viewportRef}>
         <div className="stage-world-scaler" style={worldStyle}>
-          <div className="stage-world" style={{ transform: `translateX(${-view.camera}px)` }}>
+          <div className="stage-world" style={{ transform: `translate(${-view.camera + view.shakeX}px, ${view.shakeY}px)` }}>
             <div className="stage-hills" />
             <div className="stage-ground" style={{ width: STAGE_WIDTH }} />
 
-            {view.goalActive && (
-              <div className="stage-goal" style={{ left: GOAL_X, top: GROUND_Y - 180 }}>
-                <span className="stage-goal-glow" />
-                <span className="stage-goal-icon" aria-hidden>{stage.goalIcon}</span>
-                <span className="stage-goal-label">{stage.goalLabel}</span>
+            {view.hazards.map((hz) => (
+              <div
+                key={hz.x}
+                className={`stage-hazard stage-hazard-${hz.kind}`}
+                style={{ left: hz.x, top: GROUND_Y, width: hz.width }}
+              >
+                <span aria-hidden>{HAZARD_EMOJI[hz.kind]}</span>
+                <small>{hz.label}</small>
               </div>
-            )}
+            ))}
+
+            {view.platforms.map((plat) => (
+              <div
+                key={`${plat.x}-${plat.y}`}
+                className="stage-platform"
+                style={{ left: plat.x, top: plat.y, width: plat.width }}
+              />
+            ))}
 
             {view.enemies.map((enemy) => (
               <Enemy
@@ -175,6 +216,8 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
               />
             ))}
 
+            {view.boss && <Boss boss={view.boss} />}
+
             <Player
               region={region}
               state={view.pstate}
@@ -189,7 +232,7 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
             {view.projectiles.map((p) => (
               <span
                 key={p.id}
-                className="stage-projectile"
+                className={`stage-projectile stage-projectile-${p.team}`}
                 style={{
                   left: p.x - p.r,
                   top: p.y - p.r,
@@ -224,6 +267,13 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
             <strong>J</strong> ou <strong>✦</strong> lança sua onda para restaurar os problemas à distância!
           </div>
         )}
+
+        {view.bossBanner && (
+          <div className="stage-boss-banner" role="status">
+            <strong>⚠ {stage.boss.name}</strong>
+            <span>{view.bossBanner}</span>
+          </div>
+        )}
       </div>
 
       <HUD
@@ -238,7 +288,9 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
         enemiesRemaining={view.enemiesRemaining}
         totalEnemies={engine.totalEnemies}
         specialReady={specialReady}
-        goalActive={view.goalActive}
+        boss={view.boss}
+        muted={muted}
+        onToggleMute={toggleMute}
         onExit={onExit}
       />
 
@@ -269,13 +321,13 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
             <h2>{stage.title}</h2>
             <p className="stage-overlay-objective">🎯 {stage.objective}</p>
             <ul className="stage-controls-help">
-              <li><strong>← →</strong> ou <strong>A / D</strong> mover</li>
-              <li><strong>Espaço</strong> pular</li>
-              <li><strong>J</strong> lançar onda de {stage.attackVerb.toLowerCase()} (ataca à distância!)</li>
+              <li><strong>← →</strong> ou <strong>A / D</strong> mover · <strong>Espaço</strong> pular</li>
+              <li><strong>J</strong> lançar onda de {stage.attackVerb.toLowerCase()} (à distância)</li>
               <li><strong>K</strong> {stage.specialVerb} — responda à pergunta para o golpe forte</li>
             </ul>
             <p className="stage-overlay-tip">
-              💡 Atinja os problemas com a onda antes que eles cheguem até você. Encostar neles tira sua vida!
+              💡 Restaure os problemas, desvie dos ataques (pule!) e enfrente o chefe <strong>{stage.boss.name}</strong>.
+              Ele só é vencido com o golpe especial — ou seja, acertando o quiz!
             </p>
             <button className="btn-primary btn-large" onClick={() => setPhase('playing')}>
               Começar missão
@@ -299,6 +351,11 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
           <div className="stage-overlay-card">
             <span className="eyebrow">Missão cumprida</span>
             <h2>Selo {regionInfo.name} conquistado! 🏅</h2>
+            <div className="stage-stars" aria-label={`${stars} de 3 estrelas`}>
+              {[1, 2, 3].map((n) => (
+                <span key={n} className={n <= stars ? 'star on' : 'star'}>★</span>
+              ))}
+            </div>
             <p>{stage.victoryMessage}</p>
             <div className="stage-result-score">
               <strong>{view.score}</strong>

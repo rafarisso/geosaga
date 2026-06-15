@@ -1,4 +1,5 @@
 import type { StageDefinition } from '../../data/types';
+import type { BossView } from './stageEngine';
 
 interface HUDProps {
   guardianName: string;
@@ -12,11 +13,13 @@ interface HUDProps {
   enemiesRemaining: number;
   totalEnemies: number;
   specialReady: boolean;
-  goalActive: boolean;
+  boss: BossView | null;
+  muted: boolean;
+  onToggleMute: () => void;
   onExit: () => void;
 }
 
-/** Camada de interface da fase: vida, energia/conhecimento, objetivo e progresso. */
+/** Camada de interface da fase: vida, energia/conhecimento, objetivo, chefe. */
 export function HUD({
   guardianName,
   stage,
@@ -29,7 +32,9 @@ export function HUD({
   enemiesRemaining,
   totalEnemies,
   specialReady,
-  goalActive,
+  boss,
+  muted,
+  onToggleMute,
   onExit,
 }: HUDProps) {
   const hpRatio = Math.max(0, hp / maxHp);
@@ -58,17 +63,28 @@ export function HUD({
             <span>Pontos</span>
             <strong>{score}</strong>
           </div>
-          <button className="stage-exit-btn" onClick={onExit}>Sair</button>
+          <button className="stage-icon-btn" onClick={onToggleMute} aria-label={muted ? 'Ativar som' : 'Desativar som'}>
+            {muted ? '🔇' : '🔊'}
+          </button>
+          <button className="stage-icon-btn" onClick={onExit}>Sair</button>
         </div>
       </div>
 
-      <div className="stage-objective" role="status">
-        <span className="stage-objective-tag">Objetivo</span>
-        <p>{goalActive ? 'Alcance o totem brilhante para concluir a missão!' : stage.objective}</p>
-        <span className="stage-objective-count">
-          {goalActive ? '✦ Caminho liberado' : `Problemas restantes: ${enemiesRemaining}/${totalEnemies}`}
-        </span>
-      </div>
+      {boss ? (
+        <div className="stage-boss-bar" role="status">
+          <span className="stage-boss-bar-name">{boss.emoji} {boss.name}</span>
+          <div className="stage-bar stage-bar-boss" aria-label={`Vida do chefe`}>
+            <span style={{ width: `${Math.max(0, (boss.hp / boss.maxHp) * 100)}%` }} />
+            <small>Use o golpe especial (quiz) para vencê-lo!</small>
+          </div>
+        </div>
+      ) : (
+        <div className="stage-objective" role="status">
+          <span className="stage-objective-tag">Objetivo</span>
+          <p>{stage.objective}</p>
+          <span className="stage-objective-count">Problemas restantes: {enemiesRemaining}/{totalEnemies}</span>
+        </div>
+      )}
     </div>
   );
 }
