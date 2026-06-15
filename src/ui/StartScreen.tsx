@@ -46,7 +46,7 @@ export function StartScreen({ onPlay, onContinue, progress }: StartScreenProps) 
       </section>
 
       <footer className="creator-credit">
-        Desenvolvedor: Profº Rafael Risso - Geografia|
+        Desenvolvedor: Profº Rafael Risso - Geografia
       </footer>
 
       {showHowTo && (

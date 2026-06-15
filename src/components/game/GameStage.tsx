@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CHARACTERS } from '../../data/characters';
+import { QUESTIONS } from '../../data/questions';
 import { REGIONS } from '../../data/regions';
 import { STAGES } from '../../data/stages';
 import type { Question, RegionId } from '../../data/types';
@@ -13,6 +14,7 @@ import { Enemy } from './Enemy';
 import { HUD } from './HUD';
 import { MobileControls } from './MobileControls';
 import { Player } from './Player';
+import { RegionalScenery } from './RegionalScenery';
 import { SpecialQuizModal } from './SpecialQuizModal';
 import {
   ENEMY_SIZE,
@@ -31,6 +33,15 @@ type Phase = 'intro' | 'playing' | 'quiz' | 'victory' | 'defeat';
 
 const HAZARD_EMOJI: Record<string, string> = { fogo: '🔥', agua: '🌊', gelo: '❄️', fumaca: '💨' };
 
+function shuffleQuestions(items: Question[]): Question[] {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const target = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[target]] = [copy[target], copy[index]];
+  }
+  return copy;
+}
+
 interface GameStageProps {
   region: RegionId;
   onExit: () => void;
@@ -46,6 +57,9 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
   const [engine, setEngine] = useState(() => new StageEngine(region));
 
   const questionsRef = useRef<Question[]>([]);
+  const questionDeckRef = useRef<Question[]>([]);
+  const lastQuestionIdRef = useRef<string | null>(null);
+  const renderElapsedRef = useRef(0);
   const [view, setView] = useState<View>(() => engine.view());
   const [phase, setPhase] = useState<Phase>('intro');
   const [special, setSpecial] = useState<Question | null>(null);
@@ -64,9 +78,16 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
 
   useEffect(() => {
     let cancelled = false;
-    fetchQuestions({ region, count: 5 })
-      .then((items) => { if (!cancelled) questionsRef.current = items; })
-      .catch(() => { questionsRef.current = []; });
+    const applyQuestionBank = (items: Question[]) => {
+      const bank = items.length > 0 ? items : QUESTIONS[region];
+      questionsRef.current = bank;
+      const withoutImmediateRepeat = bank.filter((question) => question.id !== lastQuestionIdRef.current);
+      questionDeckRef.current = shuffleQuestions(withoutImmediateRepeat.length > 0 ? withoutImmediateRepeat : bank);
+    };
+    applyQuestionBank(QUESTIONS[region]);
+    fetchQuestions({ region, count: 8 })
+      .then((items) => { if (!cancelled) applyQuestionBank(items); })
+      .catch(() => { if (!cancelled) applyQuestionBank(QUESTIONS[region]); });
     return () => { cancelled = true; };
   }, [region]);
 
@@ -110,33 +131,51 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
     setView(v);
     setSpecial(null);
     setPhase('playing');
+    navigator.vibrate?.(correct ? [30, 30, 55] : 35);
   }
 
-  function handleStep(dt: number) {
+  function drawQuestion(): Question {
+    const source = questionsRef.current.length > 0 ? questionsRef.current : QUESTIONS[region];
+    if (questionDeckRef.current.length === 0) {
+      const withoutImmediateRepeat = source.filter((question) => question.id !== lastQuestionIdRef.current);
+      questionDeckRef.current = shuffleQuestions(withoutImmediateRepeat.length > 0 ? withoutImmediateRepeat : source);
+    }
+    const question = questionDeckRef.current.pop() ?? source[0];
+    lastQuestionIdRef.current = question.id;
+    return question;
+  }
+
+  function handleStep(dt: number): boolean {
     const outcome = engine.step(dt, inputRef.current);
-    const v = engine.view();
-    emitSfx(v);
     if (outcome === 'requestSpecial') {
-      const bank = questionsRef.current;
-      if (bank.length > 0) {
-        setSpecial(bank[Math.floor(Math.random() * bank.length)]);
-        setView(v);
-        setPhase('quiz');
-        return;
-      }
+      const v = engine.view();
+      setSpecial(drawQuestion());
+      setView(v);
+      setPhase('quiz');
+      return false;
     } else if (outcome === 'victory') {
+      const v = engine.view();
       setStars(engine.starsEarned());
       playSound('victory');
       setView(v);
       setPhase('victory');
-      return;
+      return false;
     } else if (outcome === 'defeat') {
+      const v = engine.view();
       playSound('gameover');
       setView(v);
       setPhase('defeat');
-      return;
+      return false;
     }
-    setView(v);
+
+    renderElapsedRef.current += dt;
+    if (renderElapsedRef.current >= 1 / 30 || outcome === 'bossIncoming') {
+      renderElapsedRef.current = 0;
+      const v = engine.view();
+      emitSfx(v);
+      setView(v);
+    }
+    return true;
   }
 
   useGameLoop(handleStep, active);
@@ -144,8 +183,11 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
   const specialReady = view.energy >= MAX_ENERGY;
 
   const worldStyle = useMemo(
-    () => ({ width: VIEW_W, height: VIEW_H, transform: `scale(${scale})` }),
-    [scale],
+    () => {
+      const touchLift = isTouch && !needsRotate ? Math.min(128, Math.max(0, (1 - scale) * 390)) : 0;
+      return { width: VIEW_W, height: VIEW_H, transform: `translateY(${-touchLift}px) scale(${scale})` };
+    },
+    [isTouch, needsRotate, scale],
   );
 
   function restart() {
@@ -156,7 +198,26 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
     setView(fresh.view());
     setSpecial(null);
     setStars(0);
+    renderElapsedRef.current = 0;
     setPhase('intro');
+  }
+
+  async function enterImmersiveMode() {
+    if (!isTouch) return;
+    try {
+      if (!document.fullscreenElement) await document.documentElement.requestFullscreen?.();
+      const orientation = screen.orientation as ScreenOrientation & {
+        lock?: (value: 'landscape') => Promise<void>;
+      };
+      await orientation.lock?.('landscape');
+    } catch {
+      // iOS e alguns navegadores não permitem bloquear a orientação.
+    }
+  }
+
+  function startMission() {
+    setPhase('playing');
+    void enterImmersiveMode();
   }
 
   function toggleMute() {
@@ -167,20 +228,21 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
 
   return (
     <div
-      className="stage-root"
+      className={`stage-root stage-region-${region} ${isTouch ? 'stage-touch-device' : ''}`}
       style={{
         '--sky-top': stage.scenery.skyTop,
         '--sky-bottom': stage.scenery.skyBottom,
         '--ground': stage.scenery.ground,
         '--ground-accent': stage.scenery.groundAccent,
         '--hill': stage.scenery.hill,
+        '--scenery-haze': stage.scenery.haze,
         '--region-color': character.themeColor,
       } as React.CSSProperties}
     >
       <div className="stage-viewport" ref={viewportRef}>
         <div className="stage-world-scaler" style={worldStyle}>
+          <RegionalScenery stage={stage} camera={view.camera} />
           <div className="stage-world" style={{ transform: `translate(${-view.camera + view.shakeX}px, ${view.shakeY}px)` }}>
-            <div className="stage-hills" />
             <div className="stage-ground" style={{ width: STAGE_WIDTH }} />
 
             {view.hazards.map((hz) => (
@@ -264,7 +326,11 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
 
         {phase === 'playing' && !view.hasFired && (
           <div className="stage-hint" role="status">
-            <strong>J</strong> ou <strong>✦</strong> lança sua onda para restaurar os problemas à distância!
+            {isTouch ? (
+              <>Toque em <strong>{stage.attackVerb}</strong> para atingir os problemas à distância.</>
+            ) : (
+              <><strong>J</strong> lança sua onda para restaurar os problemas à distância!</>
+            )}
           </div>
         )}
 
@@ -309,7 +375,10 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
             <span className="stage-rotate-icon" aria-hidden>📱↻</span>
             <h2>Gire o celular</h2>
             <p>A fase de aventura é jogada na horizontal. Vire o aparelho para o modo paisagem para começar.</p>
-            <button className="btn-secondary" onClick={onExit}>Voltar ao mapa</button>
+            <div className="stage-overlay-actions">
+              <button className="btn-primary" onClick={() => void enterImmersiveMode()}>Usar tela cheia</button>
+              <button className="btn-secondary" onClick={onExit}>Voltar ao mapa</button>
+            </div>
           </div>
         </div>
       )}
@@ -320,16 +389,30 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
             <span className="eyebrow">Fase {regionInfo.name}</span>
             <h2>{stage.title}</h2>
             <p className="stage-overlay-objective">🎯 {stage.objective}</p>
+            <div className="stage-mechanic-card">
+              <strong>{stage.mechanic.label}</strong>
+              <span>{stage.mechanic.hint}</span>
+            </div>
             <ul className="stage-controls-help">
-              <li><strong>← →</strong> ou <strong>A / D</strong> mover · <strong>Espaço</strong> pular</li>
-              <li><strong>J</strong> lançar onda de {stage.attackVerb.toLowerCase()} (à distância)</li>
-              <li><strong>K</strong> {stage.specialVerb} — responda à pergunta para o golpe forte</li>
+              {isTouch ? (
+                <>
+                  <li>Use os direcionais à esquerda para se mover.</li>
+                  <li>Os botões à direita controlam pulo, ataque e golpe especial.</li>
+                  <li>O golpe especial acende quando o conhecimento chega a 100%.</li>
+                </>
+              ) : (
+                <>
+                  <li><strong>← →</strong> ou <strong>A / D</strong> mover · <strong>Espaço</strong> pular</li>
+                  <li><strong>J</strong> lançar onda de {stage.attackVerb.toLowerCase()} (à distância)</li>
+                  <li><strong>K</strong> {stage.specialVerb} — responda à pergunta para o golpe forte</li>
+                </>
+              )}
             </ul>
             <p className="stage-overlay-tip">
               💡 Restaure os problemas, desvie dos ataques (pule!) e enfrente o chefe <strong>{stage.boss.name}</strong>.
               Ele só é vencido com o golpe especial — ou seja, acertando o quiz!
             </p>
-            <button className="btn-primary btn-large" onClick={() => setPhase('playing')}>
+            <button className="btn-primary btn-large" onClick={startMission}>
               Começar missão
             </button>
           </div>
@@ -338,6 +421,7 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
 
       {phase === 'quiz' && special && (
         <SpecialQuizModal
+          key={special.id}
           region={region}
           guardianName={character.name}
           specialVerb={stage.specialVerb}

@@ -5,7 +5,7 @@ import { STAGES } from '../../data/stages';
 import type {
   AnimationState,
   BossDefinition,
-  HazardKind,
+  HazardDef,
   PlatformDef,
   RegionId,
   RegionalProblem,
@@ -42,8 +42,8 @@ const ENEMY_PROJ_R = 19;
 const ENEMY_ATTACK_INTERVAL = 3;
 const BOSS_SPEED = 80;
 const BOSS_HOVER = GROUND_Y - 24;
-const SPECIAL_BOSS_FACTOR = 3.2;
-const HAZARD_DAMAGE = 6;
+const SPECIAL_BOSS_FACTOR = 3.5;
+const DEFAULT_HAZARD_DAMAGE = 6;
 
 export type StepOutcome = 'playing' | 'requestSpecial' | 'bossIncoming' | 'victory' | 'defeat';
 
@@ -185,7 +185,7 @@ export interface View {
   projectiles: ProjectileView[];
   particles: ParticleView[];
   platforms: PlatformDef[];
-  hazards: { x: number; width: number; kind: HazardKind; label: string }[];
+  hazards: HazardDef[];
 }
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
@@ -215,7 +215,8 @@ export class StageEngine {
   private readonly stats: (typeof CHARACTERS)[RegionId]['stats'];
   private readonly accent: string;
   private readonly platforms: PlatformDef[];
-  private readonly hazards: { x: number; width: number; kind: HazardKind; label: string }[];
+  private readonly hazards: HazardDef[];
+  private readonly movement: (typeof STAGES)[RegionId]['movement'];
 
   constructor(region: RegionId) {
     const character = CHARACTERS[region];
@@ -225,6 +226,7 @@ export class StageEngine {
     this.accent = REGIONS[region].accentColor;
     this.platforms = stage.platforms;
     this.hazards = stage.hazards;
+    this.movement = stage.movement;
 
     this.enemies = stage.enemyIds.flatMap((id, index) => {
       const problem = getProblem(id);
@@ -232,8 +234,8 @@ export class StageEngine {
       const enemy: EnemyWorld = {
         key: `${id}-${index}`,
         problem,
-        baseX: 640 + index * 520,
-        x: 640 + index * 520,
+        baseX: stage.enemySpawns[index] ?? 640 + index * 520,
+        x: stage.enemySpawns[index] ?? 640 + index * 520,
         feetY: GROUND_Y,
         hp: Math.round(problem.hp * diff),
         maxHp: Math.round(problem.hp * diff),
@@ -253,8 +255,8 @@ export class StageEngine {
       feetY: BOSS_HOVER,
       vx: 0,
       phase: 0,
-      hp: Math.round(stage.boss.hp * diff),
-      maxHp: Math.round(stage.boss.hp * diff),
+      hp: stage.boss.hp,
+      maxHp: stage.boss.hp,
       contactDamage: Math.round(stage.boss.contactDamage * diff),
       hitFlash: 0,
       shake: 0,
@@ -431,10 +433,17 @@ export class StageEngine {
     });
   }
 
-  private fireEnemyShot(fromX: number, fromY: number, damage: number, color: string): void {
+  private fireEnemyShot(
+    fromX: number,
+    fromY: number,
+    damage: number,
+    color: string,
+    targetYOffset = 0,
+    speedMultiplier = 1,
+  ): void {
     const { player } = this;
     const tx = player.x + PLAYER_W / 2;
-    const ty = player.feetY - PLAYER_H * 0.5;
+    const ty = player.feetY - PLAYER_H * 0.5 + targetYOffset;
     const dx = tx - fromX;
     const dy = ty - fromY;
     const len = Math.hypot(dx, dy) || 1;
@@ -442,8 +451,8 @@ export class StageEngine {
       id: this.nextId++,
       x: fromX,
       y: fromY,
-      vx: (dx / len) * ENEMY_PROJ_SPEED,
-      vy: (dy / len) * ENEMY_PROJ_SPEED,
+      vx: (dx / len) * ENEMY_PROJ_SPEED * speedMultiplier,
+      vy: (dy / len) * ENEMY_PROJ_SPEED * speedMultiplier,
       life: 3,
       color,
       team: 'enemy',
@@ -507,7 +516,9 @@ export class StageEngine {
         }
       }
     }
-    this.projectiles = this.projectiles.filter((p) => p.life > 0 && p.x > -80 && p.x < STAGE_WIDTH + 80 && p.y < VIEW_H + 120);
+    this.projectiles = this.projectiles.filter(
+      (p) => p.life > 0 && p.x > -80 && p.x < STAGE_WIDTH + 80 && p.y > -120 && p.y < VIEW_H + 120,
+    );
   }
 
   private updateParticles(dt: number): void {
@@ -548,12 +559,19 @@ export class StageEngine {
     this.shake = Math.max(0, this.shake - dt * 1.6);
     this.bossBannerTimer = Math.max(0, this.bossBannerTimer - dt);
 
-    // Movimento horizontal
+    // Movimento horizontal com aceleração. Cada região pode alterar a tração.
     let move = 0;
     if (input.left) move -= 1;
     if (input.right) move += 1;
     if (player.invuln <= 0 || player.state !== 'hit') {
-      player.vx = move * this.stats.velocidade;
+      const center = player.x + PLAYER_W / 2;
+      const terrain = this.hazards.find((hazard) => center > hazard.x && center < hazard.x + hazard.width);
+      const maxSpeed = this.stats.velocidade * (terrain?.speedMultiplier ?? 1);
+      const targetSpeed = move * maxSpeed;
+      const control = player.onGround ? 1 : this.movement.airControl;
+      const rate = (move === 0 ? this.movement.deceleration : this.movement.acceleration) * control;
+      const difference = targetSpeed - player.vx;
+      player.vx += clamp(difference, -rate * dt, rate * dt);
       if (move !== 0) player.facing = move > 0 ? 1 : -1;
     }
 
@@ -589,12 +607,18 @@ export class StageEngine {
     this.resolveVertical(dt, prevFeet);
     player.x = clamp(player.x + player.vx * dt, 0, STAGE_WIDTH - PLAYER_W);
 
-    // Zonas de perigo (no chão)
-    if (player.invuln <= 0 && player.feetY >= GROUND_Y - 6) {
+    // Zonas de perigo (no chão): dano, correnteza e redução de velocidade.
+    if (player.feetY >= GROUND_Y - 6) {
       const cx = player.x + PLAYER_W / 2;
       for (const hz of this.hazards) {
         if (cx > hz.x && cx < hz.x + hz.width) {
-          this.hurtPlayer(HAZARD_DAMAGE, cx + 1);
+          if (hz.push) {
+            player.x = clamp(player.x + hz.push * dt, 0, STAGE_WIDTH - PLAYER_W);
+            player.vx += hz.push * dt * 1.4;
+          }
+          if (player.invuln <= 0) {
+            this.hurtPlayer(hz.damage ?? DEFAULT_HAZARD_DAMAGE, cx - (hz.push ?? 1));
+          }
           break;
         }
       }
@@ -696,9 +720,18 @@ export class StageEngine {
     boss.attackTimer -= dt;
     if (boss.attackTimer <= 0) {
       boss.attackTimer = boss.def.attackInterval;
-      // Rajada dupla
-      this.fireEnemyShot(boss.x + BOSS_W / 2, boss.feetY - BOSS_H / 2, boss.contactDamage, boss.def.color);
-      this.fireEnemyShot(boss.x + BOSS_W / 2, boss.feetY - BOSS_H / 2 - 18, Math.round(boss.contactDamage * 0.8), boss.def.color);
+      const fromX = boss.x + BOSS_W / 2;
+      const fromY = boss.feetY - BOSS_H / 2;
+      if (boss.def.attackPattern === 'single') {
+        this.fireEnemyShot(fromX, fromY, Math.round(boss.contactDamage * 1.2), boss.def.color, 0, 1.08);
+      } else if (boss.def.attackPattern === 'spread') {
+        this.fireEnemyShot(fromX, fromY, Math.round(boss.contactDamage * 0.72), boss.def.color, -115, 0.92);
+        this.fireEnemyShot(fromX, fromY, Math.round(boss.contactDamage * 0.72), boss.def.color, 0, 0.96);
+        this.fireEnemyShot(fromX, fromY, Math.round(boss.contactDamage * 0.72), boss.def.color, 115, 0.92);
+      } else {
+        this.fireEnemyShot(fromX, fromY, boss.contactDamage, boss.def.color);
+        this.fireEnemyShot(fromX, fromY - 18, Math.round(boss.contactDamage * 0.8), boss.def.color, 70);
+      }
     }
 
     const bxMin = boss.x + 24;

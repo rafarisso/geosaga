@@ -18,7 +18,7 @@ export function MobileControls({ setButton, attackVerb, specialVerb, specialRead
     onPointerDown: (event: PointerEvent) => {
       event.preventDefault();
       try {
-        (event.target as HTMLElement).setPointerCapture?.(event.pointerId);
+        event.currentTarget.setPointerCapture?.(event.pointerId);
       } catch {
         // Alguns navegadores podem rejeitar a captura; o controle segue funcionando.
       }
@@ -30,11 +30,13 @@ export function MobileControls({ setButton, attackVerb, specialVerb, specialRead
     },
     onPointerLeave: () => setButton(button, false),
     onPointerCancel: () => setButton(button, false),
+    onLostPointerCapture: () => setButton(button, false),
   });
 
   const tap = (button: GameButton) => ({
     onPointerDown: (event: PointerEvent) => {
       event.preventDefault();
+      navigator.vibrate?.(button === 'special' ? 20 : 8);
       setButton(button, true);
     },
   });
@@ -55,7 +57,8 @@ export function MobileControls({ setButton, attackVerb, specialVerb, specialRead
         </button>
         <button
           className={`touch-btn touch-special ${specialReady ? 'ready' : 'locked'}`}
-          aria-label={specialVerb}
+          aria-label={specialReady ? specialVerb : `${specialVerb}: carregando conhecimento`}
+          disabled={!specialReady}
           {...tap('special')}
         >
           <span aria-hidden>⭐</span><small>{specialVerb}</small>

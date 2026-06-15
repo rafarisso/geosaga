@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 export type GameButton = 'left' | 'right' | 'jump' | 'attack' | 'special';
 
@@ -51,7 +51,12 @@ export interface KeyboardControls {
 export function useKeyboardControls(enabled = true): KeyboardControls {
   const inputRef = useRef<InputState>(createInput());
 
-  const setButton = (button: GameButton, isDown: boolean) => {
+  const resetInput = useCallback(() => {
+    inputRef.current = createInput();
+  }, []);
+
+  const setButton = useCallback((button: GameButton, isDown: boolean) => {
+    if (!enabled) return;
     const input = inputRef.current;
     if (button === 'left' || button === 'right') {
       input[button] = isDown;
@@ -60,13 +65,11 @@ export function useKeyboardControls(enabled = true): KeyboardControls {
       if (button === 'attack') input.attackPressed = true;
       if (button === 'special') input.specialPressed = true;
     }
-  };
+  }, [enabled]);
 
   useEffect(() => {
     if (!enabled) {
-      // Solta direções ao desabilitar para evitar movimento "preso".
-      inputRef.current.left = false;
-      inputRef.current.right = false;
+      resetInput();
       return;
     }
 
@@ -85,13 +88,22 @@ export function useKeyboardControls(enabled = true): KeyboardControls {
       if (button === 'left' || button === 'right') setButton(button, false);
     };
 
+    const handleVisibility = () => {
+      if (document.hidden) resetInput();
+    };
+
     window.addEventListener('keydown', handleDown);
     window.addEventListener('keyup', handleUp);
+    window.addEventListener('blur', resetInput);
+    document.addEventListener('visibilitychange', handleVisibility);
     return () => {
       window.removeEventListener('keydown', handleDown);
       window.removeEventListener('keyup', handleUp);
+      window.removeEventListener('blur', resetInput);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      resetInput();
     };
-  }, [enabled]);
+  }, [enabled, resetInput, setButton]);
 
   return { inputRef, setButton };
 }

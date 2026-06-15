@@ -100,6 +100,8 @@ export interface BossDefinition {
   contactDamage: number;
   /** Intervalo, em segundos, entre os ataques do chefe. */
   attackInterval: number;
+  /** Padrão dos projéteis disparados pelo chefe. */
+  attackPattern: 'single' | 'double' | 'spread';
   /** Fala exibida quando o chefe aparece. */
   taunt: string;
 }
@@ -120,6 +122,32 @@ export interface HazardDef {
   width: number;
   kind: HazardKind;
   label: string;
+  /** Dano por contato. */
+  damage?: number;
+  /** Força horizontal aplicada enquanto o jogador está na área. */
+  push?: number;
+  /** Multiplicador da velocidade máxima dentro da área. */
+  speedMultiplier?: number;
+}
+
+export type SceneryDecorationKind =
+  | 'amazon-tree'
+  | 'river'
+  | 'cactus'
+  | 'rock'
+  | 'buriti'
+  | 'wetland'
+  | 'skyline'
+  | 'factory'
+  | 'araucaria'
+  | 'pampas';
+
+export interface SceneryDecoration {
+  kind: SceneryDecorationKind;
+  x: number;
+  bottom?: number;
+  scale?: number;
+  depth: 'far' | 'mid' | 'near';
 }
 
 /** Definição de uma fase jogável de uma região. */
@@ -140,6 +168,8 @@ export interface StageDefinition {
   goalLabel: string;
   /** Lista de ids de problemas regionais que aparecem na fase. */
   enemyIds: string[];
+  /** Posições horizontais dos problemas, na mesma ordem de enemyIds. */
+  enemySpawns: number[];
   /** Chefe regional enfrentado após limpar os problemas. */
   boss: BossDefinition;
   /** Plataformas da fase (verticalidade). */
@@ -148,6 +178,17 @@ export interface StageDefinition {
   hazards: HazardDef[];
   /** Multiplicador de dificuldade (vida/dano dos inimigos e do chefe). */
   difficulty: number;
+  /** Sensação de movimento própria da fase. */
+  movement: {
+    acceleration: number;
+    deceleration: number;
+    airControl: number;
+  };
+  /** Mecânica regional apresentada ao jogador. */
+  mechanic: {
+    label: string;
+    hint: string;
+  };
   /** Tema visual do cenário lateral. */
   scenery: {
     skyTop: string;
@@ -155,6 +196,8 @@ export interface StageDefinition {
     ground: string;
     groundAccent: string;
     hill: string;
+    haze: string;
+    decorations: SceneryDecoration[];
   };
 }
 

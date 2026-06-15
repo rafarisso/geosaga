@@ -894,27 +894,208 @@ button:focus-visible {
 
 .stage-world {
   position: absolute;
+  z-index: 4;
   top: 0;
   left: 0;
   height: 540px;
   will-change: transform;
 }
 
-.stage-hills {
+.stage-scenery {
   position: absolute;
-  right: 0;
-  bottom: 70px;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.stage-scenery-haze {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 18%, var(--scenery-haze) 100%);
+}
+
+.stage-scenery-ridges {
+  position: absolute;
+  bottom: 68px;
   left: 0;
-  height: 220px;
+  height: 225px;
+  opacity: 0.58;
   background:
-    radial-gradient(60px 90px at 180px 220px, var(--hill) 60%, transparent 62%),
-    radial-gradient(90px 130px at 460px 230px, var(--hill) 60%, transparent 62%),
-    radial-gradient(70px 100px at 760px 220px, var(--hill) 60%, transparent 62%),
-    radial-gradient(110px 150px at 1100px 235px, var(--hill) 60%, transparent 62%),
-    radial-gradient(80px 110px at 1500px 220px, var(--hill) 60%, transparent 62%),
-    radial-gradient(120px 160px at 1950px 240px, var(--hill) 60%, transparent 62%),
-    radial-gradient(80px 120px at 2350px 225px, var(--hill) 60%, transparent 62%);
-  opacity: 0.55;
+    radial-gradient(160px 130px at 8% 100%, var(--hill) 67%, transparent 68%),
+    radial-gradient(230px 170px at 27% 105%, var(--hill) 67%, transparent 68%),
+    radial-gradient(190px 145px at 48% 102%, var(--hill) 67%, transparent 68%),
+    radial-gradient(250px 180px at 70% 108%, var(--hill) 67%, transparent 68%),
+    radial-gradient(180px 140px at 90% 102%, var(--hill) 67%, transparent 68%);
+}
+
+.stage-region-nordeste .stage-scenery-ridges {
+  opacity: 0.7;
+  background:
+    linear-gradient(165deg, transparent 0 38%, var(--hill) 39% 67%, transparent 68%) 0 0 / 620px 100% repeat-x,
+    linear-gradient(15deg, transparent 0 54%, color-mix(in srgb, var(--hill) 72%, #6d3f20) 55% 78%, transparent 79%) 260px 35px / 760px 100% repeat-x;
+}
+
+.stage-region-sudeste .stage-scenery-ridges {
+  opacity: 0.5;
+  filter: saturate(0.8);
+}
+
+.stage-region-sul .stage-scenery-ridges {
+  opacity: 0.52;
+  filter: brightness(1.12) saturate(0.75);
+}
+
+.stage-scenery-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  will-change: transform;
+}
+
+.stage-scenery-far { z-index: 1; opacity: 0.48; filter: saturate(0.78); }
+.stage-scenery-mid { z-index: 2; opacity: 0.72; }
+.stage-scenery-near { z-index: 3; opacity: 0.9; }
+
+.stage-decoration {
+  --decoration-scale: 1;
+  position: absolute;
+  display: block;
+  transform: scale(var(--decoration-scale));
+  transform-origin: bottom center;
+}
+
+.stage-decoration-amazon-tree,
+.stage-decoration-buriti,
+.stage-decoration-araucaria {
+  width: 22px;
+  height: 155px;
+  border-radius: 45% 45% 8px 8px;
+  background: linear-gradient(90deg, #4f321d, #89603a 45%, #3d291c);
+}
+
+.stage-decoration-amazon-tree::before {
+  position: absolute;
+  top: -34px;
+  left: -62px;
+  width: 146px;
+  height: 95px;
+  content: "";
+  border-radius: 52% 48% 44% 56%;
+  background:
+    radial-gradient(circle at 25% 62%, #0d6b48 0 28%, transparent 29%),
+    radial-gradient(circle at 48% 32%, #18835a 0 34%, transparent 35%),
+    radial-gradient(circle at 76% 63%, #0b5e43 0 30%, transparent 31%),
+    radial-gradient(circle at 50% 72%, #15764f 0 40%, transparent 41%);
+  filter: drop-shadow(0 8px 4px rgba(0, 0, 0, 0.18));
+}
+
+.stage-decoration-river,
+.stage-decoration-wetland {
+  width: 230px;
+  height: 34px;
+  border-radius: 50%;
+  background:
+    repeating-linear-gradient(170deg, rgba(255, 255, 255, 0.36) 0 5px, transparent 5px 18px),
+    linear-gradient(180deg, #6fd8d1, #167f96);
+  box-shadow: 0 0 24px rgba(79, 217, 214, 0.42);
+}
+
+.stage-decoration-cactus {
+  width: 20px;
+  height: 100px;
+  border-radius: 12px 12px 5px 5px;
+  background: linear-gradient(90deg, #47742c, #75a63c 55%, #365d25);
+  box-shadow: -1px 0 0 rgba(255, 255, 255, 0.18) inset;
+}
+
+.stage-decoration-cactus::before,
+.stage-decoration-cactus::after {
+  position: absolute;
+  top: 38px;
+  width: 38px;
+  height: 14px;
+  content: "";
+  border-radius: 10px;
+  background: #5f8f34;
+}
+
+.stage-decoration-cactus::before { right: 10px; transform: rotate(90deg); transform-origin: right center; }
+.stage-decoration-cactus::after { left: 10px; top: 58px; transform: rotate(-90deg); transform-origin: left center; }
+
+.stage-decoration-rock {
+  width: 190px;
+  height: 92px;
+  clip-path: polygon(5% 100%, 18% 42%, 40% 18%, 72% 30%, 96% 100%);
+  background: linear-gradient(145deg, #a76534, #7f4729 62%, #5e3525);
+  filter: drop-shadow(0 10px 5px rgba(0, 0, 0, 0.2));
+}
+
+.stage-decoration-buriti { height: 175px; width: 16px; }
+.stage-decoration-buriti::before {
+  position: absolute;
+  top: -24px;
+  left: -50px;
+  width: 116px;
+  height: 68px;
+  content: "";
+  background: repeating-conic-gradient(from 4deg, #2f713a 0 8deg, transparent 8deg 28deg);
+  border-radius: 50%;
+}
+
+.stage-decoration-wetland {
+  background:
+    repeating-linear-gradient(78deg, transparent 0 12px, #5d8437 13px 16px, transparent 17px 28px),
+    linear-gradient(180deg, rgba(128, 208, 196, 0.8), #438b78);
+  box-shadow: 0 0 20px rgba(76, 164, 139, 0.35);
+}
+
+.stage-decoration-skyline {
+  width: 270px;
+  height: 145px;
+  background:
+    repeating-linear-gradient(90deg, #395564 0 30px, transparent 30px 38px, #516d78 38px 82px, transparent 82px 90px),
+    repeating-linear-gradient(90deg, transparent 0 10px, rgba(255, 224, 123, 0.45) 10px 15px, transparent 15px 25px);
+  clip-path: polygon(0 100%, 0 45%, 12% 45%, 12% 20%, 27% 20%, 27% 52%, 42% 52%, 42% 5%, 58% 5%, 58% 38%, 74% 38%, 74% 25%, 88% 25%, 88% 55%, 100% 55%, 100% 100%);
+}
+
+.stage-decoration-factory {
+  width: 190px;
+  height: 92px;
+  background: linear-gradient(180deg, #66737b, #394851);
+  clip-path: polygon(0 100%, 0 42%, 20% 58%, 20% 38%, 43% 58%, 43% 38%, 66% 58%, 66% 20%, 83% 20%, 83% 100%);
+}
+
+.stage-decoration-factory::before {
+  position: absolute;
+  top: -62px;
+  right: 27px;
+  width: 28px;
+  height: 70px;
+  content: "";
+  background: #46545d;
+  box-shadow: 0 -18px 28px rgba(207, 215, 218, 0.68);
+}
+
+.stage-decoration-araucaria { height: 180px; width: 17px; }
+.stage-decoration-araucaria::before,
+.stage-decoration-araucaria::after {
+  position: absolute;
+  left: 50%;
+  content: "";
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #285d42;
+}
+.stage-decoration-araucaria::before { top: -26px; width: 118px; height: 42px; }
+.stage-decoration-araucaria::after { top: 4px; width: 82px; height: 32px; background: #347050; }
+
+.stage-decoration-pampas {
+  width: 240px;
+  height: 66px;
+  background: repeating-linear-gradient(78deg, transparent 0 9px, #a9b878 10px 12px, transparent 13px 20px);
+  filter: drop-shadow(0 -3px 1px rgba(241, 232, 184, 0.5));
 }
 
 .stage-ground {
@@ -1006,13 +1187,22 @@ button:focus-visible {
   display: grid;
   place-items: center;
   border: 3px solid rgba(255, 255, 255, 0.4);
-  border-radius: 26px;
+  border-radius: 46% 54% 42% 58%;
   background:
     radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.25), transparent 60%),
     var(--boss-color);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45), 0 0 30px var(--boss-color);
   pointer-events: none;
   animation: enemy-bob 2.2s ease-in-out infinite;
+}
+
+.stage-boss::before {
+  position: absolute;
+  inset: -14px;
+  content: "";
+  border: 2px dashed rgba(255, 255, 255, 0.34);
+  border-radius: 50%;
+  animation: proj-spin 7s linear infinite;
 }
 
 .stage-boss-emoji {
@@ -1029,6 +1219,12 @@ button:focus-visible {
   border: 1px solid rgba(0, 0, 0, 0.18);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), inset 0 3px 0 rgba(255, 255, 255, 0.2);
 }
+
+.stage-region-norte .stage-platform { background: linear-gradient(180deg, #65c87e, #256848 32%, #174a37); }
+.stage-region-nordeste .stage-platform { background: linear-gradient(180deg, #e2b35f, #9f642c 34%, #74421f); }
+.stage-region-centro-oeste .stage-platform { background: linear-gradient(180deg, #bdad55, #76602d 34%, #4d4829); }
+.stage-region-sudeste .stage-platform { border-radius: 4px; background: linear-gradient(180deg, #8aa3a3, #53676b 35%, #35484c); }
+.stage-region-sul .stage-platform { background: linear-gradient(180deg, #d8f4f3, #79a996 30%, #466b57); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), inset 0 4px 0 rgba(255, 255, 255, 0.55); }
 
 /* Zonas de perigo */
 .stage-hazard {
@@ -1058,10 +1254,10 @@ button:focus-visible {
   white-space: nowrap;
 }
 
-.stage-hazard-fogo { background: linear-gradient(180deg, rgba(255, 110, 40, 0.55), transparent); box-shadow: inset 0 0 22px rgba(255, 110, 40, 0.55); }
-.stage-hazard-agua { background: linear-gradient(180deg, rgba(70, 150, 230, 0.55), transparent); box-shadow: inset 0 0 22px rgba(70, 150, 230, 0.5); }
-.stage-hazard-gelo { background: linear-gradient(180deg, rgba(170, 220, 245, 0.6), transparent); box-shadow: inset 0 0 22px rgba(170, 220, 245, 0.55); }
-.stage-hazard-fumaca { background: linear-gradient(180deg, rgba(150, 150, 150, 0.55), transparent); box-shadow: inset 0 0 22px rgba(160, 160, 160, 0.5); }
+.stage-hazard-fogo { background: repeating-linear-gradient(115deg, rgba(255, 80, 25, 0.65) 0 12px, rgba(255, 184, 48, 0.4) 12px 24px, transparent 25px 38px); box-shadow: inset 0 0 22px rgba(255, 110, 40, 0.65); }
+.stage-hazard-agua { background: repeating-linear-gradient(170deg, rgba(145, 232, 255, 0.55) 0 10px, rgba(43, 136, 204, 0.48) 10px 24px, transparent 24px 35px); box-shadow: inset 0 0 22px rgba(70, 150, 230, 0.58); }
+.stage-hazard-gelo { background: repeating-linear-gradient(150deg, rgba(225, 250, 255, 0.72) 0 15px, rgba(112, 190, 228, 0.45) 15px 28px); box-shadow: inset 0 0 22px rgba(170, 220, 245, 0.62); }
+.stage-hazard-fumaca { background: radial-gradient(ellipse at 20% 55%, rgba(200, 205, 205, 0.58), transparent 35%), radial-gradient(ellipse at 70% 35%, rgba(125, 130, 134, 0.58), transparent 38%); box-shadow: inset 0 0 22px rgba(160, 160, 160, 0.5); }
 
 /* Banner do chefe (fala ao surgir) */
 .stage-boss-banner {
@@ -1173,17 +1369,28 @@ button:focus-visible {
 }
 
 .stage-enemy-body {
+  position: relative;
   display: grid;
   place-items: center;
   width: 100%;
   flex: 1;
   border: 2px solid rgba(255, 255, 255, 0.35);
-  border-radius: 18px;
+  overflow: hidden;
+  border-radius: 46% 54% 40% 44%;
   background:
     radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.22), transparent 60%),
     var(--enemy-color);
   box-shadow: 0 10px 18px rgba(0, 0, 0, 0.32);
   animation: enemy-bob 2.4s ease-in-out infinite;
+}
+
+.stage-enemy-body::after {
+  position: absolute;
+  inset: 8px;
+  content: "";
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: inherit;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.22);
 }
 
 .stage-enemy-emoji {
@@ -1404,6 +1611,12 @@ button:focus-visible {
   animation: hint-pulse 1.3s ease-in-out infinite;
 }
 
+.stage-touch-device .stage-hint {
+  top: 7.4rem;
+  bottom: auto;
+  max-width: min(29rem, calc(100% - 2rem));
+}
+
 .stage-hint strong {
   display: inline-block;
   margin: 0 0.1rem;
@@ -1425,6 +1638,31 @@ button:focus-visible {
   color: #ffe9a6 !important;
   font-size: 0.82rem;
   font-weight: 650;
+}
+
+.stage-mechanic-card {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 0.9rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--region-color) 50%, transparent);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--region-color) 13%, transparent);
+  text-align: left;
+}
+
+.stage-mechanic-card strong {
+  flex: 0 0 auto;
+  color: #ffe26b;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.stage-mechanic-card span {
+  color: #d7ebe5;
+  font-size: 0.78rem;
+  line-height: 1.35;
 }
 
 /* Controles de toque (celular, paisagem) */
@@ -1471,6 +1709,7 @@ button:focus-visible {
 }
 
 .touch-btn:active { transform: scale(0.92); filter: brightness(1.2); }
+.touch-btn:disabled { cursor: not-allowed; pointer-events: none; }
 
 .touch-btn small {
   margin-top: 2px;
@@ -1559,6 +1798,7 @@ button:focus-visible {
   .touch-dir { width: 3.6rem; height: 3.6rem; font-size: 1.4rem; }
   .touch-jump, .touch-special { width: 3.3rem; height: 3.3rem; font-size: 1.2rem; }
   .touch-attack { width: 4.1rem; height: 4.1rem; font-size: 1.6rem; }
+  .stage-touch-device .stage-hint { top: 6.7rem; font-size: 0.68rem; }
 }
 
 /* Overlays de fase (intro, vitória, derrota) */
@@ -1569,6 +1809,7 @@ button:focus-visible {
   inset: 0;
   display: grid;
   place-items: center;
+  overflow-y: auto;
   padding: 1.2rem;
   background: rgba(2, 16, 22, 0.82);
   backdrop-filter: blur(8px);
@@ -1724,7 +1965,7 @@ button:focus-visible {
   .quiz-shell { border-radius: 1rem; }
 }
 
-@media (orientation: landscape) and (max-height: 500px) and (min-width: 761px) {
+@media (orientation: landscape) and (max-height: 500px) {
   .start-screen {
     grid-template-columns: minmax(18rem, 0.85fr) minmax(28rem, 1.15fr);
     align-items: center;
@@ -1774,28 +2015,49 @@ button:focus-visible {
   }
 
   .quiz-shell {
-    grid-template-columns: minmax(11rem, 0.5fr) minmax(32rem, 1.5fr);
+    display: grid;
+    grid-template-columns: minmax(8.5rem, 0.42fr) minmax(0, 1.58fr);
     width: min(62rem, 100%);
     min-height: calc(100svh - 0.7rem);
     max-height: calc(100svh - 0.7rem);
     border-radius: 1rem;
   }
 
-  .quiz-guardian-panel { padding: 0.8rem; }
-  .quiz-guardian-panel h2 { font-size: 1.5rem; }
-  .quiz-guardian-panel p { font-size: 0.7rem; }
+  .quiz-guardian-panel { min-height: 0; padding: 0.65rem; }
+  .quiz-guardian-panel h2 { font-size: clamp(1rem, 3vw, 1.45rem); }
+  .quiz-guardian-panel p { font-size: 0.64rem; }
   .quiz-guardian-panel .eyebrow { font-size: 0.52rem; }
   .quiz-guardian-panel .guardian-sprite { right: -10%; bottom: -2rem; left: -10%; width: 120%; height: 78%; }
   .quiz-exit { min-height: 36px; margin-bottom: 0.35rem; padding: 0.35rem 0.6rem; }
 
-  .quiz-card { overflow-y: auto; padding: 0.8rem 1rem; }
-  .quiz-statement { margin: 0.55rem 0; font-size: 1.15rem; line-height: 1.2; }
+  .quiz-card { min-width: 0; overflow-y: auto; padding: 0.65rem 0.8rem; }
+  .quiz-statement { margin: 0.45rem 0; font-size: clamp(0.94rem, 2.6vw, 1.15rem); line-height: 1.18; }
   .quiz-choices { grid-template-columns: 1fr 1fr; gap: 0.45rem; }
-  .quiz-choice { min-height: 42px; padding: 0.45rem 0.6rem; font-size: 0.72rem; }
+  .quiz-choice { min-width: 0; min-height: 42px; padding: 0.4rem 0.5rem; font-size: 0.7rem; }
   .quiz-choice > span { width: 1.55rem; height: 1.55rem; }
   .quiz-feedback { margin-top: 0.5rem; padding: 0.55rem 0.7rem; }
   .quiz-feedback p { font-size: 0.7rem; }
   .quiz-feedback .btn-primary { min-height: 38px; padding: 0.55rem 0.9rem; }
+
+  .stage-overlay {
+    place-items: start center;
+    padding: max(0.35rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right)) max(0.35rem, env(safe-area-inset-bottom)) max(0.5rem, env(safe-area-inset-left));
+  }
+
+  .stage-overlay-card {
+    width: min(46rem, 100%);
+    padding: 0.7rem 1rem;
+    border-radius: 1rem;
+  }
+
+  .stage-overlay-card h2 { margin: 0.12rem 0 0.35rem; font-size: 1.3rem; }
+  .stage-overlay-card p { margin-bottom: 0.45rem; font-size: 0.72rem; line-height: 1.32; }
+  .stage-mechanic-card { margin-bottom: 0.45rem; padding: 0.4rem 0.55rem; }
+  .stage-mechanic-card strong { font-size: 0.64rem; }
+  .stage-mechanic-card span { font-size: 0.66rem; }
+  .stage-controls-help { grid-template-columns: repeat(3, 1fr); gap: 0.3rem; margin-bottom: 0.45rem; }
+  .stage-controls-help li { padding: 0.35rem 0.45rem; font-size: 0.65rem; }
+  .stage-overlay-tip { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
