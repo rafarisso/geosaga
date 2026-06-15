@@ -5,20 +5,56 @@ GeoSaga é um jogo educativo de Geografia do Brasil com estética de aventura 2D
 - Jogo publicado: https://geosaga-brasil.netlify.app
 - Repositório: https://github.com/rafarisso/geosaga
 
-Este repositório contém o MVP web em React, TypeScript, Vite e Phaser. A interface atual usa React; o Phaser permanece preparado para futuras cenas de plataforma, exploração e luta.
+Este repositório contém o MVP web em React, TypeScript, Vite e Phaser. A interface e o modo jogável atuais usam React (loop de jogo com `requestAnimationFrame`); o Phaser permanece preparado para futuras cenas. O quiz original continua intacto e agora também é usado como mecânica de poder dentro das fases.
 
 ## Recursos do MVP
 
 - tela inicial responsiva com o logo e os cinco guardiões;
 - experiência mobile-first em retrato e paisagem, com áreas de toque adequadas;
 - seleção das regiões Norte, Nordeste, Centro-Oeste, Sudeste e Sul;
+- dois modos por região: **Quiz rápido** (estudo) e **Jogar fase** (aventura 2D);
 - 25 perguntas locais, cinco para cada região;
 - feedback explicativo para respostas certas e erradas;
 - pontuação, melhores resultados e selos regionais;
-- progresso persistido no `localStorage`;
+- progresso de quiz e de fases persistido no `localStorage`;
 - botão Continuar com recuperação do progresso;
 - folhas de pose originais preservadas e versões PNG com transparência;
 - metadados e estados preparados para animações futuras.
+
+## Modo jogável (fase 2D lateral)
+
+Cada região tem uma fase de plataforma/combate simbólico, jogável pelo botão **🎮 Jogar fase**.
+
+- **Movimento:** setas `← →` ou `A` / `D`.
+- **Pulo:** `Espaço` (ou seta para cima / `W`).
+- **Ataque básico (restaurar/purificar):** `J` — causa dano e carrega o conhecimento.
+- **Golpe especial:** `K` — quando a barra de conhecimento enche, abre uma **pergunta da região**. Acertar libera um golpe forte em área; errar mostra a explicação didática e o golpe sai fraco.
+- **Mobile:** botões virtuais na tela (direcionais à esquerda, ações à direita).
+
+O combate é simbólico e educativo: os inimigos são **problemas socioambientais** da região (rio poluído, desmatamento, seca, queimada, poluição urbana, geada etc.), modelados como placeholders (emoji + bloco colorido) prontos para troca por arte real. Ao derrotar todos os problemas, libera-se o **objetivo final** da fase (totem brilhante); alcançá-lo conclui a missão, salva o progresso e concede o selo da região.
+
+### Arquitetura do modo jogável
+
+```text
+src/
+  components/game/
+    GameStage.tsx        # tela/rota da fase: orquestra UI, fases e loop
+    stageEngine.ts       # motor mutável (física, combate, câmera) fora do React
+    Player.tsx           # guardião controlável (recorte de frames do spritesheet)
+    Enemy.tsx            # problema regional (placeholder com barra de vida)
+    HUD.tsx              # vida, conhecimento, objetivo, pontos
+    MobileControls.tsx   # botões virtuais (toque)
+    SpecialQuizModal.tsx # pergunta-relâmpago do golpe especial
+  data/
+    regionalProblems.ts  # inimigos/problemas por região
+    stages.ts            # objetivo, cenário e verbos de cada fase
+  hooks/
+    useGameLoop.ts          # loop com requestAnimationFrame (passo limitado)
+    useKeyboardControls.ts  # teclado + entrada virtual compartilhada
+    useProgress.ts          # progresso (quiz e fases) com localStorage
+```
+
+Os atributos de gameplay de cada guardião (`vida`, `velocidade`, `pulo`, `ataque`, `poderEspecial`, além de `asset` e `corTematica`) ficam em `src/data/characters.ts`. O MVP entrega a fase **Norte (Iarê)** totalmente jogável; as demais regiões já têm objetivo, inimigos e cenário definidos e usam o mesmo motor, prontas para ajuste fino.
 
 ## Como executar
 
