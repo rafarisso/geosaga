@@ -150,8 +150,8 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
             {view.goalActive && (
               <div className="stage-goal" style={{ left: GOAL_X, top: GROUND_Y - 180 }}>
                 <span className="stage-goal-glow" />
-                <span className="stage-goal-icon" aria-hidden>🌿</span>
-                <span className="stage-goal-label">Objetivo</span>
+                <span className="stage-goal-icon" aria-hidden>{stage.goalIcon}</span>
+                <span className="stage-goal-label">{stage.goalLabel}</span>
               </div>
             )}
 

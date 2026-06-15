@@ -14,6 +14,8 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     specialVerb: 'Onda das Águas',
     victoryMessage:
       'Iarê devolveu a vida aos rios! As águas voltam a correr limpas pela floresta.',
+    goalIcon: '🌳',
+    goalLabel: 'Floresta protegida',
     enemyIds: ['norte-rio-poluido', 'norte-desmatamento', 'norte-queimada'],
     scenery: {
       skyTop: '#0d6e8c',
@@ -31,7 +33,14 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     specialVerb: 'Chuva do Sertão',
     victoryMessage:
       'Mandacaru trouxe água ao sertão! A caatinga reverdece e a vida resiste.',
-    enemyIds: ['nordeste-seca', 'nordeste-solo-rachado', 'nordeste-mandacaru-corrompido'],
+    goalIcon: '💧',
+    goalLabel: 'Cisterna ativada',
+    enemyIds: [
+      'nordeste-seca',
+      'nordeste-solo-rachado',
+      'nordeste-erosao',
+      'nordeste-mandacaru-corrompido',
+    ],
     scenery: {
       skyTop: '#e7a33c',
       skyBottom: '#f4cd6a',
@@ -48,7 +57,14 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     specialVerb: 'Ventania do Cerrado',
     victoryMessage:
       'Buriti apagou o fogo! O cerrado respira e o Pantanal volta a florescer.',
-    enemyIds: ['centro-oeste-incendio', 'centro-oeste-fumaca', 'centro-oeste-animal-perigo'],
+    goalIcon: '🦜',
+    goalLabel: 'Pantanal salvo',
+    enemyIds: [
+      'centro-oeste-incendio',
+      'centro-oeste-fumaca',
+      'centro-oeste-area-degradada',
+      'centro-oeste-animal-perigo',
+    ],
     scenery: {
       skyTop: '#caa53a',
       skyBottom: '#efd06a',
@@ -65,7 +81,14 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     specialVerb: 'Brisa da Mata',
     victoryMessage:
       'Jequi limpou o ar e devolveu o verde às cidades! A Mata Atlântica respira de novo.',
-    enemyIds: ['sudeste-poluicao-urbana', 'sudeste-enchente', 'sudeste-fumaca-industrial'],
+    goalIcon: '🌆',
+    goalLabel: 'Cidade verde',
+    enemyIds: [
+      'sudeste-poluicao-urbana',
+      'sudeste-enchente',
+      'sudeste-concreto',
+      'sudeste-fumaca-industrial',
+    ],
     scenery: {
       skyTop: '#3f6f9c',
       skyBottom: '#70a6c8',
@@ -82,7 +105,14 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     specialVerb: 'Calor dos Pampas',
     victoryMessage:
       'Araucá protegeu as araucárias e os campos! O Sul resiste ao frio com vida.',
-    enemyIds: ['sul-vento-gelado', 'sul-araucaria-ameacada', 'sul-geada'],
+    goalIcon: '🌲',
+    goalLabel: 'Araucárias salvas',
+    enemyIds: [
+      'sul-vento-gelado',
+      'sul-geada',
+      'sul-erosao-pampas',
+      'sul-araucaria-ameacada',
+    ],
     scenery: {
       skyTop: '#5e8fb0',
       skyBottom: '#a9d2e6',

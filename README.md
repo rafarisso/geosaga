@@ -54,7 +54,7 @@ src/
     useProgress.ts          # progresso (quiz e fases) com localStorage
 ```
 
-Os atributos de gameplay de cada guardião (`vida`, `velocidade`, `pulo`, `ataque`, `poderEspecial`, além de `asset` e `corTematica`) ficam em `src/data/characters.ts`. O MVP entrega a fase **Norte (Iarê)** totalmente jogável; as demais regiões já têm objetivo, inimigos e cenário definidos e usam o mesmo motor, prontas para ajuste fino.
+Os atributos de gameplay de cada guardião (`vida`, `velocidade`, `pulo`, `ataque`, `poderEspecial`, além de `asset`, `corTematica` e a direção nativa do sprite em `spriteFaces`) ficam em `src/data/characters.ts`. As **cinco regiões são jogáveis**, cada uma com guardião, cenário, objetivo temático (totem próprio), problemas regionais e verbos de ação distintos, todas sobre o mesmo motor de fase (`stageEngine.ts`).
 
 ## Como executar
 

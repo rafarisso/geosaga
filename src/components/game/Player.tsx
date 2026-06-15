@@ -27,6 +27,9 @@ export function Player({ region, state, facing, x, feetY, width, height, blinkin
   const frame = character.animationFrames[state];
   const maxFrame = character.sheet.frameCount - 1;
   const position = maxFrame === 0 ? 0 : (frame / maxFrame) * 100;
+  // Espelha o sprite para olhar na direção do movimento, respeitando a direção
+  // nativa da arte de cada guardião (facing 1 = direita).
+  const flip = character.spriteFaces === 'left' ? -facing : facing;
 
   const style: CSSProperties = {
     left: x,
@@ -36,9 +39,7 @@ export function Player({ region, state, facing, x, feetY, width, height, blinkin
     backgroundImage: `url(${character.processedAsset})`,
     backgroundSize: `${character.sheet.frameCount * 100}% auto`,
     backgroundPosition: `${position}% center`,
-    // A arte-base aponta para a esquerda; invertemos para o sprite olhar
-    // sempre na direção do movimento (facing 1 = direita).
-    transform: `scaleX(${-facing})`,
+    transform: `scaleX(${flip})`,
     opacity: blinking ? 0.45 : 1,
   };
 
