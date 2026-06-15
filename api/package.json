@@ -1,0 +1,20 @@
+{
+  "name": "geosaga-api",
+  "version": "1.0.0",
+  "description": "API do GeoSaga (Azure Functions): proxy seguro para o Azure OpenAI",
+  "main": "dist/src/functions/*.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "prestart": "npm run build",
+    "start": "func start"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.5.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^20.0.0"
+  }
+}

@@ -1,0 +1,69 @@
+import { REGION_LIST } from '../data/regions';
+import type { GameProgress, RegionId } from '../data/types';
+import { GuardianSprite } from './GuardianSprite';
+
+interface RegionSelectScreenProps {
+  progress: GameProgress;
+  onSelect: (region: RegionId) => void;
+  onBack: () => void;
+}
+
+export function RegionSelectScreen({ progress, onSelect, onBack }: RegionSelectScreenProps) {
+  return (
+    <main className="region-screen">
+      <header className="game-topbar">
+        <button className="btn-ghost" onClick={onBack}>Início</button>
+        <div className="topbar-title">
+          <span className="eyebrow">Jornada pelo Brasil</span>
+          <h1>Escolha sua próxima região</h1>
+        </div>
+        <div className="score-pill" aria-label={`${progress.totalScore} pontos`}>
+          <span>Pontos</span>
+          <strong>{progress.totalScore}</strong>
+        </div>
+      </header>
+
+      <section className="region-grid" aria-label="Regiões do Brasil">
+        {REGION_LIST.map((region) => {
+          const completed = progress.completedRegions.includes(region.id);
+          const score = progress.bestScores[region.id] ?? 0;
+          return (
+            <article
+              className={`region-card region-${region.id} ${completed ? 'completed' : ''}`}
+              key={region.id}
+              style={{ '--region-color': region.themeColor, '--region-accent': region.accentColor } as React.CSSProperties}
+            >
+              <div className="region-card-art">
+                <span className="region-number">0{REGION_LIST.indexOf(region) + 1}</span>
+                {completed && <span className="badge-earned">Selo conquistado</span>}
+                <GuardianSprite region={region.id} state={completed ? 'victory' : 'idle'} />
+              </div>
+              <div className="region-card-content">
+                <span className="region-biome">{region.biome}</span>
+                <h2>{region.name}</h2>
+                <h3>{region.guardian.name}</h3>
+                <p>{region.shortDescription}</p>
+                <div className="region-card-footer">
+                  <span>{score > 0 ? `Melhor: ${score} pts` : '5 perguntas'}</span>
+                  <button className="btn-region" onClick={() => onSelect(region.id)}>
+                    {completed ? 'Jogar novamente' : 'Iniciar desafio'}
+                  </button>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </section>
+
+      <div className="badge-trail" aria-label="Progresso de regiões">
+        {REGION_LIST.map((region) => (
+          <div className={progress.badges.includes(region.id) ? 'trail-item earned' : 'trail-item'} key={region.id}>
+            <span>{progress.badges.includes(region.id) ? '✓' : '·'}</span>
+            {region.name}
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+}
+

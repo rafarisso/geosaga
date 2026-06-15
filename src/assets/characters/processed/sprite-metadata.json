@@ -1,0 +1,57 @@
+{
+  "arauca": {
+    "width": 1916,
+    "height": 821,
+    "transparentPixels": 977971,
+    "partialPixels": 97606,
+    "transparentRatio": 0.6217,
+    "frames": 5,
+    "approximateFrameWidth": 383,
+    "source": "src/assets/characters/arauca/arauca-pose-sheet-original.png",
+    "processed": "src/assets/characters/processed/arauca-pose-sheet-transparent.png"
+  },
+  "buriti": {
+    "width": 1672,
+    "height": 941,
+    "transparentPixels": 1196558,
+    "partialPixels": 25147,
+    "transparentRatio": 0.7605,
+    "frames": 5,
+    "approximateFrameWidth": 334,
+    "source": "src/assets/characters/buriti/buriti-pose-sheet-original.png",
+    "processed": "src/assets/characters/processed/buriti-pose-sheet-transparent.png"
+  },
+  "iare": {
+    "width": 1916,
+    "height": 821,
+    "transparentPixels": 1036658,
+    "partialPixels": 51352,
+    "transparentRatio": 0.659,
+    "frames": 5,
+    "approximateFrameWidth": 383,
+    "source": "src/assets/characters/iare/iare-pose-sheet-original.png",
+    "processed": "src/assets/characters/processed/iare-pose-sheet-transparent.png"
+  },
+  "jequi": {
+    "width": 1774,
+    "height": 887,
+    "transparentPixels": 1125248,
+    "partialPixels": 45372,
+    "transparentRatio": 0.7151,
+    "frames": 5,
+    "approximateFrameWidth": 355,
+    "source": "src/assets/characters/jequi/jequi-pose-sheet-original.png",
+    "processed": "src/assets/characters/processed/jequi-pose-sheet-transparent.png"
+  },
+  "mandacaru": {
+    "width": 1916,
+    "height": 821,
+    "transparentPixels": 1042357,
+    "partialPixels": 14372,
+    "transparentRatio": 0.6626,
+    "frames": 5,
+    "approximateFrameWidth": 383,
+    "source": "src/assets/characters/mandacaru/mandacaru-pose-sheet-original.png",
+    "processed": "src/assets/characters/processed/mandacaru-pose-sheet-transparent.png"
+  }
+}
