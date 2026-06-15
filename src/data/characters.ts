@@ -3,17 +3,21 @@ import buritiProcessed from '../assets/characters/processed/buriti-pose-sheet-tr
 import iareProcessed from '../assets/characters/processed/iare-pose-sheet-transparent.png';
 import jequiProcessed from '../assets/characters/processed/jequi-pose-sheet-transparent.png';
 import mandacaruProcessed from '../assets/characters/processed/mandacaru-pose-sheet-transparent.png';
-import type { AnimationState, RegionId } from './types';
+import type { AnimationState, CharacterStats, RegionId } from './types';
 
 export interface CharacterData {
   id: string;
   name: string;
   region: RegionId;
   description: string;
+  /** Cor temática do guardião (corTematica). */
   themeColor: string;
   originalAsset: string;
+  /** Asset usado em tela (sprite com fundo transparente). */
   processedAsset: string;
   guardianType: string;
+  /** Atributos de gameplay (vida, velocidade, pulo, ataque, poderEspecial). */
+  stats: CharacterStats;
   sheet: {
     width: number;
     height: number;
@@ -42,6 +46,7 @@ export const CHARACTERS: Record<RegionId, CharacterData> = {
     originalAsset: 'src/assets/characters/iare/iare-pose-sheet-original.png',
     processedAsset: iareProcessed,
     guardianType: 'Guardiã das águas',
+    stats: { vida: 100, velocidade: 230, pulo: 720, ataque: 16, poderEspecial: 45 },
     sheet: { width: 1916, height: 821, frameCount: 5, approximateFrameWidth: 383 },
     animationFrames,
   },
@@ -54,6 +59,7 @@ export const CHARACTERS: Record<RegionId, CharacterData> = {
     originalAsset: 'src/assets/characters/mandacaru/mandacaru-pose-sheet-original.png',
     processedAsset: mandacaruProcessed,
     guardianType: 'Guardião do sertão',
+    stats: { vida: 120, velocidade: 205, pulo: 690, ataque: 20, poderEspecial: 48 },
     sheet: { width: 1916, height: 821, frameCount: 5, approximateFrameWidth: 383 },
     animationFrames,
   },
@@ -66,6 +72,7 @@ export const CHARACTERS: Record<RegionId, CharacterData> = {
     originalAsset: 'src/assets/characters/buriti/buriti-pose-sheet-original.png',
     processedAsset: buritiProcessed,
     guardianType: 'Guardiã do cerrado e pantanal',
+    stats: { vida: 105, velocidade: 240, pulo: 730, ataque: 17, poderEspecial: 46 },
     sheet: { width: 1672, height: 941, frameCount: 5, approximateFrameWidth: 334 },
     animationFrames,
   },
@@ -78,6 +85,7 @@ export const CHARACTERS: Record<RegionId, CharacterData> = {
     originalAsset: 'src/assets/characters/jequi/jequi-pose-sheet-original.png',
     processedAsset: jequiProcessed,
     guardianType: 'Guardião da mata e das cidades',
+    stats: { vida: 110, velocidade: 225, pulo: 705, ataque: 18, poderEspecial: 47 },
     sheet: { width: 1774, height: 887, frameCount: 5, approximateFrameWidth: 355 },
     animationFrames,
   },
@@ -90,6 +98,7 @@ export const CHARACTERS: Record<RegionId, CharacterData> = {
     originalAsset: 'src/assets/characters/arauca/arauca-pose-sheet-original.png',
     processedAsset: araucaProcessed,
     guardianType: 'Guardião dos pampas e araucárias',
+    stats: { vida: 115, velocidade: 215, pulo: 700, ataque: 19, poderEspecial: 47 },
     sheet: { width: 1916, height: 821, frameCount: 5, approximateFrameWidth: 383 },
     animationFrames,
   },

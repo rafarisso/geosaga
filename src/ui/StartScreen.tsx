@@ -57,10 +57,10 @@ export function StartScreen({ onPlay, onContinue, progress }: StartScreenProps) 
             <h2 id="how-to-title">Como jogar</h2>
             <ol>
               <li>Escolha uma das cinco regiões brasileiras.</li>
-              <li>Responda às cinco perguntas do guardião.</li>
-              <li>Leia as explicações para aprender com cada resposta.</li>
-              <li>Consiga pelo menos três acertos para conquistar o selo regional.</li>
-              <li>Complete as cinco regiões e torne-se Mestre do Brasil.</li>
+              <li>Em cada região, escolha <strong>📚 Quiz rápido</strong> para estudar ou <strong>🎮 Jogar fase</strong> para a aventura 2D.</li>
+              <li>Na fase, mova-se (← → / A D), pule (espaço) e restaure os problemas regionais (J).</li>
+              <li>Carregue o conhecimento e use o golpe especial (K): acerte a pergunta para um golpe poderoso!</li>
+              <li>Derrote os problemas, alcance o objetivo e conquiste o selo de cada região.</li>
             </ol>
             <button className="btn-primary" onClick={() => { setShowHowTo(false); onPlay(); }}>Começar jornada</button>
           </section>

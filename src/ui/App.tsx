@@ -1,24 +1,43 @@
 import { useState } from 'react';
 import type { QuizResult, RegionId } from '../data/types';
 import { gameEvents, EVENTS } from '../game/events';
-import { loadProgress, registerQuizResult } from '../services/progressService';
+import { useProgress } from '../hooks/useProgress';
+import { GameStage } from '../components/game/GameStage';
 import { QuizPanel } from './QuizPanel';
 import { RegionSelectScreen } from './RegionSelectScreen';
 import { StartScreen } from './StartScreen';
 
-type Screen = 'start' | 'regions';
+type Screen = 'start' | 'regions' | 'stage';
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('start');
   const [quizRegion, setQuizRegion] = useState<RegionId | null>(null);
-  const [progress, setProgress] = useState(loadProgress);
+  const [stageRegion, setStageRegion] = useState<RegionId | null>(null);
+  const { progress, completeQuiz, completeStage } = useProgress();
 
   function handleQuizClose(result: QuizResult | null) {
     if (result) {
-      setProgress((current) => registerQuizResult(current, result));
+      completeQuiz(result);
       gameEvents.emit(EVENTS.QUIZ_CLOSED, { region: result.region, passed: result.passed });
     }
     setQuizRegion(null);
+  }
+
+  function handlePlayStage(region: RegionId) {
+    setStageRegion(region);
+    setScreen('stage');
+  }
+
+  if (screen === 'stage' && stageRegion) {
+    return (
+      <div className="app-shell">
+        <GameStage
+          region={stageRegion}
+          onExit={() => { setStageRegion(null); setScreen('regions'); }}
+          onVictory={(score) => completeStage({ region: stageRegion, score, victory: true })}
+        />
+      </div>
+    );
   }
 
   return (
@@ -32,7 +51,8 @@ export default function App() {
       ) : (
         <RegionSelectScreen
           progress={progress}
-          onSelect={(region) => setQuizRegion(region)}
+          onQuiz={(region) => setQuizRegion(region)}
+          onPlayStage={handlePlayStage}
           onBack={() => setScreen('start')}
         />
       )}

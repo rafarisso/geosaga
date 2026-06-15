@@ -4,11 +4,12 @@ import { GuardianSprite } from './GuardianSprite';
 
 interface RegionSelectScreenProps {
   progress: GameProgress;
-  onSelect: (region: RegionId) => void;
+  onQuiz: (region: RegionId) => void;
+  onPlayStage: (region: RegionId) => void;
   onBack: () => void;
 }
 
-export function RegionSelectScreen({ progress, onSelect, onBack }: RegionSelectScreenProps) {
+export function RegionSelectScreen({ progress, onQuiz, onPlayStage, onBack }: RegionSelectScreenProps) {
   return (
     <main className="region-screen">
       <header className="game-topbar">
@@ -26,6 +27,7 @@ export function RegionSelectScreen({ progress, onSelect, onBack }: RegionSelectS
       <section className="region-grid" aria-label="Regiões do Brasil">
         {REGION_LIST.map((region) => {
           const completed = progress.completedRegions.includes(region.id);
+          const stageDone = progress.completedStages.includes(region.id);
           const score = progress.bestScores[region.id] ?? 0;
           return (
             <article
@@ -35,7 +37,9 @@ export function RegionSelectScreen({ progress, onSelect, onBack }: RegionSelectS
             >
               <div className="region-card-art">
                 <span className="region-number">0{REGION_LIST.indexOf(region) + 1}</span>
-                {completed && <span className="badge-earned">Selo conquistado</span>}
+                {stageDone
+                  ? <span className="badge-earned">Fase vencida</span>
+                  : completed && <span className="badge-earned">Selo do quiz</span>}
                 <GuardianSprite region={region.id} state={completed ? 'victory' : 'idle'} />
               </div>
               <div className="region-card-content">
@@ -44,10 +48,15 @@ export function RegionSelectScreen({ progress, onSelect, onBack }: RegionSelectS
                 <h3>{region.guardian.name}</h3>
                 <p>{region.shortDescription}</p>
                 <div className="region-card-footer">
-                  <span>{score > 0 ? `Melhor: ${score} pts` : '5 perguntas'}</span>
-                  <button className="btn-region" onClick={() => onSelect(region.id)}>
-                    {completed ? 'Jogar novamente' : 'Iniciar desafio'}
-                  </button>
+                  <span>{score > 0 ? `Melhor quiz: ${score} pts` : '5 perguntas'}</span>
+                  <div className="region-card-buttons">
+                    <button className="btn-region btn-region-quiz" onClick={() => onQuiz(region.id)}>
+                      📚 Quiz rápido
+                    </button>
+                    <button className="btn-region btn-region-play" onClick={() => onPlayStage(region.id)}>
+                      🎮 Jogar fase
+                    </button>
+                  </div>
                 </div>
               </div>
             </article>
