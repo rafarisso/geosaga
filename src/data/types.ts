@@ -97,6 +97,10 @@ export interface StageDefinition {
   specialVerb: string;
   /** Mensagem mostrada ao concluir a fase. */
   victoryMessage: string;
+  /** Ícone temático do objetivo final liberado ao limpar a fase. */
+  goalIcon: string;
+  /** Rótulo do objetivo final (ex.: "Cisterna", "Floresta"). */
+  goalLabel: string;
   /** Lista de ids de problemas regionais que aparecem na fase. */
   enemyIds: string[];
   /** Tema visual do cenário lateral. */
