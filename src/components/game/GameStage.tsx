@@ -228,7 +228,7 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
 
   return (
     <div
-      className={`stage-root stage-region-${region} ${isTouch ? 'stage-touch-device' : ''}`}
+      className={`stage-root stage-region-${region} ${stage.scenery.backgroundImage ? 'stage-has-backdrop' : ''} ${isTouch ? 'stage-touch-device' : ''}`}
       style={{
         '--sky-top': stage.scenery.skyTop,
         '--sky-bottom': stage.scenery.skyBottom,

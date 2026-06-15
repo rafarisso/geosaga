@@ -1,5 +1,9 @@
 import type { RegionId, StageDefinition } from './types';
+import centroOesteCinematicBg from '../assets/backgrounds/centro-oeste-cinematic-bg.png';
+import nordesteCinematicBg from '../assets/backgrounds/nordeste-cinematic-bg.png';
+import norteCinematicBg from '../assets/backgrounds/norte-cinematic-bg.png';
 import sudesteCinematicBg from '../assets/backgrounds/sudeste-cinematic-bg.png';
+import sulCinematicBg from '../assets/backgrounds/sul-cinematic-bg.png';
 
 /**
  * Fases jogáveis por região. Layout, terreno e cenário ficam nos dados para que
@@ -45,6 +49,7 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       hint: 'As águas empurram Iarê. Use as plataformas e pule antes de entrar no rio.',
     },
     scenery: {
+      backgroundImage: norteCinematicBg,
       skyTop: '#0b6684',
       skyBottom: '#1fa98b',
       ground: '#155c3b',
@@ -100,6 +105,7 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       hint: 'O solo quente reduz sua velocidade. Atravesse as áreas vermelhas pelas plataformas.',
     },
     scenery: {
+      backgroundImage: nordesteCinematicBg,
       skyTop: '#d9892e',
       skyBottom: '#f4ce70',
       ground: '#9d6628',
@@ -155,6 +161,7 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       hint: 'O fogo ocupa áreas maiores e causa mais dano. Ataque à distância antes de avançar.',
     },
     scenery: {
+      backgroundImage: centroOesteCinematicBg,
       skyTop: '#b8872e',
       skyBottom: '#efd36d',
       ground: '#75602d',
@@ -301,6 +308,7 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       hint: 'Araucá desliza após soltar o direcional. Antecipe as paradas e evite a geada.',
     },
     scenery: {
+      backgroundImage: sulCinematicBg,
       skyTop: '#557f9d',
       skyBottom: '#b1d7e7',
       ground: '#3b6048',
