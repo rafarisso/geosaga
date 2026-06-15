@@ -94,7 +94,9 @@ export interface RegionalProblem {
 /** Chefe regional: o "problema-mor" da região, só derrotado com o quiz. */
 export interface BossDefinition {
   name: string;
-  emoji: string;
+  /** Arte raster do chefe final. Quando ausente, o emoji fica como fallback legado. */
+  image?: string;
+  emoji?: string;
   color: string;
   /** Visual CSS dedicado para chefes com silhueta propria. */
   visual?: 'default' | 'pollution-master';

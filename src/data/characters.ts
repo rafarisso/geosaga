@@ -80,7 +80,7 @@ export const CHARACTERS: Record<RegionId, CharacterData> = {
     originalAsset: 'src/assets/characters/buriti/buriti-pose-sheet-original.png',
     processedAsset: buritiProcessed,
     guardianType: 'Guardiã do cerrado e pantanal',
-    spriteFaces: 'left',
+    spriteFaces: 'right',
     stats: { vida: 105, velocidade: 240, pulo: 730, ataque: 17, poderEspecial: 46 },
     sheet: { width: 1672, height: 941, frameCount: 5, approximateFrameWidth: 334 },
     animationFrames,

@@ -1451,26 +1451,40 @@ button:focus-visible {
   position: absolute;
   display: grid;
   place-items: center;
-  border: 3px solid rgba(255, 255, 255, 0.4);
-  border-radius: 46% 54% 42% 58%;
-  background:
-    radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.25), transparent 60%),
-    var(--boss-color);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45), 0 0 30px var(--boss-color);
+  border: 0;
+  background: transparent;
+  filter: drop-shadow(0 18px 16px rgba(0, 0, 0, 0.48));
   pointer-events: none;
   animation: enemy-bob 2.2s ease-in-out infinite;
 }
 
 .stage-boss::before {
   position: absolute;
-  inset: -14px;
+  inset: -26px -20px -18px;
   content: "";
-  border: 2px dashed rgba(255, 255, 255, 0.34);
+  border: 2px solid color-mix(in srgb, var(--boss-color) 54%, transparent);
   border-radius: 50%;
-  animation: proj-spin 7s linear infinite;
+  background: radial-gradient(circle, color-mix(in srgb, var(--boss-color) 34%, transparent), transparent 68%);
+  filter: blur(1px);
+  animation: boss-aura 1.7s ease-in-out infinite;
+}
+
+.stage-boss-image {
+  position: relative;
+  z-index: 1;
+  width: 124%;
+  height: 124%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+@keyframes boss-aura {
+  50% { opacity: 0.62; transform: scale(1.08); }
 }
 
 .stage-boss-emoji {
+  position: relative;
+  z-index: 1;
   font-size: 4.6rem;
   filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5));
 }

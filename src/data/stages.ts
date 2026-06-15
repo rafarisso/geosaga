@@ -4,6 +4,11 @@ import nordesteCinematicBg from '../assets/backgrounds/nordeste-cinematic-bg.png
 import norteCinematicBg from '../assets/backgrounds/norte-cinematic-bg.png';
 import sudesteCinematicBg from '../assets/backgrounds/sudeste-cinematic-bg.png';
 import sulCinematicBg from '../assets/backgrounds/sul-cinematic-bg.png';
+import furiaDasChamasBoss from '../assets/bosses/furia-das-chamas.png';
+import mareNegraBoss from '../assets/bosses/mare-negra.png';
+import mestreDaNevoaBoss from '../assets/bosses/mestre-da-nevoa.png';
+import reiDoGeloBoss from '../assets/bosses/rei-do-gelo.png';
+import senhorDaSecaBoss from '../assets/bosses/senhor-da-seca.png';
 
 /**
  * Fases jogáveis por região. Layout, terreno e cenário ficam nos dados para que
@@ -23,7 +28,7 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     enemySpawns: [620, 1390, 2080],
     boss: {
       name: 'Maré Negra',
-      emoji: '🛢️',
+      image: mareNegraBoss,
       color: '#3b3b2a',
       hp: 320,
       contactDamage: 14,
@@ -34,8 +39,10 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     platforms: [
       { x: 410, y: 360, width: 170 },
       { x: 850, y: 315, width: 150 },
+      { x: 960, y: 392, width: 410, guide: 'Ponte' },
       { x: 1350, y: 355, width: 190 },
       { x: 1790, y: 300, width: 160 },
+      { x: 1870, y: 392, width: 350, guide: 'Troncos' },
       { x: 2210, y: 350, width: 170 },
     ],
     hazards: [
@@ -79,7 +86,7 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     enemySpawns: [560, 1110, 1700, 2200],
     boss: {
       name: 'Senhor da Seca',
-      emoji: '☀️',
+      image: senhorDaSecaBoss,
       color: '#b5651d',
       hp: 360,
       contactDamage: 15,
@@ -90,8 +97,10 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     platforms: [
       { x: 360, y: 370, width: 145 },
       { x: 720, y: 325, width: 145 },
+      { x: 820, y: 394, width: 370, guide: 'Passarela' },
       { x: 1210, y: 350, width: 170 },
       { x: 1580, y: 290, width: 145 },
+      { x: 1690, y: 394, width: 350, guide: 'Passarela' },
       { x: 2050, y: 345, width: 180 },
     ],
     hazards: [
@@ -135,7 +144,7 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     enemySpawns: [650, 1190, 1740, 2220],
     boss: {
       name: 'Fúria das Chamas',
-      emoji: '🔥',
+      image: furiaDasChamasBoss,
       color: '#c0392b',
       hp: 400,
       contactDamage: 16,
@@ -145,8 +154,10 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     },
     platforms: [
       { x: 460, y: 345, width: 180 },
+      { x: 650, y: 394, width: 330, guide: 'Aceiro' },
       { x: 860, y: 285, width: 145 },
       { x: 1260, y: 365, width: 175 },
+      { x: 1370, y: 394, width: 400, guide: 'Aceiro' },
       { x: 1650, y: 305, width: 155 },
       { x: 2110, y: 350, width: 185 },
     ],
@@ -191,9 +202,8 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     enemySpawns: [560, 1110, 1660, 2200],
     boss: {
       name: 'Mestre da Névoa',
-      emoji: '☣️',
+      image: mestreDaNevoaBoss,
       color: '#56616a',
-      visual: 'pollution-master',
       hp: 520,
       contactDamage: 18,
       attackInterval: 1.65,
@@ -282,7 +292,7 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     enemySpawns: [610, 1210, 1780, 2250],
     boss: {
       name: 'Rei do Gelo',
-      emoji: '🧊',
+      image: reiDoGeloBoss,
       color: '#5dade2',
       hp: 480,
       contactDamage: 18,
@@ -292,8 +302,10 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     },
     platforms: [
       { x: 430, y: 350, width: 165 },
+      { x: 620, y: 394, width: 470, guide: 'Ponte' },
       { x: 820, y: 310, width: 190 },
       { x: 1280, y: 365, width: 155 },
+      { x: 1510, y: 394, width: 430, guide: 'Ponte' },
       { x: 1690, y: 300, width: 185 },
       { x: 2170, y: 350, width: 170 },
     ],

@@ -25,6 +25,7 @@ export const MAX_ENERGY = 100;
 
 const GRAVITY = 2400;
 const PLAYER_HITBOX_W = 58;
+const PLAYER_PROJECTILE_HITBOX_H = 64;
 const ENEMY_HITBOX_W = 70;
 const ATTACK_DURATION = 0.18;
 const ATTACK_COOLDOWN = 0.34;
@@ -145,7 +146,8 @@ export interface ParticleView {
 
 export interface BossView {
   name: string;
-  emoji: string;
+  image?: string;
+  emoji?: string;
   color: string;
   visual?: BossDefinition['visual'];
   x: number;
@@ -534,7 +536,11 @@ export class StageEngine {
         // Ataque inimigo contra o jogador.
         const cx = this.player.x + PLAYER_W / 2;
         const cy = this.player.feetY - PLAYER_H / 2;
-        if (this.player.invuln <= 0 && Math.abs(p.x - cx) < PLAYER_HITBOX_W / 2 + ENEMY_PROJ_R && Math.abs(p.y - cy) < PLAYER_H / 2 + ENEMY_PROJ_R) {
+        if (
+          this.player.invuln <= 0
+          && Math.abs(p.x - cx) < PLAYER_HITBOX_W / 2 + ENEMY_PROJ_R
+          && Math.abs(p.y - cy) < PLAYER_PROJECTILE_HITBOX_H / 2 + ENEMY_PROJ_R
+        ) {
           this.hurtPlayer(p.damage, p.x);
           p.life = 0;
         }
@@ -636,7 +642,7 @@ export class StageEngine {
     player.x = clamp(player.x + player.vx * dt, 0, STAGE_WIDTH - PLAYER_W);
 
     // Zonas de perigo (no chão): dano, correnteza e redução de velocidade.
-    if (player.feetY >= GROUND_Y - 6) {
+    if (player.onGround && player.feetY >= GROUND_Y - 6) {
       const cx = player.x + PLAYER_W / 2;
       for (const hz of this.hazards) {
         if (this.isHazardRestored(hz)) continue;
@@ -810,6 +816,7 @@ export class StageEngine {
       boss: this.bossActive && this.boss.alive
         ? {
             name: this.boss.def.name,
+            image: this.boss.def.image,
             emoji: this.boss.def.emoji,
             color: this.boss.def.color,
             visual: this.boss.def.visual,

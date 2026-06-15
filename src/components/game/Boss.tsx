@@ -6,10 +6,7 @@ interface BossProps {
   boss: BossView;
 }
 
-/**
- * Chefe regional — o "problema-mor" da região. Placeholder visual (bloco
- * temático + emoji grande) pronto para receber arte/animação dedicada.
- */
+/** Chefe regional — o "problema-mor" da região, renderizado com arte dedicada. */
 export function Boss({ boss }: BossProps) {
   const offset = boss.shake > 0 ? Math.sin(boss.shake * 70) * 7 : 0;
   const visual = boss.visual ?? 'default';
@@ -26,7 +23,11 @@ export function Boss({ boss }: BossProps) {
   return (
     <div className={`stage-boss stage-boss-${visual}`} style={style} role="img" aria-label={boss.name}>
       <span className="stage-boss-core" aria-hidden />
-      <span className="stage-boss-emoji" aria-hidden>{boss.emoji}</span>
+      {boss.image ? (
+        <img className="stage-boss-image" src={boss.image} alt="" aria-hidden />
+      ) : (
+        <span className="stage-boss-emoji" aria-hidden>{boss.emoji}</span>
+      )}
     </div>
   );
 }

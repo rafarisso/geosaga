@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "assets:process": "node scripts/process-assets.mjs"
+    "assets:process": "node scripts/process-assets.mjs",
+    "stages:validate": "node scripts/validate-stage-obstacles.mjs"
   },
   "dependencies": {
     "phaser": "^3.90.0",

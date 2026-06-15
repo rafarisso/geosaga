@@ -72,7 +72,7 @@ export function HUD({
 
       {boss ? (
         <div className="stage-boss-bar" role="status">
-          <span className="stage-boss-bar-name">{boss.emoji} {boss.name}</span>
+          <span className="stage-boss-bar-name">{boss.name}</span>
           <div className="stage-bar stage-bar-boss" aria-label={`Vida do chefe`}>
             <span style={{ width: `${Math.max(0, (boss.hp / boss.maxHp) * 100)}%` }} />
             <small>Use o golpe especial (quiz) para vencê-lo!</small>
