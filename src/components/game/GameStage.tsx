@@ -261,7 +261,9 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
                 key={`${plat.x}-${plat.y}`}
                 className="stage-platform"
                 style={{ left: plat.x, top: plat.y, width: plat.width }}
-              />
+              >
+                {plat.guide && <small className="stage-platform-guide">{plat.guide}</small>}
+              </div>
             ))}
 
             {view.enemies.map((enemy) => (

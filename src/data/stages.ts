@@ -192,11 +192,16 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       taunt: 'A cidade vai sufocar sob o concreto e a fumaça!',
     },
     platforms: [
-      { x: 390, y: 355, width: 190 },
-      { x: 760, y: 295, width: 150 },
-      { x: 1260, y: 335, width: 210 },
-      { x: 1740, y: 275, width: 165 },
-      { x: 2160, y: 345, width: 180 },
+      { x: 390, y: 380, width: 180 },
+      // Travessia da enchente: todos os saltos respeitam o alcance de Jequi.
+      { x: 720, y: 390, width: 170, guide: 'Suba aqui' },
+      { x: 930, y: 365, width: 145, guide: '1' },
+      { x: 1095, y: 390, width: 155, guide: '2' },
+      { x: 1370, y: 365, width: 190 },
+      // Rota elevada para evitar a fumaça industrial.
+      { x: 1740, y: 385, width: 170 },
+      { x: 1930, y: 355, width: 145 },
+      { x: 2095, y: 385, width: 170 },
     ],
     hazards: [
       { x: 900, width: 290, kind: 'agua', label: 'Enchente urbana', damage: 5, push: -185, speedMultiplier: 0.7 },
@@ -206,7 +211,7 @@ export const STAGES: Record<RegionId, StageDefinition> = {
     movement: { acceleration: 1850, deceleration: 2300, airControl: 0.74 },
     mechanic: {
       label: 'Enchente urbana',
-      hint: 'A água empurra e desacelera. Ganhe altura usando viadutos e plataformas.',
+      hint: 'Pegue impulso, suba no viaduto baixo antes da água e salte pelos dois apoios da travessia.',
     },
     scenery: {
       skyTop: '#345e88',

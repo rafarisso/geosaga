@@ -112,6 +112,8 @@ export interface PlatformDef {
   /** Altura do topo da plataforma (coordenada Y do mundo). */
   y: number;
   width: number;
+  /** Orientação curta exibida em trechos que exigem plataforma. */
+  guide?: string;
 }
 
 export type HazardKind = 'fogo' | 'agua' | 'gelo' | 'fumaca';
