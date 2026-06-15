@@ -1,4 +1,5 @@
 import type { RegionId, StageDefinition } from './types';
+import sudesteCinematicBg from '../assets/backgrounds/sudeste-cinematic-bg.png';
 
 /**
  * Fases jogáveis por região. Layout, terreno e cenário ficam nos dados para que
@@ -237,6 +238,7 @@ export const STAGES: Record<RegionId, StageDefinition> = {
       hint: 'Use os viadutos para cruzar áreas críticas. Derrote a drenagem obstruída e a chaminé irregular para neutralizar perigos do mapa.',
     },
     scenery: {
+      backgroundImage: sudesteCinematicBg,
       skyTop: '#23384c',
       skyBottom: '#7aa6b6',
       ground: '#263c3a',

@@ -936,6 +936,28 @@ button:focus-visible {
   will-change: transform;
 }
 
+.stage-world-backdrop {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  height: 540px;
+  background-image: var(--stage-backdrop);
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+.stage-world-backdrop::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    linear-gradient(180deg, rgba(5, 12, 18, 0.1) 0 54%, rgba(5, 12, 18, 0.2) 100%),
+    radial-gradient(ellipse at 50% 55%, transparent 0 54%, rgba(0, 0, 0, 0.34) 100%);
+}
+
 .stage-scenery {
   position: absolute;
   z-index: 1;
@@ -982,40 +1004,22 @@ button:focus-visible {
 
 .stage-region-sudeste .stage-viewport {
   background:
-    radial-gradient(circle at 78% 20%, rgba(255, 244, 184, 0.92) 0 8%, rgba(255, 217, 103, 0.28) 9% 18%, transparent 28%),
-    linear-gradient(180deg, var(--sky-top) 0%, #557f91 48%, var(--sky-bottom) 78%);
+    linear-gradient(180deg, #0b141c 0%, #16242c 48%, #0a1115 100%);
 }
 
 .stage-region-sudeste .stage-viewport::before {
-  top: 17%;
-  right: 16%;
-  width: 14rem;
-  height: 14rem;
-  background: radial-gradient(circle, rgba(255, 248, 190, 0.95) 0 19%, rgba(255, 224, 104, 0.35) 38%, transparent 68%);
-  filter: blur(8px);
+  display: none;
 }
 
 .stage-region-sudeste .stage-scenery-haze {
-  background:
-    radial-gradient(ellipse at 74% 38%, rgba(77, 82, 77, 0.3), transparent 36%),
-    radial-gradient(ellipse at 43% 64%, rgba(38, 53, 57, 0.24), transparent 38%),
-    linear-gradient(180deg, rgba(37, 53, 60, 0.08) 0 38%, var(--scenery-haze) 76%, rgba(43, 58, 56, 0.24) 100%),
-    repeating-linear-gradient(90deg, transparent 0 88px, rgba(255, 255, 255, 0.055) 89px 91px, transparent 92px 180px);
+  display: none;
 }
 
-.stage-region-sudeste .stage-scenery-far {
-  opacity: 0.72;
-  filter: contrast(1.1) saturate(0.92);
-}
-
-.stage-region-sudeste .stage-scenery-mid {
-  opacity: 0.92;
-  filter: contrast(1.08) saturate(1.02);
-}
-
-.stage-region-sudeste .stage-scenery-near {
-  opacity: 1;
-  filter: contrast(1.12) saturate(1.08);
+.stage-region-sudeste .stage-world-scaler::before,
+.stage-region-sudeste .stage-world-scaler::after,
+.stage-region-sudeste .stage-scenery-ridges,
+.stage-region-sudeste .stage-scenery-layer {
+  display: none;
 }
 
 .stage-region-sul .stage-scenery-ridges {
@@ -1309,15 +1313,12 @@ button:focus-visible {
 
 .stage-region-sudeste .stage-ground {
   background:
-    repeating-linear-gradient(90deg, rgba(10, 18, 22, 0.34) 0 72px, transparent 72px 144px),
-    repeating-linear-gradient(0deg, transparent 0 18px, rgba(198, 218, 207, 0.06) 19px 20px),
-    linear-gradient(132deg, transparent 0 43%, rgba(91, 166, 111, 0.4) 43.5% 46%, transparent 46.5%),
-    linear-gradient(38deg, transparent 0 64%, rgba(105, 184, 125, 0.32) 64.5% 66%, transparent 66.5%),
-    linear-gradient(180deg, #77b58a 0 10px, #2f4444 10px 44px, #17292c 44px);
+    linear-gradient(180deg, rgba(141, 185, 135, 0.74) 0 7px, rgba(23, 34, 35, 0.56) 7px 100%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.26) 0 160px, transparent 160px 320px);
   box-shadow:
-    inset 0 6px 0 rgba(180, 224, 195, 0.18),
-    inset 0 -18px 0 rgba(7, 17, 20, 0.24),
-    0 -14px 34px rgba(31, 76, 59, 0.22);
+    inset 0 2px 0 rgba(218, 255, 211, 0.22),
+    inset 0 -20px 0 rgba(5, 10, 12, 0.22),
+    0 -10px 22px rgba(0, 0, 0, 0.18);
 }
 
 .stage-player {
@@ -1572,25 +1573,17 @@ button:focus-visible {
 .stage-region-centro-oeste .stage-platform { background: linear-gradient(180deg, #bdad55, #76602d 34%, #4d4829); }
 .stage-region-sudeste .stage-platform {
   height: 20px;
-  border-radius: 5px;
+  border-radius: 3px;
   background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0 18px, transparent 18px 36px),
-    linear-gradient(180deg, #a2b8b5, #667d7e 34%, #344a50);
+    linear-gradient(180deg, rgba(173, 190, 184, 0.92), rgba(76, 87, 86, 0.9) 34%, rgba(26, 35, 38, 0.92));
   box-shadow:
-    0 10px 18px rgba(0, 0, 0, 0.36),
-    inset 0 4px 0 rgba(255, 255, 255, 0.28),
-    inset 0 -5px 0 rgba(12, 24, 30, 0.34);
+    0 12px 18px rgba(0, 0, 0, 0.46),
+    inset 0 3px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -5px 0 rgba(5, 12, 15, 0.44);
 }
 
 .stage-region-sudeste .stage-platform::before {
-  position: absolute;
-  right: 10px;
-  bottom: 100%;
-  left: 10px;
-  height: 7px;
-  content: "";
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(214, 229, 223, 0.8), rgba(92, 113, 116, 0.9));
+  display: none;
 }
 .stage-region-sul .stage-platform { background: linear-gradient(180deg, #d8f4f3, #79a996 30%, #466b57); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), inset 0 4px 0 rgba(255, 255, 255, 0.55); }
 

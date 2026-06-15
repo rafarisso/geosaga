@@ -209,6 +209,8 @@ export interface StageDefinition {
   };
   /** Tema visual do cenário lateral. */
   scenery: {
+    /** Arte raster opcional usada como fundo principal da fase. */
+    backgroundImage?: string;
     skyTop: string;
     skyBottom: string;
     ground: string;

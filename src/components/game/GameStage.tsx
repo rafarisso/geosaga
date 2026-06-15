@@ -236,6 +236,7 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
         '--ground-accent': stage.scenery.groundAccent,
         '--hill': stage.scenery.hill,
         '--scenery-haze': stage.scenery.haze,
+        '--stage-backdrop': stage.scenery.backgroundImage ? `url(${stage.scenery.backgroundImage})` : undefined,
         '--region-color': character.themeColor,
       } as React.CSSProperties}
     >
@@ -243,6 +244,7 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
         <div className="stage-world-scaler" style={worldStyle}>
           <RegionalScenery stage={stage} camera={view.camera} />
           <div className="stage-world" style={{ transform: `translate(${-view.camera + view.shakeX}px, ${view.shakeY}px)` }}>
+            {stage.scenery.backgroundImage && <div className="stage-world-backdrop" style={{ width: STAGE_WIDTH }} />}
             <div className="stage-ground" style={{ width: STAGE_WIDTH }} />
 
             {view.hazards.map((hz) => (
