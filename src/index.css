@@ -1240,11 +1240,11 @@ button:focus-visible {
   font-weight: 650;
 }
 
-/* Controles virtuais */
+/* Controles de toque (celular, paisagem) */
 
-.stage-mobile-controls {
+.stage-touch {
   position: absolute;
-  z-index: 20;
+  z-index: 25;
   right: 0;
   bottom: 0;
   left: 0;
@@ -1253,70 +1253,125 @@ button:focus-visible {
   justify-content: space-between;
   padding:
     0
-    max(1rem, env(safe-area-inset-right))
+    max(1.1rem, env(safe-area-inset-right))
     max(1rem, env(safe-area-inset-bottom))
-    max(1rem, env(safe-area-inset-left));
+    max(1.1rem, env(safe-area-inset-left));
   pointer-events: none;
 }
 
-.stage-pad-left,
-.stage-pad-right {
+.stage-touch-dpad,
+.stage-touch-actions {
   display: flex;
-  gap: 0.7rem;
+  align-items: flex-end;
+  gap: 0.8rem;
   pointer-events: auto;
 }
 
-.stage-pad-btn {
+.touch-btn {
   display: grid;
   place-items: center;
-  width: 3.6rem;
-  height: 3.6rem;
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.45);
   border-radius: 50%;
   color: #fff;
-  background: rgba(4, 22, 28, 0.55);
+  background: rgba(4, 22, 28, 0.5);
   cursor: pointer;
-  font-size: 1.3rem;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: none;
-}
-
-.stage-action-btn {
-  display: grid;
-  place-items: center;
-  gap: 0;
-  width: 4rem;
-  height: 4rem;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
-  color: #fff;
-  cursor: pointer;
-  font-size: 1.35rem;
   line-height: 1;
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(4px);
 }
 
-.stage-action-btn small {
-  font-size: 0.5rem;
-  font-weight: 800;
+.touch-btn:active { transform: scale(0.92); filter: brightness(1.2); }
+
+.touch-btn small {
+  margin-top: 2px;
+  font-size: 0.52rem;
+  font-weight: 900;
   text-transform: uppercase;
 }
 
-.stage-action-jump { background: rgba(54, 124, 160, 0.78); }
-.stage-action-attack { background: rgba(43, 155, 104, 0.82); }
-.stage-action-special.ready {
+.touch-dir {
+  width: 4.4rem;
+  height: 4.4rem;
+  font-size: 1.7rem;
+}
+
+.touch-jump,
+.touch-attack,
+.touch-special {
+  width: 4rem;
+  height: 4rem;
+  font-size: 1.5rem;
+}
+
+.touch-attack {
+  width: 5rem;
+  height: 5rem;
+  font-size: 2rem;
+  border-color: rgba(120, 240, 200, 0.7);
+  background: rgba(28, 150, 110, 0.78);
+}
+
+.touch-jump { background: rgba(54, 124, 160, 0.72); }
+
+.touch-special.ready {
   background: linear-gradient(180deg, #ffe878, #f6bd38);
   color: #1b1430;
-  box-shadow: 0 0 16px rgba(255, 226, 107, 0.75);
+  box-shadow: 0 0 18px rgba(255, 226, 107, 0.8);
   animation: special-glow 1.2s ease-in-out infinite;
 }
-.stage-action-special.locked { background: rgba(80, 80, 96, 0.6); opacity: 0.7; }
+
+.touch-special.locked { background: rgba(80, 80, 96, 0.55); opacity: 0.6; }
 
 @keyframes special-glow {
-  50% { transform: scale(1.06); }
+  50% { transform: scale(1.07); }
+}
+
+/* Aviso para girar o celular */
+
+.stage-rotate {
+  position: absolute;
+  z-index: 60;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(2, 16, 22, 0.94);
+}
+
+.stage-rotate-card {
+  width: min(26rem, 100%);
+  text-align: center;
+}
+
+.stage-rotate-icon {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 3.4rem;
+  animation: rotate-wobble 1.6s ease-in-out infinite;
+}
+
+.stage-rotate-card h2 { margin: 0 0 0.6rem; font-size: 1.7rem; }
+.stage-rotate-card p { margin: 0 0 1.4rem; color: #cfe4dd; line-height: 1.55; }
+
+@keyframes rotate-wobble {
+  50% { transform: rotate(90deg); }
+}
+
+/* Paisagem em telas baixas: HUD compacta para não cortar a fase */
+@media (max-height: 460px) {
+  .stage-hud-bars { width: min(15rem, 46%); }
+  .stage-bar { height: 1rem; }
+  .stage-bar > small { font-size: 0.58rem; }
+  .stage-objective { padding: 0.3rem 0.7rem; }
+  .stage-objective p { font-size: 0.66rem; }
+  .stage-objective-count { font-size: 0.6rem; }
+  .stage-hint { bottom: 5.2rem; font-size: 0.72rem; padding: 0.4rem 0.8rem; }
+  .touch-dir { width: 3.6rem; height: 3.6rem; font-size: 1.4rem; }
+  .touch-jump, .touch-special { width: 3.3rem; height: 3.3rem; font-size: 1.2rem; }
+  .touch-attack { width: 4.1rem; height: 4.1rem; font-size: 1.6rem; }
 }
 
 /* Overlays de fase (intro, vitória, derrota) */
