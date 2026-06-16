@@ -2700,6 +2700,271 @@ button:focus-visible {
   .stage-overlay-tip { display: none; }
 }
 
+/* ==========================================================================
+   Dinâmica do jogo — orientação na tela inicial, combo, câmera lenta,
+   entrada/telegrafia/fúria do chefe e timer do quiz.
+   ========================================================================== */
+
+/* Resumo da dinâmica na tela inicial */
+.start-dynamics {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+  max-width: 30rem;
+}
+
+.start-dynamics li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.8rem;
+  background: rgba(8, 30, 38, 0.42);
+  color: #eaf6f2;
+  font-size: 0.86rem;
+  font-weight: 600;
+  backdrop-filter: blur(2px);
+}
+
+.start-dynamics li span { font-size: 1.2rem; line-height: 1; }
+.start-dynamics strong { color: #ffe26b; }
+
+.how-to-tip {
+  margin: 0.4rem 0 1rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.7rem;
+  background: rgba(24, 122, 100, 0.14);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* Aviso de combo durante a fase */
+.stage-combo {
+  position: absolute;
+  z-index: 28;
+  top: 22%;
+  right: 4%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid rgba(255, 226, 107, 0.7);
+  border-radius: 0.8rem;
+  background: rgba(20, 14, 4, 0.74);
+  text-align: right;
+  pointer-events: none;
+  animation: combo-pop 0.22s ease;
+}
+
+.stage-combo strong { color: #fff; font-size: 0.95rem; line-height: 1; }
+.stage-combo span { color: #ffe26b; font-size: 1.4rem; font-weight: 900; line-height: 1.05; }
+
+@keyframes combo-pop {
+  from { transform: scale(0.7); opacity: 0; }
+  70% { transform: scale(1.12); }
+}
+
+/* Câmera lenta na entrada do chefe (bullet time) */
+.stage-slowmo .stage-world-scaler { filter: saturate(1.25) contrast(1.05); }
+
+.stage-slowmo-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 26;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, transparent 42%, rgba(6, 10, 20, 0.55) 100%);
+  animation: slowmo-fade 0.3s ease;
+}
+
+@keyframes slowmo-fade { from { opacity: 0; } }
+
+/* Entrada cinematográfica do chefe */
+.stage-boss-intro { animation: boss-enter 0.6s ease backwards; }
+
+@keyframes boss-enter {
+  from { transform: translateX(40px) scale(1.35); opacity: 0; }
+}
+
+/* Telegrafia: "tell" antes do disparo */
+.stage-boss-tell {
+  position: absolute;
+  inset: -22px -16px -14px;
+  z-index: 0;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--boss-color) 70%, #fff) 0%, transparent 62%);
+}
+
+.stage-boss-charging .stage-boss-tell {
+  opacity: 1;
+  animation: boss-tell 0.5s ease-out;
+}
+
+.stage-boss-charging { animation: boss-charge-shake 0.16s steps(2) infinite; }
+
+@keyframes boss-tell {
+  0% { opacity: 0.15; transform: scale(0.7); }
+  100% { opacity: 0.9; transform: scale(1.18); }
+}
+
+@keyframes boss-charge-shake {
+  0% { transform: translateX(-2px); }
+  100% { transform: translateX(2px); }
+}
+
+/* Segunda fase: chefe furioso */
+.stage-boss-enraged {
+  filter: drop-shadow(0 0 14px rgba(255, 90, 60, 0.7)) saturate(1.35) hue-rotate(-8deg);
+  animation: enemy-bob 1.4s ease-in-out infinite;
+}
+
+.stage-boss-enraged::before {
+  border-color: rgba(255, 110, 70, 0.8);
+  background: radial-gradient(circle, rgba(255, 90, 50, 0.4), transparent 66%);
+}
+
+.stage-boss-bar.enraged .stage-bar-boss { border-color: rgba(255, 70, 40, 0.95); }
+.stage-boss-bar.enraged .stage-bar-boss > span { background: linear-gradient(90deg, #ff2d1a, #ff8a3d); }
+
+.stage-boss-fury {
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(255, 70, 40, 0.85);
+  color: #fff;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 900;
+  animation: fury-pulse 0.7s ease-in-out infinite;
+}
+
+@keyframes fury-pulse { 50% { opacity: 0.55; } }
+
+/* Timer do quiz especial (risco x recompensa) */
+.quiz-timer {
+  height: 0.55rem;
+  margin: 0 0 0.9rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.quiz-timer > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2fb98a, #7ee0b5);
+  transition: width 0.1s linear;
+}
+
+.quiz-timer.urgent > span { background: linear-gradient(90deg, #ff4d3d, #ffb14d); }
+.quiz-timer.urgent { animation: timer-flash 0.5s ease-in-out infinite; }
+.quiz-timer.locked > span { transition: none; }
+
+@keyframes timer-flash { 50% { opacity: 0.55; } }
+
+/* Seletor de dificuldade na tela inicial */
+.start-difficulty {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0 0 1.1rem;
+  max-width: 30rem;
+}
+
+.start-difficulty-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #cfe9e0;
+}
+
+.start-difficulty-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.difficulty-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(8, 30, 38, 0.5);
+  color: #eaf6f2;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+
+.difficulty-chip:hover { transform: translateY(-1px); }
+
+.difficulty-chip.active {
+  border-color: #ffe26b;
+  background: rgba(255, 226, 107, 0.18);
+  color: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 226, 107, 0.35);
+}
+
+.difficulty-chip span { font-size: 1.1rem; line-height: 1; }
+.start-difficulty-hint { color: #bcd6cd; font-size: 0.8rem; min-height: 1.1em; }
+
+/* Itens coletáveis na fase */
+.stage-pickup {
+  position: absolute;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  font-size: 1.9rem;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
+  animation: pickup-bob 1.1s ease-in-out infinite;
+}
+
+.stage-pickup::before {
+  position: absolute;
+  inset: -8px;
+  content: "";
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.55), transparent 66%);
+  animation: pickup-glow 1.1s ease-in-out infinite;
+}
+
+.stage-pickup-heal::before { background: radial-gradient(circle, rgba(123, 240, 161, 0.6), transparent 66%); }
+.stage-pickup-energy::before { background: radial-gradient(circle, rgba(255, 226, 107, 0.6), transparent 66%); }
+
+@keyframes pickup-bob { 50% { transform: translate(-50%, -62%); } }
+@keyframes pickup-glow { 50% { opacity: 0.5; transform: scale(1.12); } }
+
+/* Selo de comportamento do inimigo */
+.stage-enemy-badge {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: rgba(8, 18, 22, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.stage-enemy-badge-turret { border-color: rgba(255, 150, 80, 0.8); }
+.stage-enemy-badge-rusher { border-color: rgba(255, 90, 90, 0.8); }
+.stage-enemy-badge-jumper { border-color: rgba(120, 200, 255, 0.8); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;

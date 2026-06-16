@@ -71,11 +71,14 @@ export function HUD({
       </div>
 
       {boss ? (
-        <div className="stage-boss-bar" role="status">
-          <span className="stage-boss-bar-name">{boss.name}</span>
+        <div className={`stage-boss-bar ${boss.enraged ? 'enraged' : ''}`} role="status">
+          <span className="stage-boss-bar-name">
+            {boss.name}
+            {boss.enraged && <em className="stage-boss-fury">🔥 Fúria</em>}
+          </span>
           <div className="stage-bar stage-bar-boss" aria-label={`Vida do chefe`}>
             <span style={{ width: `${Math.max(0, (boss.hp / boss.maxHp) * 100)}%` }} />
-            <small>Use o golpe especial (quiz) para vencê-lo!</small>
+            <small>{boss.intro ? 'O chefe está chegando…' : 'Use o golpe especial (quiz) para vencê-lo!'}</small>
           </div>
         </div>
       ) : (

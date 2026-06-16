@@ -1,8 +1,9 @@
 import type { CSSProperties } from 'react';
-import type { RegionalProblem } from '../../data/types';
+import type { EnemyBehavior, RegionalProblem } from '../../data/types';
 
 interface EnemyProps {
   problem: RegionalProblem;
+  behavior: EnemyBehavior;
   x: number;
   feetY: number;
   size: number;
@@ -14,15 +15,24 @@ interface EnemyProps {
   shake: number;
 }
 
+/** Selo curto que sinaliza o comportamento do problema para o jogador. */
+const BEHAVIOR_BADGE: Record<EnemyBehavior, { icon: string; label: string } | null> = {
+  chaser: null,
+  turret: { icon: '🎯', label: 'Atira rápido' },
+  rusher: { icon: '💨', label: 'Avança' },
+  jumper: { icon: '⬆️', label: 'Salta' },
+};
+
 /**
  * Inimigo/problema regional como placeholder visual (bloco colorido + emoji),
  * com barra de vida. Estrutura pronta para receber sprites: substitua o emoji
  * por uma imagem/spritesheet usando `problem` quando a arte existir.
  */
-export function Enemy({ problem, x, feetY, size, hp, maxHp, hitFlash, shake }: EnemyProps) {
+export function Enemy({ problem, behavior, x, feetY, size, hp, maxHp, hitFlash, shake }: EnemyProps) {
   const ratio = Math.max(0, hp / maxHp);
   const offset = shake > 0 ? Math.sin(shake * 60) * 5 : 0;
   const visual = problem.visual ?? 'default';
+  const badge = BEHAVIOR_BADGE[behavior];
   const style: CSSProperties = {
     left: x,
     top: feetY - size,
@@ -38,6 +48,11 @@ export function Enemy({ problem, x, feetY, size, hp, maxHp, hitFlash, shake }: E
       <div className="stage-enemy-healthbar">
         <span style={{ width: `${ratio * 100}%` }} />
       </div>
+      {badge && (
+        <span className={`stage-enemy-badge stage-enemy-badge-${behavior}`} title={badge.label}>
+          <span aria-hidden>{badge.icon}</span>
+        </span>
+      )}
       <div className="stage-enemy-body">
         <span className="stage-enemy-core" aria-hidden />
         <span className="stage-enemy-emoji" aria-hidden>{problem.emoji}</span>

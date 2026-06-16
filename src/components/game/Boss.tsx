@@ -20,8 +20,17 @@ export function Boss({ boss }: BossProps) {
     filter: boss.hitFlash > 0 ? 'brightness(2.2) saturate(0.5)' : undefined,
   } as CSSProperties;
 
+  const classes = [
+    'stage-boss',
+    `stage-boss-${visual}`,
+    boss.intro ? 'stage-boss-intro' : '',
+    boss.charging ? 'stage-boss-charging' : '',
+    boss.enraged ? 'stage-boss-enraged' : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className={`stage-boss stage-boss-${visual}`} style={style} role="img" aria-label={boss.name}>
+    <div className={classes} style={style} role="img" aria-label={boss.name}>
+      <span className="stage-boss-tell" aria-hidden />
       <span className="stage-boss-core" aria-hidden />
       {boss.image ? (
         <img className="stage-boss-image" src={boss.image} alt="" aria-hidden />

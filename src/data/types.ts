@@ -2,6 +2,18 @@ export type RegionId = 'norte' | 'nordeste' | 'centro-oeste' | 'sudeste' | 'sul'
 
 export type Difficulty = 1 | 2 | 3;
 
+/** Nível de desafio escolhido pelo jogador (afeta vida/dano e a vida do herói). */
+export type GameDifficulty = 'facil' | 'normal' | 'dificil';
+
+/**
+ * Comportamento de combate de um problema regional:
+ * - `chaser`: avança em direção ao jogador e dispara à distância (padrão);
+ * - `turret`: fica parado e dispara com mais frequência;
+ * - `rusher`: corre para o corpo a corpo e quase não atira;
+ * - `jumper`: salta pelo cenário, dificultando os acertos.
+ */
+export type EnemyBehavior = 'chaser' | 'turret' | 'rusher' | 'jumper';
+
 export type AnimationState = 'idle' | 'walk' | 'jump' | 'attack' | 'hit' | 'victory';
 
 export interface Guardian {
@@ -89,6 +101,8 @@ export interface RegionalProblem {
   contactDamage: number;
   /** Cor temática do bloco/card do inimigo. */
   color: string;
+  /** Comportamento de combate. Ausente = `chaser` (padrão). */
+  behavior?: EnemyBehavior;
 }
 
 /** Chefe regional: o "problema-mor" da região, só derrotado com o quiz. */

@@ -3,7 +3,7 @@ import { CHARACTERS } from '../../data/characters';
 import { QUESTIONS } from '../../data/questions';
 import { REGIONS } from '../../data/regions';
 import { STAGES } from '../../data/stages';
-import type { Question, RegionId } from '../../data/types';
+import type { GameDifficulty, Question, RegionId } from '../../data/types';
 import { fetchQuestions } from '../../services/questionService';
 import { isMuted, playSound, setMuted } from '../../game/soundEngine';
 import { useDeviceMode } from '../../hooks/useDeviceMode';
@@ -44,17 +44,19 @@ function shuffleQuestions(items: Question[]): Question[] {
 
 interface GameStageProps {
   region: RegionId;
+  /** Nível de desafio escolhido pelo jogador. */
+  difficulty?: GameDifficulty;
   onExit: () => void;
   /** Chamado uma vez quando a fase é vencida, para persistir o progresso. */
   onVictory: (score: number, stars: number) => void;
 }
 
-export function GameStage({ region, onExit, onVictory }: GameStageProps) {
+export function GameStage({ region, difficulty = 'normal', onExit, onVictory }: GameStageProps) {
   const character = CHARACTERS[region];
   const stage = STAGES[region];
   const regionInfo = REGIONS[region];
 
-  const [engine, setEngine] = useState(() => new StageEngine(region));
+  const [engine, setEngine] = useState(() => new StageEngine(region, difficulty));
 
   const questionsRef = useRef<Question[]>([]);
   const questionDeckRef = useRef<Question[]>([]);
@@ -68,7 +70,15 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
   const victorySavedRef = useRef(false);
 
   // Estado anterior para disparar efeitos sonoros por diferença.
-  const sfx = useRef({ hp: engine.view().hp, enemies: engine.totalEnemies, proj: 0, boss: false });
+  const sfx = useRef({
+    hp: engine.view().hp,
+    enemies: engine.totalEnemies,
+    proj: 0,
+    boss: false,
+    charging: false,
+    enraged: false,
+    pickups: 0,
+  });
 
   const { isTouch, isPortrait } = useDeviceMode();
   const needsRotate = isTouch && isPortrait;
@@ -115,16 +125,29 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
 
   function emitSfx(v: View) {
     const playerProj = v.projectiles.filter((p) => p.team === 'player').length;
+    const charging = v.boss?.charging ?? false;
+    const enraged = v.boss?.enraged ?? false;
     if (playerProj > sfx.current.proj) playSound('attack');
     if (v.hp < sfx.current.hp) playSound('hurt');
     if (v.enemiesRemaining < sfx.current.enemies) playSound('defeatEnemy');
     if (v.bossActive && !sfx.current.boss) playSound('bossAppear');
-    sfx.current = { hp: v.hp, enemies: v.enemiesRemaining, proj: playerProj, boss: v.bossActive };
+    if (charging && !sfx.current.charging) playSound('bossCharge');
+    if (enraged && !sfx.current.enraged) playSound('bossEnrage');
+    if (v.pickupsCollected > sfx.current.pickups) playSound('pickup');
+    sfx.current = {
+      hp: v.hp,
+      enemies: v.enemiesRemaining,
+      proj: playerProj,
+      boss: v.bossActive,
+      charging,
+      enraged,
+      pickups: v.pickupsCollected,
+    };
   }
 
-  function resolveSpecial(correct: boolean) {
+  function resolveSpecial(correct: boolean, speedBonus = 0) {
     const hadBoss = engine.view().bossActive;
-    engine.applySpecial(correct);
+    engine.applySpecial(correct, speedBonus);
     playSound(hadBoss ? 'bossHit' : 'special');
     const v = engine.view();
     sfx.current.boss = v.bossActive;
@@ -191,10 +214,10 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
   );
 
   function restart() {
-    const fresh = new StageEngine(region);
+    const fresh = new StageEngine(region, difficulty);
     setEngine(fresh);
     victorySavedRef.current = false;
-    sfx.current = { hp: fresh.view().hp, enemies: fresh.totalEnemies, proj: 0, boss: false };
+    sfx.current = { hp: fresh.view().hp, enemies: fresh.totalEnemies, proj: 0, boss: false, charging: false, enraged: false, pickups: 0 };
     setView(fresh.view());
     setSpecial(null);
     setStars(0);
@@ -228,7 +251,7 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
 
   return (
     <div
-      className={`stage-root stage-region-${region} ${stage.scenery.backgroundImage ? 'stage-has-backdrop' : ''} ${isTouch ? 'stage-touch-device' : ''}`}
+      className={`stage-root stage-region-${region} ${stage.scenery.backgroundImage ? 'stage-has-backdrop' : ''} ${isTouch ? 'stage-touch-device' : ''} ${view.slowmo ? 'stage-slowmo' : ''}`}
       style={{
         '--sky-top': stage.scenery.skyTop,
         '--sky-bottom': stage.scenery.skyBottom,
@@ -272,6 +295,7 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
               <Enemy
                 key={enemy.key}
                 problem={enemy.problem}
+                behavior={enemy.behavior}
                 x={enemy.x}
                 feetY={enemy.feetY}
                 size={ENEMY_SIZE}
@@ -283,6 +307,18 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
             ))}
 
             {view.boss && <Boss boss={view.boss} />}
+
+            {view.pickups.map((item) => (
+              <span
+                key={item.id}
+                className={`stage-pickup stage-pickup-${item.kind}`}
+                style={{ left: item.x, top: item.y }}
+                role="img"
+                aria-label={item.kind === 'heal' ? 'Item de vida' : 'Item de energia'}
+              >
+                {item.kind === 'heal' ? '❤️' : '💡'}
+              </span>
+            ))}
 
             <Player
               region={region}
@@ -344,6 +380,15 @@ export function GameStage({ region, onExit, onVictory }: GameStageProps) {
             <span>{view.bossBanner}</span>
           </div>
         )}
+
+        {phase === 'playing' && view.combo >= 2 && (
+          <div className="stage-combo" role="status" aria-live="off">
+            <strong>{view.combo} em sequência</strong>
+            <span>Pontos x{view.comboMultiplier}</span>
+          </div>
+        )}
+
+        {view.slowmo && <div className="stage-slowmo-vignette" aria-hidden />}
       </div>
 
       <HUD

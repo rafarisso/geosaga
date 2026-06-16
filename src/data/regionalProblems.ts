@@ -26,6 +26,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 70,
       contactDamage: 9,
       color: '#8a5a2b',
+      behavior: 'rusher',
     },
     {
       id: 'norte-queimada',
@@ -36,6 +37,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 55,
       contactDamage: 10,
       color: '#b5532a',
+      behavior: 'turret',
     },
     {
       id: 'norte-garimpo',
@@ -46,6 +48,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 80,
       contactDamage: 11,
       color: '#7a6f4a',
+      behavior: 'jumper',
     },
   ],
   nordeste: [
@@ -68,6 +71,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 70,
       contactDamage: 9,
       color: '#a9722e',
+      behavior: 'turret',
     },
     {
       id: 'nordeste-erosao',
@@ -78,6 +82,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 65,
       contactDamage: 9,
       color: '#9c5a2f',
+      behavior: 'rusher',
     },
     {
       id: 'nordeste-mandacaru-corrompido',
@@ -88,6 +93,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 85,
       contactDamage: 11,
       color: '#6f7a3a',
+      behavior: 'jumper',
     },
   ],
   'centro-oeste': [
@@ -110,6 +116,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 55,
       contactDamage: 8,
       color: '#8d8c7a',
+      behavior: 'turret',
     },
     {
       id: 'centro-oeste-animal-perigo',
@@ -120,6 +127,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 70,
       contactDamage: 7,
       color: '#b0853a',
+      behavior: 'rusher',
     },
     {
       id: 'centro-oeste-area-degradada',
@@ -130,6 +138,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 80,
       contactDamage: 10,
       color: '#7d6a3c',
+      behavior: 'jumper',
     },
   ],
   sudeste: [
@@ -154,6 +163,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 82,
       contactDamage: 10,
       color: '#2f7895',
+      behavior: 'rusher',
     },
     {
       id: 'sudeste-concreto',
@@ -165,6 +175,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 88,
       contactDamage: 9,
       color: '#8a6558',
+      behavior: 'turret',
     },
     {
       id: 'sudeste-fumaca-industrial',
@@ -176,6 +187,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 86,
       contactDamage: 11,
       color: '#655f67',
+      behavior: 'jumper',
     },
   ],
   sul: [
@@ -198,6 +210,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 80,
       contactDamage: 9,
       color: '#3f7a52',
+      behavior: 'jumper',
     },
     {
       id: 'sul-geada',
@@ -208,6 +221,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 65,
       contactDamage: 9,
       color: '#a9d2e6',
+      behavior: 'turret',
     },
     {
       id: 'sul-erosao-pampas',
@@ -218,6 +232,7 @@ export const REGIONAL_PROBLEMS: Record<RegionId, RegionalProblem[]> = {
       hp: 70,
       contactDamage: 10,
       color: '#9c8a4a',
+      behavior: 'rusher',
     },
   ],
 };

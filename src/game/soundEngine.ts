@@ -11,7 +11,10 @@ export type SoundName =
   | 'hurt'
   | 'special'
   | 'bossAppear'
+  | 'bossCharge'
+  | 'bossEnrage'
   | 'bossHit'
+  | 'pickup'
   | 'victory'
   | 'gameover';
 
@@ -100,9 +103,23 @@ export function playSound(name: SoundName): void {
       tone(ac, 'sawtooth', 160, 70, 0.5, 0.22);
       noise(ac, 0.4, 0.08);
       break;
+    case 'bossCharge':
+      // "Carga" ascendente antes do disparo (telegrafia).
+      tone(ac, 'sawtooth', 90, 360, 0.42, 0.1);
+      break;
+    case 'bossEnrage':
+      tone(ac, 'sawtooth', 220, 60, 0.6, 0.24);
+      tone(ac, 'square', 110, 70, 0.5, 0.16, 0.06);
+      noise(ac, 0.3, 0.09);
+      break;
     case 'bossHit':
       tone(ac, 'square', 260, 160, 0.16, 0.18);
       noise(ac, 0.1, 0.07);
+      break;
+    case 'pickup':
+      // Tilintar curto e alegre ao coletar item.
+      tone(ac, 'triangle', 880, 1320, 0.1, 0.16);
+      tone(ac, 'sine', 1320, 1760, 0.12, 0.1, 0.05);
       break;
     case 'victory':
       tone(ac, 'triangle', 523, 523, 0.18, 0.2);
