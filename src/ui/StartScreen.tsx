@@ -32,11 +32,11 @@ export function StartScreen({ onPlay, onContinue, progress, difficulty, onSelect
         </p>
 
         <ul className="start-dynamics" aria-label="Como funciona o jogo">
-          <li><span aria-hidden>🌎</span> Explore a fase e restaure os problemas da região</li>
-          <li><span aria-hidden>💡</span> Cada acerto carrega seu <strong>conhecimento</strong></li>
-          <li><span aria-hidden>⚡</span> Restaure em sequência para o <strong>combo</strong> de pontos</li>
-          <li><span aria-hidden>👟</span> Pule na cabeça dos problemas e pegue <strong>itens</strong> de vida e energia</li>
-          <li><span aria-hidden>👑</span> No fim, vença o <strong>chefe</strong> respondendo ao quiz</li>
+          <li><span className="dynamic-icon" aria-hidden>🌎</span><span className="dynamic-text">Explore a fase e restaure os problemas da região</span></li>
+          <li><span className="dynamic-icon" aria-hidden>💡</span><span className="dynamic-text">Cada acerto carrega seu <strong>conhecimento</strong></span></li>
+          <li><span className="dynamic-icon" aria-hidden>⚡</span><span className="dynamic-text">Restaure em sequência para o <strong>combo</strong> de pontos</span></li>
+          <li><span className="dynamic-icon" aria-hidden>👟</span><span className="dynamic-text">Pule na cabeça dos problemas e pegue <strong>itens</strong> de vida e energia</span></li>
+          <li><span className="dynamic-icon" aria-hidden>👑</span><span className="dynamic-text">No fim, vença o <strong>chefe</strong> respondendo ao quiz</span></li>
         </ul>
 
         <div className="start-difficulty" role="group" aria-label="Nível de desafio">
