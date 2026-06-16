@@ -329,6 +329,8 @@ export function GameStage({ region, difficulty = 'normal', onExit, onVictory }: 
               width={PLAYER_W}
               height={PLAYER_H}
               blinking={view.blinking}
+              guarding={view.guarding}
+              guardFlash={view.guardFlash}
             />
 
             {view.projectiles.map((p) => (
@@ -446,19 +448,20 @@ export function GameStage({ region, difficulty = 'normal', onExit, onVictory }: 
               {isTouch ? (
                 <>
                   <li>Use os direcionais à esquerda para se mover.</li>
-                  <li>Os botões à direita controlam pulo, ataque e golpe especial.</li>
+                  <li>Os botões à direita controlam abaixar, pulo, ataque e golpe especial.</li>
                   <li>O golpe especial acende quando o conhecimento chega a 100%.</li>
                 </>
               ) : (
                 <>
                   <li><strong>← →</strong> ou <strong>A / D</strong> mover · <strong>Espaço</strong> pular</li>
+                  <li><strong>↓ / S</strong> abaixar e defender projéteis baixos</li>
                   <li><strong>J</strong> lançar onda de {stage.attackVerb.toLowerCase()} (à distância)</li>
                   <li><strong>K</strong> {stage.specialVerb} — responda à pergunta para o golpe forte</li>
                 </>
               )}
             </ul>
             <p className="stage-overlay-tip">
-              💡 Restaure os problemas, desvie dos ataques (pule!) e enfrente o chefe <strong>{stage.boss.name}</strong>.
+              💡 Restaure os problemas, desvie dos ataques pulando ou abaixando, e enfrente o chefe <strong>{stage.boss.name}</strong>.
               Ele só é vencido com o golpe especial — ou seja, acertando o quiz!
             </p>
             <button className="btn-primary btn-large" onClick={startMission}>

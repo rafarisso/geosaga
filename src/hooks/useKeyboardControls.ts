@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-export type GameButton = 'left' | 'right' | 'jump' | 'attack' | 'special';
+export type GameButton = 'left' | 'right' | 'jump' | 'crouch' | 'attack' | 'special';
 
 /**
  * Estado de entrada lido pelo loop do jogo a cada quadro.
@@ -10,6 +10,7 @@ export type GameButton = 'left' | 'right' | 'jump' | 'attack' | 'special';
 export interface InputState {
   left: boolean;
   right: boolean;
+  crouch: boolean;
   jumpPressed: boolean;
   attackPressed: boolean;
   specialPressed: boolean;
@@ -19,6 +20,7 @@ function createInput(): InputState {
   return {
     left: false,
     right: false,
+    crouch: false,
     jumpPressed: false,
     attackPressed: false,
     specialPressed: false,
@@ -33,6 +35,8 @@ const KEY_MAP: Record<string, GameButton> = {
   Space: 'jump',
   ArrowUp: 'jump',
   KeyW: 'jump',
+  ArrowDown: 'crouch',
+  KeyS: 'crouch',
   KeyJ: 'attack',
   KeyK: 'special',
 };
@@ -58,7 +62,7 @@ export function useKeyboardControls(enabled = true): KeyboardControls {
   const setButton = useCallback((button: GameButton, isDown: boolean) => {
     if (!enabled) return;
     const input = inputRef.current;
-    if (button === 'left' || button === 'right') {
+    if (button === 'left' || button === 'right' || button === 'crouch') {
       input[button] = isDown;
     } else if (isDown) {
       if (button === 'jump') input.jumpPressed = true;
@@ -77,7 +81,7 @@ export function useKeyboardControls(enabled = true): KeyboardControls {
       const button = KEY_MAP[event.code];
       if (!button) return;
       event.preventDefault();
-      if (event.repeat && button !== 'left' && button !== 'right') return;
+      if (event.repeat && button !== 'left' && button !== 'right' && button !== 'crouch') return;
       setButton(button, true);
     };
 
@@ -85,7 +89,7 @@ export function useKeyboardControls(enabled = true): KeyboardControls {
       const button = KEY_MAP[event.code];
       if (!button) return;
       event.preventDefault();
-      if (button === 'left' || button === 'right') setButton(button, false);
+      if (button === 'left' || button === 'right' || button === 'crouch') setButton(button, false);
     };
 
     const handleVisibility = () => {

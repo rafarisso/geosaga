@@ -29,6 +29,10 @@ export const MAX_ENERGY = 100;
 const GRAVITY = 2400;
 const PLAYER_HITBOX_W = 58;
 const PLAYER_PROJECTILE_HITBOX_H = 64;
+const PLAYER_CROUCH_HITBOX_H = 42;
+const PLAYER_CROUCH_SPEED = 0.42;
+const GUARD_FLASH_TIME = 0.22;
+const GUARD_ENERGY_GAIN = 8;
 const ENEMY_HITBOX_W = 70;
 const ATTACK_DURATION = 0.18;
 const ATTACK_COOLDOWN = 0.34;
@@ -106,6 +110,8 @@ interface PlayerWorld {
   maxHp: number;
   energy: number;
   state: AnimationState;
+  crouching: boolean;
+  guardFlash: number;
   stateTimer: number;
   attackTimer: number;
   attackCooldown: number;
@@ -248,6 +254,8 @@ export interface View {
   pfeet: number;
   pstate: AnimationState;
   pfacing: 1 | -1;
+  guarding: boolean;
+  guardFlash: boolean;
   hp: number;
   maxHp: number;
   energy: number;
@@ -390,6 +398,8 @@ export class StageEngine {
       maxHp: playerHp,
       energy: 0,
       state: 'idle',
+      crouching: false,
+      guardFlash: 0,
       stateTimer: 0,
       attackTimer: 0,
       attackCooldown: 0,
@@ -653,6 +663,23 @@ export class StageEngine {
     this.spawnDamage(player.x + PLAYER_W / 2, player.feetY - PLAYER_H * 0.6, amount, '#ff8a73');
   }
 
+  private guardProjectile(p: Projectile): boolean {
+    const { player } = this;
+    if (!player.crouching || !player.onGround) return false;
+    const cx = player.x + PLAYER_W / 2;
+    const guardReachX = PLAYER_HITBOX_W / 2 + ENEMY_PROJ_R + 20;
+    const guardTop = player.feetY - 98;
+    const guardBottom = player.feetY - 12;
+    if (Math.abs(p.x - cx) > guardReachX || p.y < guardTop || p.y > guardBottom) return false;
+
+    p.life = 0;
+    player.guardFlash = GUARD_FLASH_TIME;
+    player.energy = Math.min(MAX_ENERGY, player.energy + GUARD_ENERGY_GAIN);
+    this.spawnSpark(p.x, p.y, '#bfefff');
+    this.spawnText(cx, player.feetY - 118, 'Defesa!', '#bfefff');
+    return true;
+  }
+
   private updateProjectiles(dt: number): void {
     for (const p of this.projectiles) {
       p.x += p.vx * dt;
@@ -687,11 +714,15 @@ export class StageEngine {
       } else {
         // Ataque inimigo contra o jogador.
         const cx = this.player.x + PLAYER_W / 2;
-        const cy = this.player.feetY - PLAYER_H / 2;
+        const hitboxH = this.player.crouching ? PLAYER_CROUCH_HITBOX_H : PLAYER_PROJECTILE_HITBOX_H;
+        const cy = this.player.crouching
+          ? this.player.feetY - hitboxH / 2 - 12
+          : this.player.feetY - PLAYER_H / 2;
+        if (this.guardProjectile(p)) continue;
         if (
           this.player.invuln <= 0
           && Math.abs(p.x - cx) < PLAYER_HITBOX_W / 2 + ENEMY_PROJ_R
-          && Math.abs(p.y - cy) < PLAYER_PROJECTILE_HITBOX_H / 2 + ENEMY_PROJ_R
+          && Math.abs(p.y - cy) < hitboxH / 2 + ENEMY_PROJ_R
         ) {
           this.hurtPlayer(p.damage, p.x);
           p.life = 0;
@@ -787,6 +818,8 @@ export class StageEngine {
       if (this.comboTimer === 0) this.comboCount = 0;
     }
 
+    player.crouching = input.crouch && player.onGround && player.attackTimer <= 0 && player.state !== 'hit';
+
     // Movimento horizontal com aceleração. Cada região pode alterar a tração.
     let move = 0;
     if (input.left) move -= 1;
@@ -798,7 +831,7 @@ export class StageEngine {
         && center > hazard.x
         && center < hazard.x + hazard.width
       ));
-      const maxSpeed = this.stats.velocidade * (terrain?.speedMultiplier ?? 1);
+      const maxSpeed = this.stats.velocidade * (terrain?.speedMultiplier ?? 1) * (player.crouching ? PLAYER_CROUCH_SPEED : 1);
       const targetSpeed = move * maxSpeed;
       const control = player.onGround ? 1 : this.movement.airControl;
       const rate = (move === 0 ? this.movement.deceleration : this.movement.acceleration) * control;
@@ -810,7 +843,7 @@ export class StageEngine {
     // Pulo
     if (input.jumpPressed) {
       input.jumpPressed = false;
-      if (player.onGround) {
+      if (player.onGround && !player.crouching) {
         player.vy = -this.stats.pulo;
         player.onGround = false;
       }
@@ -819,7 +852,7 @@ export class StageEngine {
     // Ataque básico → onda
     if (input.attackPressed) {
       input.attackPressed = false;
-      if (player.attackCooldown <= 0) {
+      if (player.attackCooldown <= 0 && !player.crouching) {
         player.attackCooldown = ATTACK_COOLDOWN;
         player.attackTimer = ATTACK_DURATION;
         player.state = 'attack';
@@ -838,6 +871,11 @@ export class StageEngine {
     const prevFeet = player.feetY;
     this.resolveVertical(dt, prevFeet);
     player.x = clamp(player.x + player.vx * dt, 0, STAGE_WIDTH - PLAYER_W);
+    if (!player.onGround || player.state === 'hit') {
+      player.crouching = false;
+    } else {
+      player.crouching = input.crouch && player.attackTimer <= 0;
+    }
 
     // Zonas de perigo (no chão): dano, correnteza e redução de velocidade.
     if (player.onGround && player.feetY >= GROUND_Y - 6) {
@@ -861,6 +899,7 @@ export class StageEngine {
     player.attackTimer = Math.max(0, player.attackTimer - dt);
     player.attackCooldown = Math.max(0, player.attackCooldown - dt);
     player.invuln = Math.max(0, player.invuln - dt);
+    player.guardFlash = Math.max(0, player.guardFlash - dt);
     player.stateTimer = Math.max(0, player.stateTimer - dt);
 
     this.updateProjectiles(dt);
@@ -872,7 +911,8 @@ export class StageEngine {
 
     // Estado de animação padrão
     if (player.stateTimer <= 0) {
-      if (!player.onGround) player.state = 'jump';
+      if (player.crouching) player.state = 'crouch';
+      else if (!player.onGround) player.state = 'jump';
       else if (player.vx !== 0) player.state = 'walk';
       else player.state = 'idle';
     }
@@ -894,7 +934,7 @@ export class StageEngine {
     const { player } = this;
     const playerHitMinX = player.x + (PLAYER_W - PLAYER_HITBOX_W) / 2;
     const playerHitMaxX = playerHitMinX + PLAYER_HITBOX_W;
-    const playerTop = player.feetY - PLAYER_H;
+    const playerTop = player.feetY - (player.crouching ? PLAYER_H * 0.58 : PLAYER_H);
 
     for (const enemy of this.enemies) {
       enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);
@@ -1045,7 +1085,8 @@ export class StageEngine {
     const bxMax = boss.x + BOSS_W - 24;
     const pxMin = player.x + (PLAYER_W - PLAYER_HITBOX_W) / 2;
     const pxMax = pxMin + PLAYER_HITBOX_W;
-    if (pxMin < bxMax && pxMax > bxMin && player.feetY - PLAYER_H < boss.feetY && player.feetY > boss.feetY - BOSS_H) {
+    const playerTop = player.feetY - (player.crouching ? PLAYER_H * 0.58 : PLAYER_H);
+    if (pxMin < bxMax && pxMax > bxMin && playerTop < boss.feetY && player.feetY > boss.feetY - BOSS_H) {
       this.hurtPlayer(boss.contactDamage, boss.x);
     }
   }
@@ -1057,6 +1098,8 @@ export class StageEngine {
       pfeet: player.feetY,
       pstate: player.state,
       pfacing: player.facing,
+      guarding: player.crouching,
+      guardFlash: player.guardFlash > 0,
       hp: player.hp,
       maxHp: player.maxHp,
       energy: player.energy,

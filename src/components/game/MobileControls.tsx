@@ -49,6 +49,9 @@ export function MobileControls({ setButton, attackVerb, specialVerb, specialRead
       </div>
 
       <div className="stage-touch-actions">
+        <button className="touch-btn touch-crouch" aria-label="Abaixar e defender" {...hold('crouch')}>
+          <span aria-hidden>v</span><small>Abaixar</small>
+        </button>
         <button className="touch-btn touch-jump" aria-label="Pular" {...tap('jump')}>
           <span aria-hidden>⤴</span><small>Pular</small>
         </button>

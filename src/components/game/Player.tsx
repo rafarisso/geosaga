@@ -14,6 +14,8 @@ interface PlayerProps {
   height: number;
   /** Pisca enquanto invulnerável após levar dano. */
   blinking: boolean;
+  guarding: boolean;
+  guardFlash: boolean;
 }
 
 /**
@@ -22,7 +24,7 @@ interface PlayerProps {
  * Preparado para spritesheets reais: troque `animationFrames`/`frameCount` em
  * characters.ts e o recorte por frame passa a usar as animações finais.
  */
-export function Player({ region, state, facing, x, feetY, width, height, blinking }: PlayerProps) {
+export function Player({ region, state, facing, x, feetY, width, height, blinking, guarding, guardFlash }: PlayerProps) {
   const character = CHARACTERS[region];
   const frame = character.animationFrames[state];
   const maxFrame = character.sheet.frameCount - 1;
@@ -45,7 +47,7 @@ export function Player({ region, state, facing, x, feetY, width, height, blinkin
 
   return (
     <div
-      className={`stage-player stage-player-${state}`}
+      className={`stage-player stage-player-${state} ${guarding ? 'stage-player-guarding' : ''} ${guardFlash ? 'stage-player-guard-flash' : ''}`}
       style={style}
       role="img"
       aria-label={`${character.name} em ação`}

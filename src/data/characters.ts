@@ -37,6 +37,7 @@ const animationFrames: Record<AnimationState, number> = {
   idle: 0,
   walk: 1,
   jump: 2,
+  crouch: 2,
   attack: 3,
   hit: 3,
   victory: 4,

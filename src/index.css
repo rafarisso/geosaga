@@ -1365,16 +1365,49 @@ button:focus-visible {
 }
 
 .stage-player-walk {
-  animation: player-walk-bob 0.42s ease-in-out infinite;
+  animation:
+    player-walk-bob 0.42s ease-in-out infinite,
+    player-walk-frames 0.58s steps(1, end) infinite;
 }
 
 .stage-player-jump {
   animation: player-jump-lean 0.55s ease-out infinite alternate;
 }
 
+.stage-player-crouch {
+  transform-origin: center bottom;
+  transform: scaleX(var(--player-flip, 1)) translateY(34px) scaleY(0.66);
+  filter: drop-shadow(0 10px 7px rgba(0, 0, 0, 0.34)) saturate(1.08);
+}
+
+.stage-player-guarding::before {
+  position: absolute;
+  right: 14%;
+  bottom: 20px;
+  left: 14%;
+  height: 74px;
+  content: "";
+  border: 2px solid rgba(191, 239, 255, 0.55);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(191, 239, 255, 0.24), transparent 68%);
+  opacity: 0.54;
+  pointer-events: none;
+}
+
+.stage-player-guard-flash::before {
+  border-color: rgba(255, 255, 255, 0.95);
+  opacity: 0.95;
+  box-shadow: 0 0 22px rgba(191, 239, 255, 0.9);
+}
+
 @keyframes player-walk-bob {
   0%, 100% { transform: scaleX(var(--player-flip, 1)) translateY(0) rotate(0deg); }
   50% { transform: scaleX(var(--player-flip, 1)) translateY(-5px) rotate(1.5deg); }
+}
+
+@keyframes player-walk-frames {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 25% center; }
 }
 
 @keyframes player-jump-lean {
@@ -2364,6 +2397,7 @@ button:focus-visible {
   font-size: 1.7rem;
 }
 
+.touch-crouch,
 .touch-jump,
 .touch-attack,
 .touch-special {
@@ -2380,6 +2414,7 @@ button:focus-visible {
   background: rgba(28, 150, 110, 0.78);
 }
 
+.touch-crouch { background: rgba(28, 74, 92, 0.72); }
 .touch-jump { background: rgba(54, 124, 160, 0.72); }
 
 .touch-special.ready {
@@ -2435,8 +2470,9 @@ button:focus-visible {
   .stage-objective p { font-size: 0.66rem; }
   .stage-objective-count { font-size: 0.6rem; }
   .stage-hint { bottom: 5.2rem; font-size: 0.72rem; padding: 0.4rem 0.8rem; }
+  .stage-touch-actions { gap: 0.45rem; }
   .touch-dir { width: 3.6rem; height: 3.6rem; font-size: 1.4rem; }
-  .touch-jump, .touch-special { width: 3.3rem; height: 3.3rem; font-size: 1.2rem; }
+  .touch-crouch, .touch-jump, .touch-special { width: 3.3rem; height: 3.3rem; font-size: 1.2rem; }
   .touch-attack { width: 4.1rem; height: 4.1rem; font-size: 1.6rem; }
   .stage-touch-device .stage-hint { top: 6.7rem; font-size: 0.68rem; }
 }

@@ -14,7 +14,7 @@ export type GameDifficulty = 'facil' | 'normal' | 'dificil';
  */
 export type EnemyBehavior = 'chaser' | 'turret' | 'rusher' | 'jumper';
 
-export type AnimationState = 'idle' | 'walk' | 'jump' | 'attack' | 'hit' | 'victory';
+export type AnimationState = 'idle' | 'walk' | 'jump' | 'crouch' | 'attack' | 'hit' | 'victory';
 
 export interface Guardian {
   id: string;
