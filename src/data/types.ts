@@ -2,6 +2,18 @@ export type RegionId = 'norte' | 'nordeste' | 'centro-oeste' | 'sudeste' | 'sul'
 
 export type Difficulty = 1 | 2 | 3;
 
+/** Nível de desafio escolhido pelo jogador (afeta vida/dano e a vida do herói). */
+export type GameDifficulty = 'facil' | 'normal' | 'dificil';
+
+/**
+ * Comportamento de combate de um problema regional:
+ * - `chaser`: avança em direção ao jogador e dispara à distância (padrão);
+ * - `turret`: fica parado e dispara com mais frequência;
+ * - `rusher`: corre para o corpo a corpo e quase não atira;
+ * - `jumper`: salta pelo cenário, dificultando os acertos.
+ */
+export type EnemyBehavior = 'chaser' | 'turret' | 'rusher' | 'jumper';
+
 export type AnimationState = 'idle' | 'walk' | 'jump' | 'attack' | 'hit' | 'victory';
 
 export interface Guardian {
@@ -80,6 +92,8 @@ export interface RegionalProblem {
   name: string;
   /** Placeholder visual enquanto não há arte final. */
   emoji: string;
+  /** Visual CSS dedicado quando a fase tem inimigos mais elaborados. */
+  visual?: 'default' | 'polluted-canal' | 'drainage-pump' | 'heat-island' | 'smog-stack';
   description: string;
   /** Pontos de vida do problema. */
   hp: number;
@@ -87,19 +101,27 @@ export interface RegionalProblem {
   contactDamage: number;
   /** Cor temática do bloco/card do inimigo. */
   color: string;
+  /** Comportamento de combate. Ausente = `chaser` (padrão). */
+  behavior?: EnemyBehavior;
 }
 
 /** Chefe regional: o "problema-mor" da região, só derrotado com o quiz. */
 export interface BossDefinition {
   name: string;
-  emoji: string;
+  /** Arte raster do chefe final. Quando ausente, o emoji fica como fallback legado. */
+  image?: string;
+  emoji?: string;
   color: string;
+  /** Visual CSS dedicado para chefes com silhueta propria. */
+  visual?: 'default' | 'pollution-master';
   /** Vida do chefe (antes da escala por região). */
   hp: number;
   /** Dano por contato com o chefe. */
   contactDamage: number;
   /** Intervalo, em segundos, entre os ataques do chefe. */
   attackInterval: number;
+  /** Padrão dos projéteis disparados pelo chefe. */
+  attackPattern: 'single' | 'double' | 'spread' | 'barrage';
   /** Fala exibida quando o chefe aparece. */
   taunt: string;
 }
@@ -110,16 +132,56 @@ export interface PlatformDef {
   /** Altura do topo da plataforma (coordenada Y do mundo). */
   y: number;
   width: number;
+  /** Orientação curta exibida em trechos que exigem plataforma. */
+  guide?: string;
 }
 
 export type HazardKind = 'fogo' | 'agua' | 'gelo' | 'fumaca';
 
 /** Zona de perigo temática que causa dano ao jogador. */
 export interface HazardDef {
+  id?: string;
   x: number;
   width: number;
   kind: HazardKind;
   label: string;
+  /** Id do problema que neutraliza este perigo ao ser derrotado. */
+  restoreWith?: string;
+  /** Texto exibido depois que o perigo for neutralizado. */
+  restoredLabel?: string;
+  /** Dano por contato. */
+  damage?: number;
+  /** Força horizontal aplicada enquanto o jogador está na área. */
+  push?: number;
+  /** Multiplicador da velocidade máxima dentro da área. */
+  speedMultiplier?: number;
+}
+
+export type SceneryDecorationKind =
+  | 'amazon-tree'
+  | 'river'
+  | 'cactus'
+  | 'rock'
+  | 'buriti'
+  | 'wetland'
+  | 'skyline'
+  | 'factory'
+  | 'serra-mar'
+  | 'rio-mountain'
+  | 'sao-paulo-bridge'
+  | 'urban-rail'
+  | 'atlantic-forest'
+  | 'graffiti-wall'
+  | 'drainage-gate'
+  | 'araucaria'
+  | 'pampas';
+
+export interface SceneryDecoration {
+  kind: SceneryDecorationKind;
+  x: number;
+  bottom?: number;
+  scale?: number;
+  depth: 'far' | 'mid' | 'near';
 }
 
 /** Definição de uma fase jogável de uma região. */
@@ -140,6 +202,8 @@ export interface StageDefinition {
   goalLabel: string;
   /** Lista de ids de problemas regionais que aparecem na fase. */
   enemyIds: string[];
+  /** Posições horizontais dos problemas, na mesma ordem de enemyIds. */
+  enemySpawns: number[];
   /** Chefe regional enfrentado após limpar os problemas. */
   boss: BossDefinition;
   /** Plataformas da fase (verticalidade). */
@@ -148,13 +212,28 @@ export interface StageDefinition {
   hazards: HazardDef[];
   /** Multiplicador de dificuldade (vida/dano dos inimigos e do chefe). */
   difficulty: number;
+  /** Sensação de movimento própria da fase. */
+  movement: {
+    acceleration: number;
+    deceleration: number;
+    airControl: number;
+  };
+  /** Mecânica regional apresentada ao jogador. */
+  mechanic: {
+    label: string;
+    hint: string;
+  };
   /** Tema visual do cenário lateral. */
   scenery: {
+    /** Arte raster opcional usada como fundo principal da fase. */
+    backgroundImage?: string;
     skyTop: string;
     skyBottom: string;
     ground: string;
     groundAccent: string;
     hill: string;
+    haze: string;
+    decorations: SceneryDecoration[];
   };
 }
 

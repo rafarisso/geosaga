@@ -39,9 +39,9 @@ export function Player({ region, state, facing, x, feetY, width, height, blinkin
     backgroundImage: `url(${character.processedAsset})`,
     backgroundSize: `${character.sheet.frameCount * 100}% auto`,
     backgroundPosition: `${position}% center`,
-    transform: `scaleX(${flip})`,
+    '--player-flip': flip,
     opacity: blinking ? 0.45 : 1,
-  };
+  } as CSSProperties;
 
   return (
     <div
