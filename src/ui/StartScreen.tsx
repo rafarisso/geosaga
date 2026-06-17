@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import logo from '../assets/logo/logo-geosaga.png';
 import { DIFFICULTY_LIST } from '../data/difficulty';
 import { REGION_LIST } from '../data/regions';
+import { STAGES } from '../data/stages';
 import type { GameDifficulty, GameProgress } from '../data/types';
 import { GuardianSprite } from './GuardianSprite';
 
@@ -15,14 +16,40 @@ interface StartScreenProps {
 
 export function StartScreen({ onPlay, onContinue, progress, difficulty, onSelectDifficulty }: StartScreenProps) {
   const [showHowTo, setShowHowTo] = useState(false);
+  const [showGuardians, setShowGuardians] = useState(false);
   const hasProgress = progress.lastRegion !== null || progress.totalScore > 0;
   const activeDifficulty = DIFFICULTY_LIST.find((option) => option.id === difficulty) ?? DIFFICULTY_LIST[1];
 
   return (
     <main className="start-screen">
-      <div className="sun-glow" />
-      <div className="landscape landscape-back" />
-      <div className="landscape landscape-front" />
+      <section className="start-cinematic" aria-label="Cenário animado do GeoSaga">
+        <div className="cinematic-bg-track" aria-hidden>
+          {[...REGION_LIST, ...REGION_LIST].map((region, index) => (
+            <span
+              className="cinematic-bg-frame"
+              key={`${region.id}-${index}`}
+              style={{ '--frame-bg': `url(${STAGES[region.id].scenery.backgroundImage})` } as CSSProperties}
+            />
+          ))}
+        </div>
+        <div className="cinematic-guardians" aria-hidden>
+          {REGION_LIST.map((region, index) => (
+            <div
+              className={`cinematic-guardian cinematic-guardian-${region.id}`}
+              style={{ '--guardian-order': index } as CSSProperties}
+              key={region.id}
+            >
+              <GuardianSprite region={region.id} state="victory" />
+              <span>{region.guardian.name}</span>
+            </div>
+          ))}
+        </div>
+        <div className="cinematic-conflict" aria-hidden>
+          <span>Biomas em risco</span>
+          <strong>5 guardiões</strong>
+          <span>Chefes regionais</span>
+        </div>
+      </section>
 
       <section className="hero-copy">
         <span className="hero-kicker">Uma aventura educativa pelo Brasil</span>
@@ -60,6 +87,7 @@ export function StartScreen({ onPlay, onContinue, progress, difficulty, onSelect
 
         <div className="start-actions">
           <button className="btn-primary btn-large" onClick={onPlay}>Jogar</button>
+          <button className="btn-secondary" onClick={() => setShowGuardians(true)}>Guardiões</button>
           <button className="btn-secondary" onClick={() => setShowHowTo(true)}>Como jogar</button>
           <button className="btn-continue" onClick={onContinue} disabled={!hasProgress}>
             Continuar
@@ -68,18 +96,48 @@ export function StartScreen({ onPlay, onContinue, progress, difficulty, onSelect
         </div>
       </section>
 
-      <section className="guardian-lineup" aria-label="Os cinco guardiões do GeoSaga">
-        {REGION_LIST.map((region) => (
-          <div className={`lineup-guardian lineup-${region.id}`} key={region.id}>
-            <GuardianSprite region={region.id} />
-            <span>{region.guardian.name}</span>
-          </div>
-        ))}
-      </section>
-
       <footer className="creator-credit">
         Desenvolvedor: Profº Rafael Risso - Geografia
       </footer>
+
+      {showGuardians && (
+        <div className="modal-backdrop guardian-modal-backdrop" role="presentation" onMouseDown={() => setShowGuardians(false)}>
+          <section className="guardian-codex" role="dialog" aria-modal="true" aria-labelledby="guardian-codex-title" onMouseDown={(event) => event.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowGuardians(false)} aria-label="Fechar">×</button>
+            <span className="eyebrow">Guardiões do Brasil</span>
+            <h2 id="guardian-codex-title">Quem protege cada região</h2>
+            <div className="guardian-profile-grid">
+              {REGION_LIST.map((region) => (
+                <article
+                  className={`guardian-profile profile-${region.id}`}
+                  key={region.id}
+                  style={{ '--region-color': region.themeColor, '--region-accent': region.accentColor } as CSSProperties}
+                >
+                  <div className="guardian-profile-art">
+                    <GuardianSprite region={region.id} state="victory" />
+                  </div>
+                  <div className="guardian-profile-copy">
+                    <span>{region.name}</span>
+                    <h3>{region.guardian.name}</h3>
+                    <strong>{region.guardian.title}</strong>
+                    <p>{region.guardian.description}</p>
+                    <dl>
+                      <div>
+                        <dt>Bioma</dt>
+                        <dd>{region.biome}</dd>
+                      </div>
+                      <div>
+                        <dt>Poder</dt>
+                        <dd>{region.guardian.power}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
 
       {showHowTo && (
         <div className="modal-backdrop" role="presentation" onMouseDown={() => setShowHowTo(false)}>
