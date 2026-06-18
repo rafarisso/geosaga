@@ -1,5 +1,9 @@
 export type RegionId = 'norte' | 'nordeste' | 'centro-oeste' | 'sudeste' | 'sul';
 
+export type CapitalRouteId = 'sudeste';
+
+export type CapitalId = 'sao-paulo' | 'rio-de-janeiro' | 'belo-horizonte' | 'vitoria';
+
 export type Difficulty = 1 | 2 | 3;
 
 /** Nível de desafio escolhido pelo jogador (afeta vida/dano e a vida do herói). */
@@ -69,6 +73,18 @@ export interface GameProgress {
   stageStars: Partial<Record<RegionId, number>>;
   /** Verdadeiro quando o jogador venceu o Desafio Brasil (todas as regiões). */
   masterOfBrazil: boolean;
+  completedCapitals: CapitalId[];
+  capitalScores: Partial<Record<CapitalId, number>>;
+  capitalStars: Partial<Record<CapitalId, number>>;
+  completedCapitalRoutes: CapitalRouteId[];
+}
+
+export interface CapitalMissionResult {
+  capital: CapitalId;
+  route: CapitalRouteId;
+  score: number;
+  stars: number;
+  completed: boolean;
 }
 
 /** Atributos de gameplay de cada guardião controlável. */

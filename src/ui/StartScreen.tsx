@@ -9,12 +9,13 @@ import { GuardianSprite } from './GuardianSprite';
 interface StartScreenProps {
   onPlay: () => void;
   onContinue: () => void;
+  onCapitals: () => void;
   progress: GameProgress;
   difficulty: GameDifficulty;
   onSelectDifficulty: (difficulty: GameDifficulty) => void;
 }
 
-export function StartScreen({ onPlay, onContinue, progress, difficulty, onSelectDifficulty }: StartScreenProps) {
+export function StartScreen({ onPlay, onContinue, onCapitals, progress, difficulty, onSelectDifficulty }: StartScreenProps) {
   const [showHowTo, setShowHowTo] = useState(false);
   const [showGuardians, setShowGuardians] = useState(false);
   const hasProgress = progress.lastRegion !== null || progress.totalScore > 0;
@@ -87,6 +88,7 @@ export function StartScreen({ onPlay, onContinue, progress, difficulty, onSelect
 
         <div className="start-actions">
           <button className="btn-primary btn-large" onClick={onPlay}>Jogar</button>
+          {progress.masterOfBrazil && <button className="btn-primary btn-large" onClick={onCapitals}>Capitais</button>}
           <button className="btn-secondary" onClick={() => setShowGuardians(true)}>Guardiões</button>
           <button className="btn-secondary" onClick={() => setShowHowTo(true)}>Como jogar</button>
           <button className="btn-continue" onClick={onContinue} disabled={!hasProgress}>

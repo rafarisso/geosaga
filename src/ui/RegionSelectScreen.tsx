@@ -6,10 +6,11 @@ interface RegionSelectScreenProps {
   progress: GameProgress;
   onQuiz: (region: RegionId) => void;
   onPlayStage: (region: RegionId) => void;
+  onCapitals: () => void;
   onBack: () => void;
 }
 
-export function RegionSelectScreen({ progress, onQuiz, onPlayStage, onBack }: RegionSelectScreenProps) {
+export function RegionSelectScreen({ progress, onQuiz, onPlayStage, onCapitals, onBack }: RegionSelectScreenProps) {
   return (
     <main className="region-screen">
       <header className="game-topbar">
@@ -74,7 +75,8 @@ export function RegionSelectScreen({ progress, onQuiz, onPlayStage, onBack }: Re
 
       {progress.masterOfBrazil && (
         <div className="master-banner" role="status">
-          🏆 Você venceu as cinco regiões e é <strong>Mestre do Brasil</strong>!
+          <span>🏆 Você venceu as cinco regiões e é <strong>Mestre do Brasil</strong>!</span>
+          <button className="btn-primary" type="button" onClick={onCapitals}>Desafio das Capitais</button>
         </div>
       )}
 

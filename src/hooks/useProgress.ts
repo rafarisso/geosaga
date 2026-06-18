@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
-import type { GameProgress, QuizResult, StageResult } from '../data/types';
+import type { CapitalMissionResult, GameProgress, QuizResult, StageResult } from '../data/types';
 import {
   loadProgress,
+  registerCapitalMissionResult,
   registerQuizResult,
   registerStageResult,
 } from '../services/progressService';
@@ -22,5 +23,9 @@ export function useProgress() {
     setProgress((current) => registerStageResult(current, result));
   }, []);
 
-  return { progress, completeQuiz, completeStage };
+  const completeCapitalMission = useCallback((result: CapitalMissionResult) => {
+    setProgress((current) => registerCapitalMissionResult(current, result));
+  }, []);
+
+  return { progress, completeQuiz, completeStage, completeCapitalMission };
 }

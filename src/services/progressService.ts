@@ -1,4 +1,5 @@
-import type { GameProgress, QuizResult, RegionId, StageResult } from '../data/types';
+import { CAPITAL_MISSIONS } from '../data/capitalChallenges';
+import type { CapitalId, CapitalMissionResult, GameProgress, QuizResult, RegionId, StageResult } from '../data/types';
 
 const STORAGE_KEY = 'geosaga-progress-v1';
 
@@ -12,12 +13,20 @@ export const EMPTY_PROGRESS: GameProgress = {
   stageScores: {},
   stageStars: {},
   masterOfBrazil: false,
+  completedCapitals: [],
+  capitalScores: {},
+  capitalStars: {},
+  completedCapitalRoutes: [],
 };
 
 const ALL_REGIONS: RegionId[] = ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'];
 
 function isRegionId(value: unknown): value is RegionId {
   return ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'].includes(String(value));
+}
+
+function isCapitalId(value: unknown): value is CapitalId {
+  return ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria'].includes(String(value));
 }
 
 export function loadProgress(): GameProgress {
@@ -31,9 +40,14 @@ export function loadProgress(): GameProgress {
     const completedStages = (parsed.completedStages ?? []).filter(isRegionId);
     const stageScores = parsed.stageScores ?? {};
     const stageStars = parsed.stageStars ?? {};
+    const completedCapitals = (parsed.completedCapitals ?? []).filter(isCapitalId);
+    const capitalScores = parsed.capitalScores ?? {};
+    const capitalStars = parsed.capitalStars ?? {};
+    const completedCapitalRoutes = (parsed.completedCapitalRoutes ?? []).filter((value) => value === 'sudeste');
     const totalScore =
       Object.values(bestScores).reduce((sum, score) => sum + (score ?? 0), 0) +
-      Object.values(stageScores).reduce((sum, score) => sum + (score ?? 0), 0);
+      Object.values(stageScores).reduce((sum, score) => sum + (score ?? 0), 0) +
+      Object.values(capitalScores).reduce((sum, score) => sum + (score ?? 0), 0);
 
     return {
       completedRegions,
@@ -45,6 +59,10 @@ export function loadProgress(): GameProgress {
       stageScores,
       stageStars,
       masterOfBrazil: parsed.masterOfBrazil === true,
+      completedCapitals,
+      capitalScores,
+      capitalStars,
+      completedCapitalRoutes,
     };
   } catch {
     return EMPTY_PROGRESS;
@@ -73,18 +91,21 @@ export function registerQuizResult(progress: GameProgress, result: QuizResult): 
     completedRegions,
     badges,
     bestScores,
-    totalScore: sumScores(bestScores, progress.stageScores),
+    totalScore: sumScores(bestScores, progress.stageScores, progress.capitalScores),
     lastRegion: result.region,
   };
   saveProgress(nextProgress);
   return nextProgress;
 }
 
-function sumScores(...maps: Partial<Record<RegionId, number>>[]): number {
-  return maps.reduce(
-    (total, map) => total + Object.values(map).reduce((sum, value) => sum + (value ?? 0), 0),
-    0,
-  );
+function sumScores(...maps: Partial<Record<string, number>>[]): number {
+  let total = 0;
+  for (const map of maps) {
+    for (const value of Object.values(map)) {
+      total += value ?? 0;
+    }
+  }
+  return total;
 }
 
 /**
@@ -120,8 +141,40 @@ export function registerStageResult(progress: GameProgress, result: StageResult)
     stageScores,
     stageStars,
     masterOfBrazil,
-    totalScore: sumScores(progress.bestScores, stageScores),
+    totalScore: sumScores(progress.bestScores, stageScores, progress.capitalScores),
     lastRegion: result.region,
+  };
+  saveProgress(nextProgress);
+  return nextProgress;
+}
+
+export function registerCapitalMissionResult(progress: GameProgress, result: CapitalMissionResult): GameProgress {
+  const capitalScores = {
+    ...progress.capitalScores,
+    [result.capital]: Math.max(progress.capitalScores[result.capital] ?? 0, result.score),
+  };
+  const capitalStars = {
+    ...progress.capitalStars,
+    [result.capital]: Math.max(progress.capitalStars[result.capital] ?? 0, result.stars),
+  };
+  const completedCapitals = result.completed
+    ? Array.from(new Set([...progress.completedCapitals, result.capital]))
+    : progress.completedCapitals;
+  const routeMissionIds = CAPITAL_MISSIONS
+    .filter((mission) => mission.route === result.route)
+    .map((mission) => mission.id);
+  const routeComplete = routeMissionIds.every((id) => completedCapitals.includes(id));
+  const completedCapitalRoutes = routeComplete
+    ? Array.from(new Set([...progress.completedCapitalRoutes, result.route]))
+    : progress.completedCapitalRoutes;
+
+  const nextProgress: GameProgress = {
+    ...progress,
+    completedCapitals,
+    capitalScores,
+    capitalStars,
+    completedCapitalRoutes,
+    totalScore: sumScores(progress.bestScores, progress.stageScores, capitalScores),
   };
   saveProgress(nextProgress);
   return nextProgress;

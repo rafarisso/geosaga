@@ -3,11 +3,15 @@ import type { GameDifficulty, QuizResult, RegionId } from '../data/types';
 import { gameEvents, EVENTS } from '../game/events';
 import { useProgress } from '../hooks/useProgress';
 import { GameStage } from '../components/game/GameStage';
+import { CapitalChallengeScreen } from './CapitalChallengeScreen';
+import { MasteryCelebrationScreen } from './MasteryCelebrationScreen';
 import { QuizPanel } from './QuizPanel';
 import { RegionSelectScreen } from './RegionSelectScreen';
 import { StartScreen } from './StartScreen';
 
-type Screen = 'start' | 'regions' | 'stage';
+type Screen = 'start' | 'regions' | 'stage' | 'mastery' | 'capitals';
+
+const ALL_REGIONS: RegionId[] = ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'];
 
 const DIFFICULTY_KEY = 'geosaga:difficulty';
 
@@ -21,8 +25,9 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('start');
   const [quizRegion, setQuizRegion] = useState<RegionId | null>(null);
   const [stageRegion, setStageRegion] = useState<RegionId | null>(null);
+  const [pendingMastery, setPendingMastery] = useState(false);
   const [difficulty, setDifficulty] = useState<GameDifficulty>(loadDifficulty);
-  const { progress, completeQuiz, completeStage } = useProgress();
+  const { progress, completeQuiz, completeStage, completeCapitalMission } = useProgress();
 
   function chooseDifficulty(next: GameDifficulty) {
     setDifficulty(next);
@@ -42,14 +47,52 @@ export default function App() {
     setScreen('stage');
   }
 
+  function exitStage() {
+    setStageRegion(null);
+    if (pendingMastery) {
+      setPendingMastery(false);
+      setScreen('mastery');
+    } else {
+      setScreen('regions');
+    }
+  }
+
   if (screen === 'stage' && stageRegion) {
     return (
       <div className="app-shell">
         <GameStage
           region={stageRegion}
           difficulty={difficulty}
-          onExit={() => { setStageRegion(null); setScreen('regions'); }}
-          onVictory={(score, stars) => completeStage({ region: stageRegion, score, victory: true, stars })}
+          onExit={exitStage}
+          onVictory={(score, stars) => {
+            const completedAfter = new Set([...progress.completedStages, stageRegion]);
+            setPendingMastery(!progress.masterOfBrazil && ALL_REGIONS.every((region) => completedAfter.has(region)));
+            completeStage({ region: stageRegion, score, victory: true, stars });
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (screen === 'mastery') {
+    return (
+      <div className="app-shell">
+        <MasteryCelebrationScreen
+          progress={progress}
+          onStartCapitals={() => setScreen('capitals')}
+          onBackToMap={() => setScreen('regions')}
+        />
+      </div>
+    );
+  }
+
+  if (screen === 'capitals') {
+    return (
+      <div className="app-shell">
+        <CapitalChallengeScreen
+          progress={progress}
+          onBack={() => setScreen('regions')}
+          onCompleteMission={completeCapitalMission}
         />
       </div>
     );
@@ -63,6 +106,7 @@ export default function App() {
           difficulty={difficulty}
           onSelectDifficulty={chooseDifficulty}
           onPlay={() => setScreen('regions')}
+          onCapitals={() => setScreen('capitals')}
           onContinue={() => setScreen('regions')}
         />
       ) : (
@@ -70,6 +114,7 @@ export default function App() {
           progress={progress}
           onQuiz={(region) => setQuizRegion(region)}
           onPlayStage={handlePlayStage}
+          onCapitals={() => setScreen('capitals')}
           onBack={() => setScreen('start')}
         />
       )}
