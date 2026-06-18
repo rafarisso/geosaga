@@ -1,9 +1,16 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import colossoCurralBoss from '../../assets/bosses/capital-belo-horizonte-boss-colosso-curral.png';
 import caosMetropoleBoss from '../../assets/bosses/capital-sao-paulo-boss-caos-metropole.png';
+import sombraBaiaBoss from '../../assets/bosses/capital-rio-boss-sombra-baia.png';
+import sentinelaManguezalBoss from '../../assets/bosses/capital-vitoria-boss-sentinela-manguezal.png';
+import beloHorizonteStageBg from '../../assets/backgrounds/capital-belo-horizonte-stage-bg.png';
+import rioStageBg from '../../assets/backgrounds/capital-rio-de-janeiro-stage-bg.png';
 import saoPauloStageBg from '../../assets/backgrounds/capital-sao-paulo-stage-bg.png';
+import vitoriaStageBg from '../../assets/backgrounds/capital-vitoria-stage-bg.png';
 import { CHARACTERS } from '../../data/characters';
+import type { CapitalMission } from '../../data/capitalChallenges';
 import { CAPITAL_SPECIAL_QUESTIONS, type CapitalSpecialQuestion } from '../../data/capitalQuestions';
-import type { CapitalMissionResult, RegionId } from '../../data/types';
+import type { CapitalId, CapitalMissionResult, RegionId } from '../../data/types';
 import { isMuted, playSound, setMuted } from '../../game/soundEngine';
 import { useDeviceMode } from '../../hooks/useDeviceMode';
 import { useGameLoop } from '../../hooks/useGameLoop';
@@ -22,6 +29,7 @@ import {
   CAPITAL_VIEW_H,
   CAPITAL_VIEW_W,
   CapitalStageEngine,
+  getCapitalStageDefinition,
   type CapitalStageView,
 } from './capitalStageEngine';
 
@@ -29,7 +37,22 @@ type Phase = 'intro' | 'playing' | 'quiz' | 'victory' | 'defeat';
 
 const GUARDIAN_ORDER: RegionId[] = ['sudeste', 'norte', 'centro-oeste', 'nordeste', 'sul'];
 
+const CAPITAL_STAGE_BACKGROUNDS: Partial<Record<CapitalId, string>> = {
+  'sao-paulo': saoPauloStageBg,
+  'rio-de-janeiro': rioStageBg,
+  'belo-horizonte': beloHorizonteStageBg,
+  vitoria: vitoriaStageBg,
+};
+
+const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
+  'sao-paulo': caosMetropoleBoss,
+  'rio-de-janeiro': sombraBaiaBoss,
+  'belo-horizonte': colossoCurralBoss,
+  vitoria: sentinelaManguezalBoss,
+};
+
 interface CapitalPlayableStageProps {
+  mission: CapitalMission;
   completed: boolean;
   onComplete: (result: CapitalMissionResult) => void;
 }
@@ -45,9 +68,9 @@ function shuffleQuestions(items: CapitalSpecialQuestion[]): CapitalSpecialQuesti
   return copy;
 }
 
-export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableStageProps) {
+export function CapitalPlayableStage({ mission, completed, onComplete }: CapitalPlayableStageProps) {
   const [guardian, setGuardian] = useState<RegionId>('sudeste');
-  const [engine, setEngine] = useState(() => new CapitalStageEngine('sudeste'));
+  const [engine, setEngine] = useState(() => new CapitalStageEngine('sudeste', mission.id));
   const [view, setView] = useState<CapitalStageView>(() => engine.view());
   const [phase, setPhase] = useState<Phase>('intro');
   const [specialQuestion, setSpecialQuestion] = useState<CapitalSpecialQuestion | null>(null);
@@ -66,6 +89,9 @@ export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableS
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const stageDefinition = getCapitalStageDefinition(mission.id);
+  const backgroundImage = CAPITAL_STAGE_BACKGROUNDS[mission.id] ?? saoPauloStageBg;
+  const bossImage = CAPITAL_STAGE_BOSS_IMAGES[mission.id] ?? caosMetropoleBoss;
 
   useEffect(() => {
     const node = viewportRef.current;
@@ -89,7 +115,7 @@ export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableS
   );
 
   function reset(nextGuardian = guardian) {
-    const fresh = new CapitalStageEngine(nextGuardian);
+    const fresh = new CapitalStageEngine(nextGuardian, mission.id);
     setGuardian(nextGuardian);
     setEngine(fresh);
     setView(fresh.view());
@@ -147,7 +173,9 @@ export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableS
   }
 
   function drawSpecialQuestion(): CapitalSpecialQuestion {
-    const bank = CAPITAL_SPECIAL_QUESTIONS['sao-paulo'];
+    const bank = CAPITAL_SPECIAL_QUESTIONS[mission.id].length > 0
+      ? CAPITAL_SPECIAL_QUESTIONS[mission.id]
+      : CAPITAL_SPECIAL_QUESTIONS['sao-paulo'];
     if (questionDeckRef.current.length === 0) {
       const withoutImmediateRepeat = bank.filter((item) => item.id !== lastQuestionIdRef.current);
       questionDeckRef.current = shuffleQuestions(withoutImmediateRepeat.length > 0 ? withoutImmediateRepeat : bank);
@@ -195,13 +223,13 @@ export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableS
     if (phase !== 'victory' || victorySavedRef.current) return;
     victorySavedRef.current = true;
     onComplete({
-      capital: 'sao-paulo',
-      route: 'sudeste',
+      capital: mission.id,
+      route: mission.route,
       score: engine.currentScore,
       stars,
       completed: true,
     });
-  }, [engine, onComplete, phase, stars]);
+  }, [engine, mission.id, mission.route, onComplete, phase, stars]);
 
   function answer(index: number) {
     if (!specialQuestion) return;
@@ -222,7 +250,7 @@ export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableS
     <section
       className="capital-play-root"
       style={{
-        '--capital-stage-bg': `url(${saoPauloStageBg})`,
+        '--capital-stage-bg': `url(${backgroundImage})`,
         '--region-color': character.themeColor,
       } as CSSProperties}
     >
@@ -234,7 +262,7 @@ export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableS
             <div className="capital-play-ground" style={{ width: CAPITAL_STAGE_W }} />
             <div className="capital-play-finish" style={{ left: CAPITAL_STAGE_W - 250 }}>
               <strong>Marco final</strong>
-              <span>Restaurar a metropole</span>
+              <span>{stageDefinition.finishLabel}</span>
             </div>
 
             {view.objectives.map((objective) => (
@@ -290,7 +318,7 @@ export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableS
               >
                 <span className="capital-boss-core" />
                 <span className="capital-boss-ring" />
-                <img className="capital-boss-image" src={caosMetropoleBoss} alt="" aria-hidden />
+                <img className="capital-boss-image" src={bossImage} alt="" aria-hidden />
                 <strong>{view.boss.name}</strong>
               </div>
             )}
@@ -360,14 +388,14 @@ export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableS
 
         {view.bossGate && (
           <div className="capital-stage-hint">
-            Colete os 3 marcos e derrote os problemas urbanos para liberar o chefe.
+            {stageDefinition.gateHint}
           </div>
         )}
       </div>
 
       <div className="capital-play-hud">
         <div className="capital-hud-bars">
-          <span className="capital-hud-name">{character.name} em Sao Paulo</span>
+          <span className="capital-hud-name">{character.name} em {stageDefinition.city}</span>
           <div className="stage-bar stage-bar-health">
             <span style={{ width: `${hpRatio * 100}%` }} />
             <small>♥ {Math.max(0, Math.round(view.hp))}</small>
@@ -427,9 +455,9 @@ export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableS
         <div className="stage-overlay">
           <div className="stage-overlay-card capital-intro-card">
             <span className="eyebrow">{completed ? 'Rejogar capital' : 'Nova campanha jogavel'}</span>
-            <h2>Sao Paulo: Corrida da Metropole</h2>
+            <h2>{stageDefinition.introTitle}</h2>
             <p className="stage-overlay-objective">
-              Colete marcos geograficos, enfrente problemas urbanos e use conhecimento para derrotar o Caos da Metropole.
+              {stageDefinition.introObjective}
             </p>
             <div className="capital-guardian-select" aria-label="Escolha seu guardiao">
               {GUARDIAN_ORDER.map((id) => (
@@ -475,11 +503,11 @@ export function CapitalPlayableStage({ completed, onComplete }: CapitalPlayableS
         <div className="stage-overlay stage-overlay-victory">
           <div className="stage-overlay-card">
             <span className="eyebrow">Capital restaurada</span>
-            <h2>Sao Paulo concluida</h2>
+            <h2>{stageDefinition.victoryTitle}</h2>
             <div className="stage-stars" aria-label={`${stars} de 3 estrelas`}>
               {[1, 2, 3].map((n) => <span className={n <= stars ? 'star on' : 'star'} key={n}>★</span>)}
             </div>
-            <p>Voce conectou mobilidade, drenagem, ilhas de calor e areas verdes em uma unica leitura geografica da cidade.</p>
+            <p>{stageDefinition.victoryBody}</p>
             <div className="stage-result-score">
               <strong>{view.score}</strong>
               <span>pontos</span>

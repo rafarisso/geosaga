@@ -1,6 +1,7 @@
 import { useState, type CSSProperties } from 'react';
 import capitalsSudesteBg from '../assets/backgrounds/capitals-sudeste-cinematic-bg.png';
 import { CapitalPlayableStage } from '../components/game/CapitalPlayableStage';
+import { PLAYABLE_CAPITAL_IDS } from '../components/game/capitalStageEngine';
 import { CAPITAL_MISSIONS } from '../data/capitalChallenges';
 import type { CapitalId, CapitalMissionResult, GameProgress } from '../data/types';
 
@@ -10,12 +11,18 @@ interface CapitalChallengeScreenProps {
   onCompleteMission: (result: CapitalMissionResult) => void;
 }
 
-const PLAYABLE_CAPITAL: CapitalId = 'sao-paulo';
+const DEFAULT_CAPITAL: CapitalId = PLAYABLE_CAPITAL_IDS[0] ?? 'sao-paulo';
+const PLAYABLE_CAPITALS = new Set<CapitalId>(PLAYABLE_CAPITAL_IDS);
+
+function isPlayableCapital(id: CapitalId): boolean {
+  return PLAYABLE_CAPITALS.has(id);
+}
 
 export function CapitalChallengeScreen({ progress, onBack, onCompleteMission }: CapitalChallengeScreenProps) {
-  const [selectedId, setSelectedId] = useState<CapitalId>(PLAYABLE_CAPITAL);
+  const [selectedId, setSelectedId] = useState<CapitalId>(DEFAULT_CAPITAL);
   const selected = CAPITAL_MISSIONS.find((mission) => mission.id === selectedId) ?? CAPITAL_MISSIONS[0];
-  const completedSaoPaulo = progress.completedCapitals.includes(PLAYABLE_CAPITAL);
+  const selectedCompleted = progress.completedCapitals.includes(selected.id);
+  const completedPlayableCount = PLAYABLE_CAPITAL_IDS.filter((id) => progress.completedCapitals.includes(id)).length;
 
   return (
     <main
@@ -30,15 +37,15 @@ export function CapitalChallengeScreen({ progress, onBack, onCompleteMission }: 
           <p>Agora a rota e jogavel: escolha um guardiao, atravesse a cidade, derrote problemas urbanos e use geografia como poder.</p>
         </div>
         <div className="capital-route-score">
-          <span>Modelo</span>
-          <strong>{completedSaoPaulo ? '1/4' : '0/4'}</strong>
+          <span>Jogaveis</span>
+          <strong>{completedPlayableCount}/{PLAYABLE_CAPITAL_IDS.length}</strong>
         </div>
       </header>
 
       <section className="capital-route-map" aria-label="Rota das capitais">
         {CAPITAL_MISSIONS.map((mission, index) => {
           const done = progress.completedCapitals.includes(mission.id);
-          const playable = mission.id === PLAYABLE_CAPITAL;
+          const playable = isPlayableCapital(mission.id);
           return (
             <button
               className={`capital-route-stop ${mission.id === selected.id ? 'active' : ''} ${done ? 'done' : ''} ${!playable ? 'planned' : ''}`}
@@ -54,9 +61,11 @@ export function CapitalChallengeScreen({ progress, onBack, onCompleteMission }: 
         })}
       </section>
 
-      {selected.id === PLAYABLE_CAPITAL ? (
+      {isPlayableCapital(selected.id) ? (
         <CapitalPlayableStage
-          completed={completedSaoPaulo}
+          key={selected.id}
+          mission={selected}
+          completed={selectedCompleted}
           onComplete={onCompleteMission}
         />
       ) : (
@@ -70,7 +79,7 @@ export function CapitalChallengeScreen({ progress, onBack, onCompleteMission }: 
           <div className="capital-planned-card">
             <strong>Proxima fase jogavel</strong>
             <span>
-              Esta capital vai seguir o modelo de Sao Paulo: cenario gerado em imagem, guardioes jogaveis,
+              Esta capital vai seguir o modelo jogavel da campanha: cenario gerado em imagem, guardioes jogaveis,
               inimigos proprios, boss urbano e quiz apenas como golpe especial.
             </span>
           </div>

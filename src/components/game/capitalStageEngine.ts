@@ -1,5 +1,5 @@
 import { CHARACTERS } from '../../data/characters';
-import type { AnimationState, RegionId } from '../../data/types';
+import type { AnimationState, CapitalId, CapitalRouteId, RegionId } from '../../data/types';
 import type { InputState } from '../../hooks/useKeyboardControls';
 
 export const CAPITAL_VIEW_W = 960;
@@ -29,6 +29,54 @@ type EnemyKind = 'traffic' | 'smog' | 'flood' | 'heat';
 type PickupKind = 'geo' | 'heal' | 'boost';
 type ParticleKind = 'damage' | 'spark' | 'text';
 export type CapitalStepOutcome = 'playing' | 'requestSpecial' | 'victory' | 'defeat';
+
+export const PLAYABLE_CAPITAL_IDS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria'];
+
+export interface CapitalEnemyDefinition {
+  id: string;
+  kind: EnemyKind;
+  name: string;
+  concept: string;
+  baseX: number;
+  feetY: number;
+  hp: number;
+  damage: number;
+  phase: number;
+  attackTimer: number;
+}
+
+export interface CapitalObjectiveDefinition {
+  id: string;
+  label: string;
+  concept: string;
+  x: number;
+  y: number;
+}
+
+export interface CapitalBossDefinition {
+  name: string;
+  hp: number;
+  damage: number;
+  attackTimer: number;
+  spawnText: string;
+  pressureText: string;
+  victoryText: string;
+}
+
+export interface CapitalStageDefinition {
+  capital: CapitalId;
+  route: CapitalRouteId;
+  city: string;
+  introTitle: string;
+  introObjective: string;
+  finishLabel: string;
+  gateHint: string;
+  victoryTitle: string;
+  victoryBody: string;
+  boss: CapitalBossDefinition;
+  enemies: CapitalEnemyDefinition[];
+  objectives: CapitalObjectiveDefinition[];
+}
 
 interface GuardianBoost {
   label: string;
@@ -236,112 +284,346 @@ export interface CapitalStageView {
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
-function createEnemies(): CapitalEnemyWorld[] {
-  return [
-    {
-      id: 'sp-traffic',
-      kind: 'traffic',
-      name: 'Engarrafamento Vivo',
-      concept: 'Mobilidade urbana',
-      baseX: 620,
-      x: 620,
-      feetY: CAPITAL_GROUND_Y,
-      hp: 92,
-      maxHp: 92,
-      damage: 12,
-      phase: 0.2,
+export const CAPITAL_STAGE_DEFINITIONS: Partial<Record<CapitalId, CapitalStageDefinition>> = {
+  'sao-paulo': {
+    capital: 'sao-paulo',
+    route: 'sudeste',
+    city: 'Sao Paulo',
+    introTitle: 'Sao Paulo: Corrida da Metropole',
+    introObjective:
+      'Colete marcos geograficos, enfrente problemas urbanos e use conhecimento para derrotar o Caos da Metropole.',
+    finishLabel: 'Restaurar a metropole',
+    gateHint: 'Colete os 3 marcos e derrote os problemas urbanos para liberar o chefe.',
+    victoryTitle: 'Sao Paulo concluida',
+    victoryBody:
+      'Voce conectou mobilidade, drenagem, ilhas de calor e areas verdes em uma unica leitura geografica da cidade.',
+    boss: {
+      name: 'Caos da Metropole',
+      hp: 420,
+      damage: 17,
+      attackTimer: 1.4,
+      spawnText: 'Chefe urbano liberado!',
+      pressureText: 'Modo pressao!',
+      victoryText: 'Sao Paulo restaurada!',
+    },
+    enemies: [
+      {
+        id: 'sp-traffic',
+        kind: 'traffic',
+        name: 'Engarrafamento Vivo',
+        concept: 'Mobilidade urbana',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 92,
+        damage: 12,
+        phase: 0.2,
+        attackTimer: 1.2,
+      },
+      {
+        id: 'sp-smog',
+        kind: 'smog',
+        name: 'Drone de Smog',
+        concept: 'Poluicao atmosferica',
+        baseX: 1160,
+        feetY: CAPITAL_GROUND_Y - 70,
+        hp: 82,
+        damage: 10,
+        phase: 1.4,
+        attackTimer: 1.6,
+      },
+      {
+        id: 'sp-flood',
+        kind: 'flood',
+        name: 'Alagamento Relampago',
+        concept: 'Drenagem urbana',
+        baseX: 1680,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 104,
+        damage: 14,
+        phase: 2.2,
+        attackTimer: 1,
+      },
+      {
+        id: 'sp-heat',
+        kind: 'heat',
+        name: 'Ilha de Calor',
+        concept: 'Microclima urbano',
+        baseX: 2240,
+        feetY: CAPITAL_GROUND_Y - 28,
+        hp: 118,
+        damage: 13,
+        phase: 3.1,
+        attackTimer: 1.7,
+      },
+    ],
+    objectives: [
+      { id: 'metro', label: 'Metro integrado', concept: 'Rede urbana', x: 430, y: 338 },
+      { id: 'drenagem', label: 'Canal recuperado', concept: 'Rios urbanos', x: 1460, y: 342 },
+      { id: 'corredor-verde', label: 'Corredor verde', concept: 'Mata Atlantica', x: 2420, y: 330 },
+    ],
+  },
+  'belo-horizonte': {
+    capital: 'belo-horizonte',
+    route: 'sudeste',
+    city: 'Belo Horizonte',
+    introTitle: 'Belo Horizonte: Colosso do Curral',
+    introObjective:
+      'Atravesse a cidade planejada, recupere Pampulha, Serra do Curral e eixos urbanos para derrotar o Colosso do Curral.',
+    finishLabel: 'Restaurar o horizonte das serras',
+    gateHint: 'Colete os 3 marcos e derrote os impactos de drenagem, expansao urbana e microclima para liberar o chefe.',
+    victoryTitle: 'Belo Horizonte concluida',
+    victoryBody:
+      'Voce conectou cidade planejada, Serra do Curral, Pampulha, drenagem urbana e crescimento metropolitano em uma leitura geografica completa.',
+    boss: {
+      name: 'Colosso do Curral',
+      hp: 455,
+      damage: 18,
       attackTimer: 1.2,
-      alive: true,
-      hitFlash: 0,
-      shake: 0,
-      slowed: 0,
+      spawnText: 'O Colosso do Curral despertou!',
+      pressureText: 'Serra em pressao!',
+      victoryText: 'Belo Horizonte restaurada!',
     },
-    {
-      id: 'sp-smog',
-      kind: 'smog',
-      name: 'Drone de Smog',
-      concept: 'Poluicao atmosferica',
-      baseX: 1160,
-      x: 1160,
-      feetY: CAPITAL_GROUND_Y - 70,
-      hp: 82,
-      maxHp: 82,
-      damage: 10,
-      phase: 1.4,
-      attackTimer: 1.6,
-      alive: true,
-      hitFlash: 0,
-      shake: 0,
-      slowed: 0,
+    enemies: [
+      {
+        id: 'bh-grid',
+        kind: 'traffic',
+        name: 'Grade Travada',
+        concept: 'Cidade planejada',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 100,
+        damage: 13,
+        phase: 0.35,
+        attackTimer: 1.12,
+      },
+      {
+        id: 'bh-dust',
+        kind: 'smog',
+        name: 'Nuvem da Serra',
+        concept: 'Qualidade do ar',
+        baseX: 1170,
+        feetY: CAPITAL_GROUND_Y - 78,
+        hp: 90,
+        damage: 11,
+        phase: 1.45,
+        attackTimer: 1.32,
+      },
+      {
+        id: 'bh-arrudas',
+        kind: 'flood',
+        name: 'Arrudas Revolto',
+        concept: 'Drenagem urbana',
+        baseX: 1690,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 112,
+        damage: 14,
+        phase: 2.15,
+        attackTimer: 0.98,
+      },
+      {
+        id: 'bh-concrete',
+        kind: 'heat',
+        name: 'Ilha de Concreto',
+        concept: 'Microclima urbano',
+        baseX: 2280,
+        feetY: CAPITAL_GROUND_Y - 28,
+        hp: 124,
+        damage: 14,
+        phase: 3.05,
+        attackTimer: 1.38,
+      },
+    ],
+    objectives: [
+      { id: 'pampulha', label: 'Pampulha', concept: 'Lagoa e patrimonio', x: 430, y: 338 },
+      { id: 'serra-curral', label: 'Serra do Curral', concept: 'Relevo e paisagem', x: 1460, y: 336 },
+      { id: 'cidade-planejada', label: 'Eixo planejado', concept: 'Malha urbana', x: 2420, y: 330 },
+    ],
+  },
+  'rio-de-janeiro': {
+    capital: 'rio-de-janeiro',
+    route: 'sudeste',
+    city: 'Rio de Janeiro',
+    introTitle: 'Rio de Janeiro: Sombra da Baia',
+    introObjective:
+      'Suba a encosta, atravesse praia e baia, recupere marcos da paisagem carioca e derrote a Sombra da Baia.',
+    finishLabel: 'Restaurar a cidade costeira',
+    gateHint: 'Colete os 3 marcos e derrote os impactos da encosta, da baia e da orla para liberar o chefe.',
+    victoryTitle: 'Rio de Janeiro concluido',
+    victoryBody:
+      'Voce conectou relevo de morros, Mata Atlantica, zona costeira e Baia de Guanabara numa leitura geografica completa.',
+    boss: {
+      name: 'Sombra da Baia',
+      hp: 440,
+      damage: 18,
+      attackTimer: 1.25,
+      spawnText: 'A Sombra da Baia surgiu!',
+      pressureText: 'Mar revolto!',
+      victoryText: 'Rio de Janeiro restaurado!',
     },
-    {
-      id: 'sp-flood',
-      kind: 'flood',
-      name: 'Alagamento Relampago',
-      concept: 'Drenagem urbana',
-      baseX: 1680,
-      x: 1680,
-      feetY: CAPITAL_GROUND_Y,
-      hp: 104,
-      maxHp: 104,
-      damage: 14,
-      phase: 2.2,
-      attackTimer: 1,
-      alive: true,
-      hitFlash: 0,
-      shake: 0,
-      slowed: 0,
+    enemies: [
+      {
+        id: 'rj-slope',
+        kind: 'traffic',
+        name: 'Morro Instavel',
+        concept: 'Ocupacao de encostas',
+        baseX: 610,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 98,
+        damage: 13,
+        phase: 0.4,
+        attackTimer: 1.1,
+      },
+      {
+        id: 'rj-bay',
+        kind: 'smog',
+        name: 'Nuvem da Baia',
+        concept: 'Baia de Guanabara',
+        baseX: 1180,
+        feetY: CAPITAL_GROUND_Y - 76,
+        hp: 88,
+        damage: 11,
+        phase: 1.5,
+        attackTimer: 1.35,
+      },
+      {
+        id: 'rj-coast',
+        kind: 'flood',
+        name: 'Correnteza da Orla',
+        concept: 'Zona costeira',
+        baseX: 1700,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 108,
+        damage: 14,
+        phase: 2.1,
+        attackTimer: 0.95,
+      },
+      {
+        id: 'rj-heat',
+        kind: 'heat',
+        name: 'Calor Carioca',
+        concept: 'Microclima urbano',
+        baseX: 2260,
+        feetY: CAPITAL_GROUND_Y - 28,
+        hp: 120,
+        damage: 14,
+        phase: 3.2,
+        attackTimer: 1.45,
+      },
+    ],
+    objectives: [
+      { id: 'guanabara', label: 'Baia de Guanabara', concept: 'Baia e estuario', x: 420, y: 338 },
+      { id: 'mata-atlantica-rj', label: 'Mata Atlantica', concept: 'Encostas verdes', x: 1450, y: 336 },
+      { id: 'zona-costeira', label: 'Zona costeira', concept: 'Praia e cidade', x: 2420, y: 330 },
+    ],
+  },
+  vitoria: {
+    capital: 'vitoria',
+    route: 'sudeste',
+    city: 'Vitoria',
+    introTitle: 'Vitoria: Sentinela do Manguezal',
+    introObjective:
+      'Atravesse a capital-ilha, recupere porto, pontes e manguezais urbanos para derrotar a Sentinela do Manguezal.',
+    finishLabel: 'Restaurar a capital-ilha',
+    gateHint: 'Colete os 3 marcos e derrote os impactos de porto, manguezal e urbanizacao costeira para liberar o chefe.',
+    victoryTitle: 'Vitoria concluida',
+    victoryBody:
+      'Voce conectou ilha, baia, pontes, porto, manguezal e relevo costeiro em uma leitura geografica completa do Espirito Santo.',
+    boss: {
+      name: 'Sentinela do Manguezal',
+      hp: 450,
+      damage: 18,
+      attackTimer: 1.18,
+      spawnText: 'A Sentinela do Manguezal emergiu!',
+      pressureText: 'Mar em pressao!',
+      victoryText: 'Vitoria restaurada!',
     },
-    {
-      id: 'sp-heat',
-      kind: 'heat',
-      name: 'Ilha de Calor',
-      concept: 'Microclima urbano',
-      baseX: 2240,
-      x: 2240,
-      feetY: CAPITAL_GROUND_Y - 28,
-      hp: 118,
-      maxHp: 118,
-      damage: 13,
-      phase: 3.1,
-      attackTimer: 1.7,
-      alive: true,
-      hitFlash: 0,
-      shake: 0,
-      slowed: 0,
-    },
-  ];
+    enemies: [
+      {
+        id: 'es-port-flow',
+        kind: 'traffic',
+        name: 'Fluxo Portuario',
+        concept: 'Logistica portuaria',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 102,
+        damage: 13,
+        phase: 0.3,
+        attackTimer: 1.08,
+      },
+      {
+        id: 'es-salt-haze',
+        kind: 'smog',
+        name: 'Neblina Salina',
+        concept: 'Clima costeiro',
+        baseX: 1180,
+        feetY: CAPITAL_GROUND_Y - 76,
+        hp: 92,
+        damage: 11,
+        phase: 1.55,
+        attackTimer: 1.3,
+      },
+      {
+        id: 'es-mangrove-channel',
+        kind: 'flood',
+        name: 'Canal do Mangue',
+        concept: 'Manguezal urbano',
+        baseX: 1700,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 114,
+        damage: 14,
+        phase: 2.05,
+        attackTimer: 0.95,
+      },
+      {
+        id: 'es-coastal-heat',
+        kind: 'heat',
+        name: 'Ilha de Concreto',
+        concept: 'Urbanizacao costeira',
+        baseX: 2280,
+        feetY: CAPITAL_GROUND_Y - 28,
+        hp: 126,
+        damage: 14,
+        phase: 3.25,
+        attackTimer: 1.34,
+      },
+    ],
+    objectives: [
+      { id: 'porto-vitoria', label: 'Porto de Vitoria', concept: 'Fluxos economicos', x: 430, y: 338 },
+      { id: 'manguezal-urbano', label: 'Manguezal urbano', concept: 'Ecossistema costeiro', x: 1460, y: 336 },
+      { id: 'capital-ilha', label: 'Capital-ilha', concept: 'Pontes e baia', x: 2420, y: 330 },
+    ],
+  },
+};
+
+export function getCapitalStageDefinition(capital: CapitalId): CapitalStageDefinition {
+  const definition = CAPITAL_STAGE_DEFINITIONS[capital];
+  if (!definition) throw new Error(`Capital stage is not playable yet: ${capital}`);
+  return definition;
 }
 
-function createObjectives(): CapitalObjectiveWorld[] {
-  return [
-    { id: 'metro', label: 'Metro integrado', concept: 'Rede urbana', x: 430, y: 338, collected: false },
-    { id: 'drenagem', label: 'Canal recuperado', concept: 'Rios urbanos', x: 1460, y: 342, collected: false },
-    { id: 'corredor-verde', label: 'Corredor verde', concept: 'Mata Atlantica', x: 2420, y: 330, collected: false },
-  ];
+function createEnemies(definitions: CapitalEnemyDefinition[]): CapitalEnemyWorld[] {
+  return definitions.map((enemy) => ({
+    ...enemy,
+    x: enemy.baseX,
+    maxHp: enemy.hp,
+    alive: true,
+    hitFlash: 0,
+    shake: 0,
+    slowed: 0,
+  }));
 }
 
+function createObjectives(definitions: CapitalObjectiveDefinition[]): CapitalObjectiveWorld[] {
+  return definitions.map((objective) => ({ ...objective, collected: false }));
+}
 export class CapitalStageEngine {
   private player: PlayerWorld;
-  private enemies = createEnemies();
-  private objectives = createObjectives();
+  private enemies: CapitalEnemyWorld[];
+  private objectives: CapitalObjectiveWorld[];
   private projectiles: ProjectileWorld[] = [];
   private pickups: PickupWorld[] = [];
   private particles: ParticleWorld[] = [];
-  private boss: CapitalBossWorld = {
-    name: 'Caos da Metropole',
-    x: CAPITAL_STAGE_W - 360,
-    feetY: CAPITAL_GROUND_Y - 4,
-    hp: 420,
-    maxHp: 420,
-    damage: 17,
-    active: false,
-    hitFlash: 0,
-    shake: 0,
-    attackTimer: 1.4,
-    windup: 0,
-    enraged: false,
-  };
+  private boss: CapitalBossWorld;
   private camera = 0;
   private score = 0;
   private combo = 0;
@@ -358,8 +640,26 @@ export class CapitalStageEngine {
   private readonly jump: number;
   private readonly attack: number;
   private readonly special: number;
+  private readonly definition: CapitalStageDefinition;
 
-  constructor(guardian: RegionId) {
+  constructor(guardian: RegionId, capital: CapitalId = 'sao-paulo') {
+    this.definition = getCapitalStageDefinition(capital);
+    this.enemies = createEnemies(this.definition.enemies);
+    this.objectives = createObjectives(this.definition.objectives);
+    this.boss = {
+      name: this.definition.boss.name,
+      x: CAPITAL_STAGE_W - 360,
+      feetY: CAPITAL_GROUND_Y - 4,
+      hp: this.definition.boss.hp,
+      maxHp: this.definition.boss.hp,
+      damage: this.definition.boss.damage,
+      active: false,
+      hitFlash: 0,
+      shake: 0,
+      attackTimer: this.definition.boss.attackTimer,
+      windup: 0,
+      enraged: false,
+    };
     const character = CHARACTERS[guardian];
     this.guardian = guardian;
     this.boost = CAPITAL_GUARDIAN_BOOSTS[guardian];
@@ -529,7 +829,7 @@ export class CapitalStageEngine {
     this.boss.active = true;
     this.boss.x = Math.max(this.player.x + 520, CAPITAL_STAGE_W - 460);
     this.boss.feetY = CAPITAL_GROUND_Y - 4;
-    this.spawnText(this.player.x + 380, 170, 'Chefe urbano liberado!', '#ffe26b');
+    this.spawnText(this.player.x + 380, 170, this.definition.boss.spawnText, '#ffe26b');
   }
 
   private damageBoss(amount: number): void {
@@ -541,13 +841,13 @@ export class CapitalStageEngine {
     this.spawnSpark(boss.x + CAPITAL_BOSS_W / 2, boss.feetY - CAPITAL_BOSS_H / 2, '#ffe26b');
     if (!boss.enraged && boss.hp <= boss.maxHp * 0.45) {
       boss.enraged = true;
-      this.spawnText(boss.x + 20, boss.feetY - CAPITAL_BOSS_H - 18, 'Modo pressao!', '#ff8a59');
+      this.spawnText(boss.x + 20, boss.feetY - CAPITAL_BOSS_H - 18, this.definition.boss.pressureText, '#ff8a59');
     }
     if (boss.hp <= 0) {
       boss.hp = 0;
       boss.active = false;
       this.score += 650;
-      this.spawnText(boss.x, boss.feetY - CAPITAL_BOSS_H, 'Sao Paulo restaurada!', '#7bf0a1');
+      this.spawnText(boss.x, boss.feetY - CAPITAL_BOSS_H, this.definition.boss.victoryText, '#7bf0a1');
     }
   }
 
