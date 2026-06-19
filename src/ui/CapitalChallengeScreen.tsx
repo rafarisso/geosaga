@@ -1,6 +1,7 @@
 import { useState, type CSSProperties } from 'react';
 import capitalsSudesteBg from '../assets/backgrounds/capitals-sudeste-cinematic-bg.png';
 import centroOesteCinematicBg from '../assets/backgrounds/centro-oeste-cinematic-bg.png';
+import nordesteCinematicBg from '../assets/backgrounds/nordeste-cinematic-bg.png';
 import sulCinematicBg from '../assets/backgrounds/sul-cinematic-bg.png';
 import { CapitalPlayableStage } from '../components/game/CapitalPlayableStage';
 import { PLAYABLE_CAPITAL_IDS } from '../components/game/capitalStageEngine';
@@ -20,6 +21,7 @@ const CAPITAL_ROUTE_BACKGROUNDS: Record<CapitalRouteId, string> = {
   sudeste: capitalsSudesteBg,
   sul: sulCinematicBg,
   'centro-oeste': centroOesteCinematicBg,
+  nordeste: nordesteCinematicBg,
 };
 
 function isPlayableCapital(id: CapitalId): boolean {
@@ -40,7 +42,8 @@ function missionRouteForCapital(capital: CapitalId | null | undefined): CapitalR
 
 export function CapitalChallengeScreen({ progress, initialCapitalId, onBack, onCompleteMission }: CapitalChallengeScreenProps) {
   const requestedRoute = missionRouteForCapital(initialCapitalId);
-  const initialRoute = requestedRoute ?? (progress.completedCapitalRoutes.includes('sudeste') ? 'sul' : DEFAULT_ROUTE);
+  const firstOpenRoute = CAPITAL_ROUTE_IDS.find((route) => !progress.completedCapitalRoutes.includes(route)) ?? DEFAULT_ROUTE;
+  const initialRoute = requestedRoute ?? firstOpenRoute;
   const initialMissionId = requestedRoute ? initialCapitalId! : firstMissionIdForRoute(initialRoute);
   const [selectedRouteId, setSelectedRouteId] = useState<CapitalRouteId>(initialRoute);
   const [selectedId, setSelectedId] = useState<CapitalId>(initialMissionId);

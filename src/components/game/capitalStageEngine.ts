@@ -25,12 +25,12 @@ const CROUCH_HITBOX_H = 54;
 const SPECIAL_COST = 100;
 const COMBO_WINDOW = 3.2;
 
-type EnemyKind = 'traffic' | 'smog' | 'flood' | 'heat';
+type EnemyKind = 'traffic' | 'smog' | 'flood' | 'heat' | 'soundcar' | 'soundwave' | 'slope' | 'tide';
 type PickupKind = 'geo' | 'heal' | 'boost';
 type ParticleKind = 'damage' | 'spark' | 'text';
 export type CapitalStepOutcome = 'playing' | 'requestSpecial' | 'victory' | 'defeat';
 
-export const PLAYABLE_CAPITAL_IDS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia'];
+export const PLAYABLE_CAPITAL_IDS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia', 'goiania', 'cuiaba', 'campo-grande', 'salvador'];
 
 export interface CapitalEnemyDefinition {
   id: string;
@@ -900,7 +900,315 @@ export const CAPITAL_STAGE_DEFINITIONS: Partial<Record<CapitalId, CapitalStageDe
       { id: 'lago-paranoa', label: 'Lago Paranoá', concept: 'Recursos hídricos', x: 1460, y: 336 },
       { id: 'cerrado-df', label: 'Cerrado', concept: 'Bioma do Planalto', x: 2420, y: 330 },
     ],
-  },};
+  },
+  goiania: {
+    capital: 'goiania',
+    route: 'centro-oeste',
+    city: 'Goiânia',
+    introTitle: 'Goiânia: Regente do Cerrado Urbano',
+    introObjective:
+      'Atravesse a Praca Civica, os parques e os eixos do Cerrado urbano para conter o Regente do Cerrado Urbano.',
+    finishLabel: 'Restaurar os parques e eixos',
+    gateHint: 'Colete os 3 marcos e derrote avenida travada, bruma seca, corrego canalizado e ilha de calor verde para liberar o chefe.',
+    victoryTitle: 'Goiânia concluida',
+    victoryBody:
+      'Voce conectou cidade planejada, Art Deco, parques urbanos, Cerrado, drenagem e clima seco em uma leitura geografica de Goiania.',
+    boss: {
+      name: 'Regente do Cerrado Urbano',
+      hp: 455,
+      damage: 18,
+      attackTimer: 1.12,
+      spawnText: 'O Regente do Cerrado Urbano tomou os eixos da capital goiana!',
+      pressureText: 'Calor e poeira em compasso acelerado!',
+      victoryText: 'Goiania restaurada!',
+    },
+    enemies: [
+      {
+        id: 'go-avenida-travada',
+        kind: 'traffic',
+        name: 'Avenida Travada',
+        concept: 'Mobilidade planejada',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 104,
+        damage: 13,
+        phase: 0.28,
+        attackTimer: 1.03,
+      },
+      {
+        id: 'go-bruma-seca',
+        kind: 'smog',
+        name: 'Bruma Seca',
+        concept: 'Clima do Cerrado',
+        baseX: 1180,
+        feetY: CAPITAL_GROUND_Y - 78,
+        hp: 92,
+        damage: 12,
+        phase: 1.42,
+        attackTimer: 1.18,
+      },
+      {
+        id: 'go-corrego-canalizado',
+        kind: 'flood',
+        name: 'Corrego Canalizado',
+        concept: 'Drenagem urbana',
+        baseX: 1700,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 116,
+        damage: 14,
+        phase: 2.12,
+        attackTimer: 0.94,
+      },
+      {
+        id: 'go-ilha-calor-verde',
+        kind: 'heat',
+        name: 'Ilha de Calor Verde',
+        concept: 'Microclima urbano',
+        baseX: 2280,
+        feetY: CAPITAL_GROUND_Y - 28,
+        hp: 126,
+        damage: 14,
+        phase: 3.08,
+        attackTimer: 1.28,
+      },
+    ],
+    objectives: [
+      { id: 'praca-civica', label: 'Praca Civica', concept: 'Cidade planejada', x: 430, y: 338 },
+      { id: 'parques-goiania', label: 'Parques urbanos', concept: 'Conforto termico', x: 1460, y: 336 },
+      { id: 'ipes-cerrado', label: 'Ipes do Cerrado', concept: 'Paisagem urbana', x: 2420, y: 330 },
+    ],
+  },
+  cuiaba: {
+    capital: 'cuiaba',
+    route: 'centro-oeste',
+    city: 'Cuiabá',
+    introTitle: 'Cuiabá: Forno do Pantanal',
+    introObjective:
+      'Atravesse o Rio Cuiaba, a rota da Chapada e o portal do Pantanal para esfriar o Forno do Pantanal.',
+    finishLabel: 'Restaurar rio, chapada e Pantanal',
+    gateHint: 'Colete os 3 marcos e derrote calor, assoreamento, fumaca seca e ponte travada para liberar o chefe.',
+    victoryTitle: 'Cuiabá concluida',
+    victoryBody:
+      'Voce conectou calor urbano, Rio Cuiaba, Cerrado, Chapada dos Guimaraes, Pantanal e fluxos regionais em uma leitura geografica de Cuiaba.',
+    boss: {
+      name: 'Forno do Pantanal',
+      hp: 470,
+      damage: 19,
+      attackTimer: 1.08,
+      spawnText: 'O Forno do Pantanal elevou a temperatura da planicie!',
+      pressureText: 'Calor extremo em expansao!',
+      victoryText: 'Cuiaba restaurada!',
+    },
+    enemies: [
+      {
+        id: 'mt-bafo-calor',
+        kind: 'heat',
+        name: 'Bafo de Calor',
+        concept: 'Conforto termico',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y - 28,
+        hp: 108,
+        damage: 14,
+        phase: 0.34,
+        attackTimer: 1.0,
+      },
+      {
+        id: 'mt-rio-assoreado',
+        kind: 'flood',
+        name: 'Rio Assoreado',
+        concept: 'Hidrografia urbana',
+        baseX: 1180,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 118,
+        damage: 14,
+        phase: 1.3,
+        attackTimer: 1.16,
+      },
+      {
+        id: 'mt-fumaca-cerrado',
+        kind: 'smog',
+        name: 'Fumaca do Cerrado',
+        concept: 'Estacao seca',
+        baseX: 1700,
+        feetY: CAPITAL_GROUND_Y - 82,
+        hp: 96,
+        damage: 12,
+        phase: 2.04,
+        attackTimer: 0.92,
+      },
+      {
+        id: 'mt-ponte-travada',
+        kind: 'traffic',
+        name: 'Ponte Travada',
+        concept: 'Fluxo metropolitano',
+        baseX: 2280,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 128,
+        damage: 15,
+        phase: 3.12,
+        attackTimer: 1.26,
+      },
+    ],
+    objectives: [
+      { id: 'rio-cuiaba', label: 'Rio Cuiaba', concept: 'Bacia e cidade', x: 430, y: 338 },
+      { id: 'chapada-guimaraes', label: 'Chapada dos Guimaraes', concept: 'Relevo e turismo', x: 1460, y: 336 },
+      { id: 'portal-pantanal', label: 'Portal do Pantanal', concept: 'Transicao ambiental', x: 2420, y: 330 },
+    ],
+  },
+  'campo-grande': {
+    capital: 'campo-grande',
+    route: 'centro-oeste',
+    city: 'Campo Grande',
+    introTitle: 'Campo Grande: Comitiva da Planicie',
+    introObjective:
+      'Atravesse parques, avenidas e o portal do Pantanal para deter a Comitiva da Planicie.',
+    finishLabel: 'Restaurar a planicie urbana',
+    gateHint: 'Colete os 3 marcos e derrote rotatoria travada, corrego sufocado, poeira da planicie e calor de avenida para liberar o chefe.',
+    victoryTitle: 'Campo Grande concluida',
+    victoryBody:
+      'Voce conectou parques, Cerrado, solo vermelho, drenagem, mobilidade e Pantanal sul-mato-grossense em uma leitura geografica de Campo Grande.',
+    boss: {
+      name: 'Comitiva da Planicie',
+      hp: 455,
+      damage: 18,
+      attackTimer: 1.14,
+      spawnText: 'A Comitiva da Planicie bloqueou os caminhos para o Pantanal!',
+      pressureText: 'Poeira e calor fechando a rota!',
+      victoryText: 'Campo Grande restaurada!',
+    },
+    enemies: [
+      {
+        id: 'ms-rotatoria-travada',
+        kind: 'traffic',
+        name: 'Rotatoria Travada',
+        concept: 'Mobilidade urbana',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 106,
+        damage: 13,
+        phase: 0.24,
+        attackTimer: 1.05,
+      },
+      {
+        id: 'ms-corrego-sufocado',
+        kind: 'flood',
+        name: 'Corrego Sufocado',
+        concept: 'Drenagem e margens',
+        baseX: 1180,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 118,
+        damage: 14,
+        phase: 1.38,
+        attackTimer: 1.14,
+      },
+      {
+        id: 'ms-poeira-planicie',
+        kind: 'smog',
+        name: 'Poeira da Planicie',
+        concept: 'Solo vermelho',
+        baseX: 1700,
+        feetY: CAPITAL_GROUND_Y - 82,
+        hp: 94,
+        damage: 12,
+        phase: 2.08,
+        attackTimer: 0.96,
+      },
+      {
+        id: 'ms-calor-avenida',
+        kind: 'heat',
+        name: 'Calor da Avenida',
+        concept: 'Ilha de calor',
+        baseX: 2280,
+        feetY: CAPITAL_GROUND_Y - 28,
+        hp: 126,
+        damage: 14,
+        phase: 3.18,
+        attackTimer: 1.3,
+      },
+    ],
+    objectives: [
+      { id: 'parque-nacoes', label: 'Parque das Nacoes', concept: 'Area verde urbana', x: 430, y: 338 },
+      { id: 'cerrado-ms', label: 'Cerrado sul-mato-grossense', concept: 'Bioma e transicao', x: 1460, y: 336 },
+      { id: 'portal-pantanal-ms', label: 'Portal do Pantanal', concept: 'Paisagem regional', x: 2420, y: 330 },
+    ],
+  },  salvador: {
+    capital: 'salvador',
+    route: 'nordeste',
+    city: 'Salvador',
+    introTitle: 'Salvador: Trovejante do Paredao',
+    introObjective:
+      'Atravesse Cidade Alta, Cidade Baixa e Baia de Todos-os-Santos, colete marcos e desligue o Trovejante do Paredao.',
+    finishLabel: 'Restaurar a baia e as ladeiras',
+    gateHint: 'Colete os 3 marcos e derrote som excessivo, ladeira travada, mare da baia e calor urbano para liberar o chefe.',
+    victoryTitle: 'Salvador concluida',
+    victoryBody:
+      'Voce conectou baia, relevo, porto, centro historico, clima litoraneo e convivencia urbana em uma leitura geografica de Salvador.',
+    boss: {
+      name: 'Trovejante do Paredao',
+      hp: 470,
+      damage: 19,
+      attackTimer: 1.05,
+      spawnText: 'O Trovejante do Paredao abriu o grave na baia!',
+      pressureText: 'Grave em pressao maxima!',
+      victoryText: 'Salvador restaurada!',
+    },
+    enemies: [
+      {
+        id: 'ba-soundcar',
+        kind: 'soundcar',
+        name: 'Carro-Paredao',
+        concept: 'Poluicao sonora',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 108,
+        damage: 13,
+        phase: 0.26,
+        attackTimer: 0.95,
+      },
+      {
+        id: 'ba-soundwave',
+        kind: 'soundwave',
+        name: 'Onda de Grave',
+        concept: 'Uso do espaco publico',
+        baseX: 1160,
+        feetY: CAPITAL_GROUND_Y - 82,
+        hp: 94,
+        damage: 12,
+        phase: 1.35,
+        attackTimer: 1.08,
+      },
+      {
+        id: 'ba-tide',
+        kind: 'tide',
+        name: 'Mare da Baia',
+        concept: 'Zona costeira',
+        baseX: 1700,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 118,
+        damage: 14,
+        phase: 2.05,
+        attackTimer: 0.92,
+      },
+      {
+        id: 'ba-slope',
+        kind: 'slope',
+        name: 'Ladeira Travada',
+        concept: 'Relevo urbano',
+        baseX: 2260,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 128,
+        damage: 14,
+        phase: 3.16,
+        attackTimer: 1.28,
+      },
+    ],
+    objectives: [
+      { id: 'baia-todos-santos', label: 'Baia de Todos-os-Santos', concept: 'Baia e porto', x: 430, y: 338 },
+      { id: 'cidade-alta-baixa', label: 'Cidade Alta/Baixa', concept: 'Relevo urbano', x: 1460, y: 336 },
+      { id: 'elevador-lacerda', label: 'Elevador Lacerda', concept: 'Mobilidade vertical', x: 2420, y: 330 },
+    ],
+  },
+};
 
 export function getCapitalStageDefinition(capital: CapitalId): CapitalStageDefinition {
   const definition = CAPITAL_STAGE_DEFINITIONS[capital];
@@ -1233,27 +1541,27 @@ export class CapitalStageEngine {
       const slowFactor = enemy.slowed > 0 ? 0.48 : 1;
       const dx = pcx - enemy.x;
 
-      if (enemy.kind === 'traffic') {
+      if (enemy.kind === 'traffic' || enemy.kind === 'soundcar' || enemy.kind === 'slope') {
         if (Math.abs(dx) < 560) enemy.baseX += Math.sign(dx) * 78 * slowFactor * dt;
         enemy.feetY = CAPITAL_GROUND_Y;
-      } else if (enemy.kind === 'flood') {
+      } else if (enemy.kind === 'flood' || enemy.kind === 'tide') {
         enemy.baseX += Math.sin(enemy.phase * 1.8) * 32 * slowFactor * dt;
         enemy.feetY = CAPITAL_GROUND_Y - Math.max(0, Math.sin(enemy.phase * 3.2)) * 44;
       } else {
-        enemy.feetY = CAPITAL_GROUND_Y - (enemy.kind === 'smog' ? 88 : 40) - Math.sin(enemy.phase * 1.8) * 16;
+        enemy.feetY = CAPITAL_GROUND_Y - (enemy.kind === 'smog' || enemy.kind === 'soundwave' ? 88 : 40) - Math.sin(enemy.phase * 1.8) * 16;
       }
-      enemy.x = enemy.baseX + Math.sin(enemy.phase) * (enemy.kind === 'traffic' ? 8 : 18);
+      enemy.x = enemy.baseX + Math.sin(enemy.phase) * (enemy.kind === 'traffic' || enemy.kind === 'soundcar' || enemy.kind === 'slope' ? 8 : 18);
 
       enemy.attackTimer -= dt * slowFactor;
       if (enemy.attackTimer <= 0 && Math.abs(dx) < 620) {
-        enemy.attackTimer = enemy.kind === 'heat' ? 1.15 : enemy.kind === 'smog' ? 1.35 : 1.75;
+        enemy.attackTimer = enemy.kind === 'heat' || enemy.kind === 'soundwave' ? 1.15 : enemy.kind === 'smog' ? 1.35 : enemy.kind === 'soundcar' ? 1.05 : 1.75;
         if (enemy.kind !== 'traffic') {
           this.fireEnemy(
             enemy.x + CAPITAL_ENEMY_SIZE / 2,
             enemy.feetY - CAPITAL_ENEMY_SIZE / 2,
             enemy.damage,
-            enemy.kind === 'heat' ? '#ff8a59' : enemy.kind === 'flood' ? '#53c8ff' : '#a7adb5',
-            enemy.kind === 'flood',
+            enemy.kind === 'heat' ? '#ff8a59' : enemy.kind === 'flood' || enemy.kind === 'tide' ? '#53c8ff' : enemy.kind === 'soundcar' || enemy.kind === 'soundwave' ? '#ffe26b' : '#a7adb5',
+            enemy.kind === 'flood' || enemy.kind === 'tide',
           );
         }
       }

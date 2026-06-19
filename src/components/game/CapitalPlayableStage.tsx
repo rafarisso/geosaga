@@ -4,7 +4,11 @@ import caosMetropoleBoss from '../../assets/bosses/capital-sao-paulo-boss-caos-m
 import neblinaAraucariasBoss from '../../assets/bosses/capital-curitiba-boss-neblina-araucarias.png';
 import tormentaIlhaBoss from '../../assets/bosses/capital-florianopolis-boss-tormenta-ilha.png';
 import crepusculoGuaibaBoss from '../../assets/bosses/capital-porto-alegre-boss-crepusculo-guaiba.png';
+import comitivaPlanicieBoss from '../../assets/bosses/capital-campo-grande-boss-comitiva-planicie.png';
+import fornoPantanalBoss from '../../assets/bosses/capital-cuiaba-boss-forno-pantanal.png';
 import eixoCerradoBoss from '../../assets/bosses/capital-brasilia-boss-eixo-cerrado.png';
+import regenteCerradoUrbanoBoss from '../../assets/bosses/capital-goiania-boss-regente-cerrado-urbano.png';
+import trovejanteParedaoBoss from '../../assets/bosses/capital-salvador-boss-trovejante-paredao.png';
 import sombraBaiaBoss from '../../assets/bosses/capital-rio-boss-sombra-baia.png';
 import sentinelaManguezalBoss from '../../assets/bosses/capital-vitoria-boss-sentinela-manguezal.png';
 import beloHorizonteStageBg from '../../assets/backgrounds/capital-belo-horizonte-stage-bg.png';
@@ -12,9 +16,33 @@ import curitibaStageBg from '../../assets/backgrounds/capital-curitiba-stage-bg.
 import florianopolisStageBg from '../../assets/backgrounds/capital-florianopolis-stage-bg.png';
 import portoAlegreStageBg from '../../assets/backgrounds/capital-porto-alegre-stage-bg.png';
 import brasiliaStageBg from '../../assets/backgrounds/capital-brasilia-stage-bg.png';
+import campoGrandeStageBg from '../../assets/backgrounds/capital-campo-grande-stage-bg.png';
+import cuiabaStageBg from '../../assets/backgrounds/capital-cuiaba-stage-bg.png';
+import goianiaStageBg from '../../assets/backgrounds/capital-goiania-stage-bg.png';
 import rioStageBg from '../../assets/backgrounds/capital-rio-de-janeiro-stage-bg.png';
+import salvadorStageBg from '../../assets/backgrounds/capital-salvador-stage-bg.png';
 import saoPauloStageBg from '../../assets/backgrounds/capital-sao-paulo-stage-bg.png';
 import vitoriaStageBg from '../../assets/backgrounds/capital-vitoria-stage-bg.png';
+import brasiliaAsfaltoEnemy from '../../assets/enemies/capital-brasilia-enemy-asfalto-vermelho.png';
+import brasiliaCanalEnemy from '../../assets/enemies/capital-brasilia-enemy-canal-paranoa.png';
+import brasiliaEixoEnemy from '../../assets/enemies/capital-brasilia-enemy-eixo-congestionado.png';
+import brasiliaPoeiraEnemy from '../../assets/enemies/capital-brasilia-enemy-poeira-cerrado.png';
+import campoGrandeCalorEnemy from '../../assets/enemies/capital-campo-grande-enemy-calor-avenida.png';
+import campoGrandeCorregoEnemy from '../../assets/enemies/capital-campo-grande-enemy-corrego-sufocado.png';
+import campoGrandePoeiraEnemy from '../../assets/enemies/capital-campo-grande-enemy-poeira-planicie.png';
+import campoGrandeRotatoriaEnemy from '../../assets/enemies/capital-campo-grande-enemy-rotatoria-travada.png';
+import cuiabaBafoEnemy from '../../assets/enemies/capital-cuiaba-enemy-bafo-calor.png';
+import cuiabaFumacaEnemy from '../../assets/enemies/capital-cuiaba-enemy-fumaca-cerrado.png';
+import cuiabaPonteEnemy from '../../assets/enemies/capital-cuiaba-enemy-ponte-travada.png';
+import cuiabaRioEnemy from '../../assets/enemies/capital-cuiaba-enemy-rio-assoreado.png';
+import goianiaAvenidaEnemy from '../../assets/enemies/capital-goiania-enemy-avenida-travada.png';
+import goianiaBrumaEnemy from '../../assets/enemies/capital-goiania-enemy-bruma-seca.png';
+import goianiaCalorEnemy from '../../assets/enemies/capital-goiania-enemy-ilha-calor-verde.png';
+import goianiaCorregoEnemy from '../../assets/enemies/capital-goiania-enemy-corrego-canalizado.png';
+import carroParedaoEnemy from '../../assets/enemies/capital-salvador-enemy-carro-paredao.png';
+import ladeiraTravadaEnemy from '../../assets/enemies/capital-salvador-enemy-ladeira-travada.png';
+import mareBaiaEnemy from '../../assets/enemies/capital-salvador-enemy-mare-baia.png';
+import ondaGraveEnemy from '../../assets/enemies/capital-salvador-enemy-onda-grave.png';
 import { CHARACTERS } from '../../data/characters';
 import type { CapitalMission } from '../../data/capitalChallenges';
 import { CAPITAL_SPECIAL_QUESTIONS, type CapitalSpecialQuestion } from '../../data/capitalQuestions';
@@ -44,8 +72,21 @@ import {
 
 type Phase = 'intro' | 'playing' | 'quiz' | 'victory' | 'defeat';
 
+interface SpecialEffect {
+  id: number;
+  x: number;
+  y: number;
+  facing: 1 | -1;
+}
+
 const GUARDIAN_ORDER: RegionId[] = ['sudeste', 'norte', 'centro-oeste', 'nordeste', 'sul'];
 
+function defaultGuardianForRoute(route: CapitalMission['route']): RegionId {
+  if (route === 'sul') return 'sul';
+  if (route === 'centro-oeste') return 'centro-oeste';
+  if (route === 'nordeste') return 'nordeste';
+  return 'sudeste';
+}
 const CAPITAL_STAGE_BACKGROUNDS: Partial<Record<CapitalId, string>> = {
   'sao-paulo': saoPauloStageBg,
   'rio-de-janeiro': rioStageBg,
@@ -55,8 +96,33 @@ const CAPITAL_STAGE_BACKGROUNDS: Partial<Record<CapitalId, string>> = {
   florianopolis: florianopolisStageBg,
   'porto-alegre': portoAlegreStageBg,
   brasilia: brasiliaStageBg,
+  goiania: goianiaStageBg,
+  cuiaba: cuiabaStageBg,
+  'campo-grande': campoGrandeStageBg,
+  salvador: salvadorStageBg,
 };
-
+const CAPITAL_ENEMY_IMAGES: Partial<Record<string, string>> = {
+  'df-axis-flow': brasiliaEixoEnemy,
+  'df-dry-haze': brasiliaPoeiraEnemy,
+  'df-paranoa-water': brasiliaCanalEnemy,
+  'df-heat-island': brasiliaAsfaltoEnemy,
+  'go-avenida-travada': goianiaAvenidaEnemy,
+  'go-bruma-seca': goianiaBrumaEnemy,
+  'go-corrego-canalizado': goianiaCorregoEnemy,
+  'go-ilha-calor-verde': goianiaCalorEnemy,
+  'mt-bafo-calor': cuiabaBafoEnemy,
+  'mt-rio-assoreado': cuiabaRioEnemy,
+  'mt-fumaca-cerrado': cuiabaFumacaEnemy,
+  'mt-ponte-travada': cuiabaPonteEnemy,
+  'ms-rotatoria-travada': campoGrandeRotatoriaEnemy,
+  'ms-corrego-sufocado': campoGrandeCorregoEnemy,
+  'ms-poeira-planicie': campoGrandePoeiraEnemy,
+  'ms-calor-avenida': campoGrandeCalorEnemy,
+  'ba-soundcar': carroParedaoEnemy,
+  'ba-soundwave': ondaGraveEnemy,
+  'ba-tide': mareBaiaEnemy,
+  'ba-slope': ladeiraTravadaEnemy,
+};
 const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
   'sao-paulo': caosMetropoleBoss,
   'rio-de-janeiro': sombraBaiaBoss,
@@ -66,6 +132,10 @@ const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
   florianopolis: tormentaIlhaBoss,
   'porto-alegre': crepusculoGuaibaBoss,
   brasilia: eixoCerradoBoss,
+  goiania: regenteCerradoUrbanoBoss,
+  cuiaba: fornoPantanalBoss,
+  'campo-grande': comitivaPlanicieBoss,
+  salvador: trovejanteParedaoBoss,
 };
 
 interface CapitalPlayableStageProps {
@@ -86,14 +156,17 @@ function shuffleQuestions(items: CapitalSpecialQuestion[]): CapitalSpecialQuesti
 }
 
 export function CapitalPlayableStage({ mission, completed, onComplete }: CapitalPlayableStageProps) {
-  const [guardian, setGuardian] = useState<RegionId>('sudeste');
-  const [engine, setEngine] = useState(() => new CapitalStageEngine('sudeste', mission.id));
+  const defaultGuardian = defaultGuardianForRoute(mission.route);
+  const [guardian, setGuardian] = useState<RegionId>(defaultGuardian);
+  const [engine, setEngine] = useState(() => new CapitalStageEngine(defaultGuardian, mission.id));
   const [view, setView] = useState<CapitalStageView>(() => engine.view());
   const [phase, setPhase] = useState<Phase>('intro');
   const [specialQuestion, setSpecialQuestion] = useState<CapitalSpecialQuestion | null>(null);
+  const [specialEffect, setSpecialEffect] = useState<SpecialEffect | null>(null);
   const [stars, setStars] = useState(0);
   const [muted, setMutedState] = useState(isMuted());
   const renderElapsedRef = useRef(0);
+  const specialEffectIdRef = useRef(0);
   const victorySavedRef = useRef(false);
   const sfxRef = useRef({ hp: view.hp, enemies: view.enemies.length, objectives: view.objectiveCount, boss: false });
   const questionDeckRef = useRef<CapitalSpecialQuestion[]>([]);
@@ -124,6 +197,12 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
     return () => observer.disconnect();
   }, []);
 
+
+  useEffect(() => {
+    if (!specialEffect) return undefined;
+    const timeout = window.setTimeout(() => setSpecialEffect(null), 720);
+    return () => window.clearTimeout(timeout);
+  }, [specialEffect]);
   const worldStyle = useMemo(
     () => {
       const touchLift = isTouch && !needsRotate ? Math.min(128, Math.max(0, (1 - scale) * 390)) : 0;
@@ -132,13 +211,14 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
     [isTouch, needsRotate, scale],
   );
 
-  function reset(nextGuardian = guardian) {
+  function reset(nextGuardian = defaultGuardian) {
     const fresh = new CapitalStageEngine(nextGuardian, mission.id);
     setGuardian(nextGuardian);
     setEngine(fresh);
     setView(fresh.view());
     setPhase('intro');
     setSpecialQuestion(null);
+    setSpecialEffect(null);
     setStars(0);
     victorySavedRef.current = false;
     sfxRef.current = { hp: fresh.view().hp, enemies: fresh.view().enemies.length, objectives: 0, boss: false };
@@ -257,7 +337,19 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
     const correct = index === specialQuestion.answerIndex;
     engine.applySpecial(correct);
     playSound(correct ? 'special' : 'hurt');
-    setView(engine.view());
+    const nextView = engine.view();
+    if (correct) {
+      specialEffectIdRef.current += 1;
+      setSpecialEffect({
+        id: specialEffectIdRef.current,
+        x: nextView.px + CAPITAL_PLAYER_W / 2 + nextView.pfacing * 42,
+        y: nextView.pfeet - CAPITAL_PLAYER_H * 0.54,
+        facing: nextView.pfacing,
+      });
+    } else {
+      setSpecialEffect(null);
+    }
+    setView(nextView);
     setSpecialQuestion(null);
     setPhase('playing');
   }
@@ -275,7 +367,7 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
         '--region-color': character.themeColor,
       } as CSSProperties}
     >
-      <div className="capital-play-viewport" ref={viewportRef}>
+      <div className={`capital-play-viewport ${specialEffect ? 'special-active' : ''}`} ref={viewportRef}>
         <div className="capital-play-scaler" style={worldStyle}>
           <div className="capital-play-world" style={{ transform: `translateX(${-view.camera}px)` }}>
             <div className="capital-play-backdrop" style={{ width: CAPITAL_STAGE_W }} />
@@ -301,9 +393,10 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
             {view.enemies.map((enemy) => {
               const ratio = Math.max(0, enemy.hp / enemy.maxHp);
               const offset = enemy.shake > 0 ? Math.sin(enemy.shake * 70) * 5 : 0;
+              const enemyImage = CAPITAL_ENEMY_IMAGES[enemy.id];
               return (
                 <div
-                  className={`capital-enemy capital-enemy-${enemy.kind} ${enemy.slowed ? 'slowed' : ''}`}
+                  className={`capital-enemy capital-enemy-${enemy.kind} ${enemyImage ? 'has-image' : ''} ${enemy.slowed ? 'slowed' : ''}`}
                   key={enemy.id}
                   style={{
                     left: enemy.x,
@@ -316,6 +409,7 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
                   role="img"
                   aria-label={enemy.name}
                 >
+                  {enemyImage ? <img className="capital-enemy-image" src={enemyImage} alt="" aria-hidden /> : null}
                   <span className="capital-enemy-core" />
                   <span className="capital-enemy-face" />
                   <div className="capital-enemy-health"><span style={{ width: `${ratio * 100}%` }} /></div>
@@ -367,6 +461,19 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
               guardFlash={view.guardFlash}
             />
 
+            {specialEffect && (
+              <div
+                className={`capital-special-burst ${specialEffect.facing === -1 ? 'facing-left' : 'facing-right'}`}
+                key={specialEffect.id}
+                style={{ left: specialEffect.x, top: specialEffect.y }}
+              >
+                <span className="capital-special-burst-beam" />
+                <span className="capital-special-burst-core" />
+                <span className="capital-special-burst-ring ring-one" />
+                <span className="capital-special-burst-ring ring-two" />
+              </div>
+            )}
+
             {view.projectiles.map((projectile) => (
               <span
                 className={`capital-projectile capital-projectile-${projectile.team}`}
@@ -399,6 +506,8 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
             ))}
           </div>
         </div>
+
+        {specialEffect && <div className="capital-special-screen-flash" key={`flash-${specialEffect.id}`} />}
 
         {view.combo >= 2 && (
           <div className="capital-combo" role="status">

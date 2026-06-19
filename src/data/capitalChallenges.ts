@@ -6,7 +6,7 @@ export interface CapitalMission {
   city: string;
   state: string;
   title: string;
-  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia';
+  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia' | 'goiania' | 'cuiaba' | 'campo-grande' | 'salvador';
   summary: string;
   challenge: string;
   visualHook: string;
@@ -20,7 +20,7 @@ export interface CapitalMission {
   };
 }
 
-export const CAPITAL_ROUTE_IDS: CapitalRouteId[] = ['sudeste', 'sul', 'centro-oeste'];
+export const CAPITAL_ROUTE_IDS: CapitalRouteId[] = ['sudeste', 'sul', 'centro-oeste', 'nordeste'];
 
 export const CAPITAL_ROUTE_META: Record<CapitalRouteId, { name: string; label: string; description: string }> = {
   sudeste: {
@@ -35,14 +35,20 @@ export const CAPITAL_ROUTE_META: Record<CapitalRouteId, { name: string; label: s
   },
   'centro-oeste': {
     name: 'Centro-Oeste',
-    label: 'Cerrado e capital federal',
-    description: 'Brasília inicia a rota do Centro-Oeste, conectando planejamento urbano, Cerrado e Lago Paranoá.',
+    label: 'Cerrado, Pantanal e capital federal',
+    description: 'Brasilia, Goiania, Cuiaba e Campo Grande fecham a rota do Centro-Oeste em fases jogaveis pelo Cerrado, Pantanal e Planalto Central.',
+  },
+  nordeste: {
+    name: 'Nordeste',
+    label: 'Litoral, historia e sertao',
+    description: 'Salvador abre a rota do Nordeste com ladeira, baia, som urbano e geografia costeira.',
   },
 };
 
 export const CAPITAL_ROUTE_ID: CapitalRouteId = 'sudeste';
 export const SUL_CAPITAL_ROUTE_ID: CapitalRouteId = 'sul';
 export const CENTRO_OESTE_CAPITAL_ROUTE_ID: CapitalRouteId = 'centro-oeste';
+export const NORDESTE_CAPITAL_ROUTE_ID: CapitalRouteId = 'nordeste';
 
 export const CAPITAL_MISSIONS: CapitalMission[] = [
   {
@@ -195,6 +201,81 @@ export const CAPITAL_MISSIONS: CapitalMission[] = [
       choices: ['Distrito Federal', 'Goiás', 'Mato Grosso', 'Minas Gerais'],
       answerIndex: 0,
       explanation: 'Brasília é a capital federal do Brasil e fica no Distrito Federal, no Centro-Oeste.',
+    },
+  },
+  {
+    id: 'goiania',
+    route: CENTRO_OESTE_CAPITAL_ROUTE_ID,
+    city: 'Goiânia',
+    state: 'GO',
+    title: 'Art Deco, Parques e Cerrado',
+    scenery: 'goiania',
+    summary: 'A capital goiana mistura avenidas planejadas, edificios Art Deco, parques urbanos, ipes e clima seco do Cerrado.',
+    challenge: 'Atravesse eixos urbanos, ilhas de calor, corregos canalizados e poeira seca sem perder os marcos da cidade planejada.',
+    visualHook: 'Praca Civica, predios Art Deco, ipes amarelos, parques verdes, solo vermelho e ceu amplo do Cerrado.',
+    collectLabel: 'marcos do Cerrado urbano',
+    clues: ['Praca Civica', 'Parques urbanos', 'Ipes e Cerrado'],
+    question: {
+      statement: 'Goiania e a capital de qual estado?',
+      choices: ['Goias', 'Mato Grosso', 'Distrito Federal', 'Tocantins'],
+      answerIndex: 0,
+      explanation: 'Goiania e a capital de Goias e uma das principais cidades planejadas do Centro-Oeste.',
+    },
+  },
+  {
+    id: 'cuiaba',
+    route: CENTRO_OESTE_CAPITAL_ROUTE_ID,
+    city: 'Cuiabá',
+    state: 'MT',
+    title: 'Calor, Rio e Portal do Pantanal',
+    scenery: 'cuiaba',
+    summary: 'Cuiaba combina calor intenso, Rio Cuiaba, conexao com a Chapada dos Guimaraes e porta de entrada para o Pantanal.',
+    challenge: 'Controle calor, fumaça seca, assoreamento e travas urbanas conectando rio, chapada e Pantanal.',
+    visualHook: 'Rua quente ao entardecer, Rio Cuiaba, morros da Chapada ao fundo, vegetacao de transicao e atmosfera de calor realista.',
+    collectLabel: 'marcos do Pantanal mato-grossense',
+    clues: ['Rio Cuiaba', 'Chapada dos Guimaraes', 'Portal do Pantanal'],
+    question: {
+      statement: 'Cuiaba e capital de qual estado brasileiro?',
+      choices: ['Mato Grosso do Sul', 'Goias', 'Mato Grosso', 'Rondonia'],
+      answerIndex: 2,
+      explanation: 'Cuiaba e a capital de Mato Grosso e tem forte relacao geografica com Cerrado, Pantanal e Chapada dos Guimaraes.',
+    },
+  },
+  {
+    id: 'campo-grande',
+    route: CENTRO_OESTE_CAPITAL_ROUTE_ID,
+    city: 'Campo Grande',
+    state: 'MS',
+    title: 'Parques, Planicie e Pantanal',
+    scenery: 'campo-grande',
+    summary: 'Campo Grande conecta avenidas largas, parques, lagos urbanos, solo vermelho e a funcao de portal do Pantanal sul-mato-grossense.',
+    challenge: 'Equilibre rotatorias, poeira, calor de avenida e corregos pressionados enquanto coleta os marcos verdes da capital.',
+    visualHook: 'Parques com lago, buritis, ipes, avenidas amplas, solo vermelho e paisagem de transicao para o Pantanal.',
+    collectLabel: 'marcos da planicie',
+    clues: ['Parque das Nacoes', 'Cerrado', 'Portal do Pantanal'],
+    question: {
+      statement: 'Campo Grande e a capital de qual estado?',
+      choices: ['Mato Grosso', 'Parana', 'Mato Grosso do Sul', 'Goias'],
+      answerIndex: 2,
+      explanation: 'Campo Grande e a capital de Mato Grosso do Sul e um importante centro urbano proximo ao Pantanal.',
+    },
+  },  {
+    id: 'salvador',
+    route: NORDESTE_CAPITAL_ROUTE_ID,
+    city: 'Salvador',
+    state: 'BA',
+    title: 'Baia, Ladeira e Paredao',
+    scenery: 'salvador',
+    summary: 'Cidade alta, cidade baixa, Baia de Todos-os-Santos, ladeiras historicas e energia urbana formam uma fase costeira intensa.',
+    challenge: 'Atravesse ladeiras, avenidas e a orla desviando das ondas de som, do transito e dos impactos sobre a baia.',
+    visualHook: 'Pelourinho sem caricatura, Elevador Lacerda, baia dourada, carros com paredao de som e ruas inclinadas.',
+    collectLabel: 'marcos da baia',
+    clues: ['Baia de Todos-os-Santos', 'Cidade Alta e Cidade Baixa', 'Elevador Lacerda'],
+    question: {
+      statement: 'Salvador e capital de qual estado brasileiro?',
+      choices: ['Bahia', 'Sergipe', 'Pernambuco', 'Alagoas'],
+      answerIndex: 0,
+      explanation: 'Salvador e a capital da Bahia e uma das capitais mais antigas e importantes do litoral brasileiro.',
     },
   },
 ];

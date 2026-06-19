@@ -23,6 +23,10 @@ const CAPITAL_LINK_IDS: CapitalId[] = [
   'florianopolis',
   'porto-alegre',
   'brasilia',
+  'goiania',
+  'cuiaba',
+  'campo-grande',
+  'salvador',
 ];
 
 function isCapitalLinkId(value: string | null): value is CapitalId {

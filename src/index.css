@@ -4071,6 +4071,42 @@ button:focus-visible {
   box-shadow: 0 -12px 0 -8px #fff, 18px -12px 0 -8px #fff;
 }
 
+.capital-enemy-image {
+  position: absolute;
+  z-index: 1;
+  inset: -34%;
+  width: 168%;
+  height: 168%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.45));
+}
+
+.capital-enemy.has-image .capital-enemy-image {
+  transform: scaleX(-1);
+}
+
+.capital-enemy.has-image .capital-enemy-core,
+.capital-enemy.has-image .capital-enemy-face {
+  display: none;
+}
+
+.capital-enemy.has-image .capital-enemy-health,
+.capital-enemy.has-image strong,
+.capital-enemy.has-image small {
+  z-index: 2;
+}
+
+.capital-enemy-soundwave.has-image .capital-enemy-image {
+  animation: capital-sonic-pulse 0.8s ease-in-out infinite;
+}
+
+.capital-enemy-soundcar.has-image .capital-enemy-image,
+.capital-enemy-slope.has-image .capital-enemy-image {
+  inset: -28% -42% -24%;
+  width: 184%;
+  height: 152%;
+}
 .capital-enemy strong,
 .capital-enemy small {
   position: absolute;
@@ -4144,12 +4180,59 @@ button:focus-visible {
   box-shadow: 0 0 28px rgba(255, 122, 58, 0.75);
 }
 
+
+.capital-enemy-soundcar .capital-enemy-core {
+  border-radius: 18% 18% 30% 30%;
+  background:
+    radial-gradient(circle at 24% 68%, #05070a 0 9%, #ffe26b 10% 13%, transparent 14%),
+    radial-gradient(circle at 76% 68%, #05070a 0 9%, #ffe26b 10% 13%, transparent 14%),
+    radial-gradient(circle at 32% 34%, #111 0 11%, #ffe26b 12% 16%, transparent 17%),
+    radial-gradient(circle at 68% 34%, #111 0 11%, #ffe26b 12% 16%, transparent 17%),
+    linear-gradient(145deg, #2f3542, #0b1018 56%, #05070c);
+  box-shadow: 0 0 24px rgba(255, 226, 107, 0.45);
+}
+
+.capital-enemy-soundwave .capital-enemy-core {
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(circle, rgba(255, 226, 107, 0.95) 0 7%, rgba(255, 136, 65, 0.55) 8% 14%, transparent 15% 22%),
+    radial-gradient(circle, #fff3a1 0 13%, #ffbf47 30%, #4d1b2b 72%);
+  box-shadow: 0 0 34px rgba(255, 226, 107, 0.78);
+  animation: capital-sonic-pulse 0.75s ease-in-out infinite;
+}
+
+.capital-enemy-tide .capital-enemy-core {
+  border-radius: 46% 46% 36% 36%;
+  background:
+    radial-gradient(circle at 35% 20%, #e7ffff 0 8%, transparent 9%),
+    repeating-linear-gradient(165deg, rgba(255, 255, 255, 0.38) 0 7px, transparent 8px 18px),
+    linear-gradient(180deg, #7ce7ff, #116e9e 58%, #07364f);
+  animation: capital-wave 0.82s ease-in-out infinite;
+}
+
+.capital-enemy-slope .capital-enemy-core {
+  border-radius: 28% 18% 20% 32%;
+  clip-path: polygon(12% 82%, 82% 82%, 66% 16%, 30% 20%);
+  background:
+    linear-gradient(135deg, transparent 0 42%, rgba(255, 255, 255, 0.35) 43% 48%, transparent 49%),
+    linear-gradient(160deg, #c76a42, #663321 58%, #241314);
+  box-shadow: 0 0 22px rgba(255, 132, 72, 0.5);
+}
 .capital-enemy.slowed {
   filter: hue-rotate(155deg) saturate(1.2) drop-shadow(0 10px 12px rgba(0, 0, 0, 0.42));
 }
 
 @keyframes capital-wave {
   50% { transform: scaleY(0.88) translateY(5px); }
+}
+
+@keyframes capital-sonic-pulse {
+  50% { transform: scale(1.12); filter: brightness(1.18); }
+}
+
+@keyframes capital-sonic-pulse-flipped {
+  0%, 100% { transform: scaleX(-1); }
+  50% { transform: scaleX(-1) scale(1.12); filter: brightness(1.18); }
 }
 
 .capital-boss {
@@ -4262,6 +4345,113 @@ button:focus-visible {
   height: 2.6rem;
   border-radius: 50%;
   background: radial-gradient(circle, var(--spark-color), transparent 65%);
+}
+
+
+.capital-play-viewport.special-active {
+  animation: capital-special-shake 0.52s ease-out;
+}
+
+.capital-special-screen-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 22;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 58%, rgba(255, 244, 154, 0.56), transparent 28%),
+    radial-gradient(circle at 50% 50%, rgba(111, 238, 255, 0.34), transparent 42%);
+  mix-blend-mode: screen;
+  animation: capital-special-flash 0.68s ease-out forwards;
+}
+
+.capital-special-burst {
+  position: absolute;
+  z-index: 10;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.capital-special-burst.facing-left {
+  transform: scaleX(-1);
+}
+
+.capital-special-burst-core {
+  position: absolute;
+  left: -22px;
+  top: -22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #ffffff 0 14%, #fff3a1 18% 32%, rgba(79, 223, 255, 0.72) 52%, transparent 72%);
+  box-shadow: 0 0 30px rgba(255, 243, 161, 0.95), 0 0 52px rgba(79, 223, 255, 0.65);
+  animation: capital-special-core 0.68s ease-out forwards;
+}
+
+.capital-special-burst-beam {
+  position: absolute;
+  left: 0;
+  top: -19px;
+  width: 310px;
+  height: 38px;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.95), rgba(255, 226, 107, 0.86) 28%, rgba(84, 220, 255, 0.62) 68%, transparent),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0 12px, transparent 13px 28px);
+  filter: blur(0.2px) drop-shadow(0 0 18px rgba(255, 226, 107, 0.85));
+  transform-origin: left center;
+  animation: capital-special-beam 0.68s ease-out forwards;
+}
+
+.capital-special-burst-ring {
+  position: absolute;
+  left: -34px;
+  top: -34px;
+  width: 68px;
+  height: 68px;
+  border: 3px solid rgba(255, 243, 161, 0.8);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(255, 226, 107, 0.72);
+  animation: capital-special-ring 0.68s ease-out forwards;
+}
+
+.capital-special-burst-ring.ring-two {
+  border-color: rgba(79, 223, 255, 0.7);
+  animation-delay: 0.08s;
+}
+
+@keyframes capital-special-shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  18% { transform: translate3d(-6px, 3px, 0); }
+  36% { transform: translate3d(5px, -2px, 0); }
+  54% { transform: translate3d(-3px, 2px, 0); }
+  72% { transform: translate3d(2px, -1px, 0); }
+}
+
+@keyframes capital-special-flash {
+  0% { opacity: 0; }
+  18% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes capital-special-core {
+  0% { opacity: 0; transform: scale(0.45); }
+  24% { opacity: 1; transform: scale(1.22); }
+  100% { opacity: 0; transform: scale(0.72); }
+}
+
+@keyframes capital-special-beam {
+  0% { opacity: 0; transform: scaleX(0.08); }
+  20% { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1.16); }
+}
+
+@keyframes capital-special-ring {
+  0% { opacity: 0; transform: scale(0.5); }
+  30% { opacity: 0.9; }
+  100% { opacity: 0; transform: scale(2.4); }
 }
 
 .capital-play-hud {
