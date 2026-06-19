@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { GameDifficulty, QuizResult, RegionId } from '../data/types';
+import type { CapitalId, GameDifficulty, QuizResult, RegionId } from '../data/types';
 import { gameEvents, EVENTS } from '../game/events';
 import { useProgress } from '../hooks/useProgress';
 import { GameStage } from '../components/game/GameStage';
@@ -14,6 +14,31 @@ type Screen = 'start' | 'regions' | 'stage' | 'mastery' | 'capitals';
 const ALL_REGIONS: RegionId[] = ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'];
 
 const DIFFICULTY_KEY = 'geosaga:difficulty';
+const CAPITAL_LINK_IDS: CapitalId[] = [
+  'sao-paulo',
+  'rio-de-janeiro',
+  'belo-horizonte',
+  'vitoria',
+  'curitiba',
+  'florianopolis',
+  'porto-alegre',
+];
+
+function isCapitalLinkId(value: string | null): value is CapitalId {
+  return !!value && CAPITAL_LINK_IDS.includes(value as CapitalId);
+}
+
+function readInitialNavigation(): { screen: Screen; capital: CapitalId | null } {
+  if (typeof window === 'undefined') return { screen: 'start', capital: null };
+
+  const params = new URLSearchParams(window.location.search);
+  const capital = params.get('capital');
+  if (params.get('screen') === 'capitals' || capital) {
+    return { screen: 'capitals', capital: isCapitalLinkId(capital) ? capital : null };
+  }
+
+  return { screen: 'start', capital: null };
+}
 
 function loadDifficulty(): GameDifficulty {
   if (typeof localStorage === 'undefined') return 'normal';
@@ -22,7 +47,8 @@ function loadDifficulty(): GameDifficulty {
 }
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('start');
+  const [initialNavigation] = useState(readInitialNavigation);
+  const [screen, setScreen] = useState<Screen>(initialNavigation.screen);
   const [quizRegion, setQuizRegion] = useState<RegionId | null>(null);
   const [stageRegion, setStageRegion] = useState<RegionId | null>(null);
   const [pendingMastery, setPendingMastery] = useState(false);

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { REGIONS } from '../data/regions';
 import type { Question, QuizResult, RegionId } from '../data/types';
 import { fetchQuestions } from '../services/questionService';
+import { shuffleQuestionChoiceDeck } from '../utils/questionChoices';
 import { GuardianSprite } from './GuardianSprite';
 
 interface QuizPanelProps {
@@ -23,7 +24,7 @@ export function QuizPanel({ region, onClose }: QuizPanelProps) {
   useEffect(() => {
     let cancelled = false;
     fetchQuestions({ region })
-      .then((items) => { if (!cancelled) setQuestions(items); })
+      .then((items) => { if (!cancelled) setQuestions(shuffleQuestionChoiceDeck(items)); })
       .catch((reason: unknown) => {
         if (!cancelled) setError(reason instanceof Error ? reason.message : 'Erro ao carregar perguntas.');
       });

@@ -1,9 +1,10 @@
 import { useState, type CSSProperties } from 'react';
 import capitalsSudesteBg from '../assets/backgrounds/capitals-sudeste-cinematic-bg.png';
+import sulCinematicBg from '../assets/backgrounds/sul-cinematic-bg.png';
 import { CapitalPlayableStage } from '../components/game/CapitalPlayableStage';
 import { PLAYABLE_CAPITAL_IDS } from '../components/game/capitalStageEngine';
-import { CAPITAL_MISSIONS } from '../data/capitalChallenges';
-import type { CapitalId, CapitalMissionResult, GameProgress } from '../data/types';
+import { CAPITAL_MISSIONS, CAPITAL_ROUTE_IDS, CAPITAL_ROUTE_META } from '../data/capitalChallenges';
+import type { CapitalId, CapitalMissionResult, CapitalRouteId, GameProgress } from '../data/types';
 
 interface CapitalChallengeScreenProps {
   progress: GameProgress;
@@ -11,39 +12,82 @@ interface CapitalChallengeScreenProps {
   onCompleteMission: (result: CapitalMissionResult) => void;
 }
 
-const DEFAULT_CAPITAL: CapitalId = PLAYABLE_CAPITAL_IDS[0] ?? 'sao-paulo';
+const DEFAULT_ROUTE: CapitalRouteId = 'sudeste';
 const PLAYABLE_CAPITALS = new Set<CapitalId>(PLAYABLE_CAPITAL_IDS);
+const CAPITAL_ROUTE_BACKGROUNDS: Record<CapitalRouteId, string> = {
+  sudeste: capitalsSudesteBg,
+  sul: sulCinematicBg,
+};
 
 function isPlayableCapital(id: CapitalId): boolean {
   return PLAYABLE_CAPITALS.has(id);
 }
 
+function firstMissionIdForRoute(route: CapitalRouteId): CapitalId {
+  const mission =
+    CAPITAL_MISSIONS.find((item) => item.route === route && isPlayableCapital(item.id))
+    ?? CAPITAL_MISSIONS.find((item) => item.route === route)
+    ?? CAPITAL_MISSIONS[0]!;
+  return mission.id;
+}
+
 export function CapitalChallengeScreen({ progress, onBack, onCompleteMission }: CapitalChallengeScreenProps) {
-  const [selectedId, setSelectedId] = useState<CapitalId>(DEFAULT_CAPITAL);
-  const selected = CAPITAL_MISSIONS.find((mission) => mission.id === selectedId) ?? CAPITAL_MISSIONS[0];
+  const initialRoute = progress.completedCapitalRoutes.includes('sudeste') ? 'sul' : DEFAULT_ROUTE;
+  const [selectedRouteId, setSelectedRouteId] = useState<CapitalRouteId>(initialRoute);
+  const [selectedId, setSelectedId] = useState<CapitalId>(() => firstMissionIdForRoute(initialRoute));
+
+  const routeMissions = CAPITAL_MISSIONS.filter((mission) => mission.route === selectedRouteId);
+  const selected = routeMissions.find((mission) => mission.id === selectedId) ?? routeMissions[0] ?? CAPITAL_MISSIONS[0]!;
+  const routeMeta = CAPITAL_ROUTE_META[selectedRouteId];
+  const routePlayableIds = routeMissions.filter((mission) => isPlayableCapital(mission.id)).map((mission) => mission.id);
   const selectedCompleted = progress.completedCapitals.includes(selected.id);
-  const completedPlayableCount = PLAYABLE_CAPITAL_IDS.filter((id) => progress.completedCapitals.includes(id)).length;
+  const completedPlayableCount = routePlayableIds.filter((id) => progress.completedCapitals.includes(id)).length;
+
+  function chooseRoute(route: CapitalRouteId) {
+    setSelectedRouteId(route);
+    setSelectedId(firstMissionIdForRoute(route));
+  }
 
   return (
     <main
       className="capital-screen capital-screen-playable"
-      style={{ '--capitals-bg': `url(${capitalsSudesteBg})` } as CSSProperties}
+      style={{ '--capitals-bg': `url(${CAPITAL_ROUTE_BACKGROUNDS[selectedRouteId]})` } as CSSProperties}
     >
       <header className="capital-topbar">
         <button className="btn-ghost" onClick={onBack}>Voltar</button>
         <div>
-          <span className="eyebrow">Modo pos-jogo</span>
-          <h1>Campanha das Capitais: Sudeste</h1>
-          <p>Agora a rota e jogavel: escolha um guardiao, atravesse a cidade, derrote problemas urbanos e use geografia como poder.</p>
+          <span className="eyebrow">Modo pós-jogo</span>
+          <h1>Campanha das Capitais: {routeMeta.name}</h1>
+          <p>{routeMeta.description}</p>
         </div>
         <div className="capital-route-score">
-          <span>Jogaveis</span>
-          <strong>{completedPlayableCount}/{PLAYABLE_CAPITAL_IDS.length}</strong>
+          <span>Jogáveis</span>
+          <strong>{completedPlayableCount}/{routePlayableIds.length}</strong>
         </div>
       </header>
 
+      <section className="capital-region-tabs" aria-label="Escolha a região das capitais">
+        {CAPITAL_ROUTE_IDS.map((route) => {
+          const missions = CAPITAL_MISSIONS.filter((mission) => mission.route === route);
+          const playable = missions.filter((mission) => isPlayableCapital(mission.id));
+          const completed = playable.filter((mission) => progress.completedCapitals.includes(mission.id)).length;
+          return (
+            <button
+              className={route === selectedRouteId ? 'active' : ''}
+              key={route}
+              type="button"
+              onClick={() => chooseRoute(route)}
+            >
+              <strong>{CAPITAL_ROUTE_META[route].name}</strong>
+              <span>{CAPITAL_ROUTE_META[route].label}</span>
+              <small>{completed}/{playable.length} jogáveis</small>
+            </button>
+          );
+        })}
+      </section>
+
       <section className="capital-route-map" aria-label="Rota das capitais">
-        {CAPITAL_MISSIONS.map((mission, index) => {
+        {routeMissions.map((mission, index) => {
           const done = progress.completedCapitals.includes(mission.id);
           const playable = isPlayableCapital(mission.id);
           return (
@@ -55,7 +99,7 @@ export function CapitalChallengeScreen({ progress, onBack, onCompleteMission }: 
             >
               <span>{index + 1}</span>
               <strong>{mission.city}</strong>
-              <small>{done ? `${progress.capitalStars[mission.id] ?? 1} estrelas` : playable ? 'Fase jogavel' : 'Proxima entrega'}</small>
+              <small>{done ? `${progress.capitalStars[mission.id] ?? 1} estrelas` : playable ? 'Fase jogável' : 'Próxima entrega'}</small>
             </button>
           );
         })}
@@ -77,10 +121,10 @@ export function CapitalChallengeScreen({ progress, onBack, onCompleteMission }: 
             <p>{selected.summary}</p>
           </div>
           <div className="capital-planned-card">
-            <strong>Proxima fase jogavel</strong>
+            <strong>Próxima fase jogável</strong>
             <span>
-              Esta capital vai seguir o modelo jogavel da campanha: cenario gerado em imagem, guardioes jogaveis,
-              inimigos proprios, boss urbano e quiz apenas como golpe especial.
+              Esta capital vai seguir o modelo jogável da campanha: cenário gerado em imagem, guardiões jogáveis,
+              inimigos próprios, boss urbano e quiz apenas como golpe especial.
             </span>
           </div>
         </section>

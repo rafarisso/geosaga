@@ -1,5 +1,5 @@
 import { CAPITAL_MISSIONS } from '../data/capitalChallenges';
-import type { CapitalId, CapitalMissionResult, GameProgress, QuizResult, RegionId, StageResult } from '../data/types';
+import type { CapitalId, CapitalMissionResult, CapitalRouteId, GameProgress, QuizResult, RegionId, StageResult } from '../data/types';
 
 const STORAGE_KEY = 'geosaga-progress-v1';
 
@@ -20,13 +20,19 @@ export const EMPTY_PROGRESS: GameProgress = {
 };
 
 const ALL_REGIONS: RegionId[] = ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'];
+const ALL_CAPITALS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre'];
+const ALL_CAPITAL_ROUTES: CapitalRouteId[] = ['sudeste', 'sul'];
 
 function isRegionId(value: unknown): value is RegionId {
   return ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'].includes(String(value));
 }
 
 function isCapitalId(value: unknown): value is CapitalId {
-  return ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria'].includes(String(value));
+  return ALL_CAPITALS.includes(String(value) as CapitalId);
+}
+
+function isCapitalRouteId(value: unknown): value is CapitalRouteId {
+  return ALL_CAPITAL_ROUTES.includes(String(value) as CapitalRouteId);
 }
 
 export function loadProgress(): GameProgress {
@@ -43,7 +49,7 @@ export function loadProgress(): GameProgress {
     const completedCapitals = (parsed.completedCapitals ?? []).filter(isCapitalId);
     const capitalScores = parsed.capitalScores ?? {};
     const capitalStars = parsed.capitalStars ?? {};
-    const completedCapitalRoutes = (parsed.completedCapitalRoutes ?? []).filter((value) => value === 'sudeste');
+    const completedCapitalRoutes = (parsed.completedCapitalRoutes ?? []).filter(isCapitalRouteId);
     const totalScore =
       Object.values(bestScores).reduce((sum, score) => sum + (score ?? 0), 0) +
       Object.values(stageScores).reduce((sum, score) => sum + (score ?? 0), 0) +

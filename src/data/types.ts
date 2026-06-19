@@ -1,8 +1,15 @@
 export type RegionId = 'norte' | 'nordeste' | 'centro-oeste' | 'sudeste' | 'sul';
 
-export type CapitalRouteId = 'sudeste';
+export type CapitalRouteId = 'sudeste' | 'sul';
 
-export type CapitalId = 'sao-paulo' | 'rio-de-janeiro' | 'belo-horizonte' | 'vitoria';
+export type CapitalId =
+  | 'sao-paulo'
+  | 'rio-de-janeiro'
+  | 'belo-horizonte'
+  | 'vitoria'
+  | 'curitiba'
+  | 'florianopolis'
+  | 'porto-alegre';
 
 export type Difficulty = 1 | 2 | 3;
 

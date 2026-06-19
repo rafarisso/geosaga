@@ -6,7 +6,7 @@ export interface CapitalMission {
   city: string;
   state: string;
   title: string;
-  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria';
+  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre';
   summary: string;
   challenge: string;
   visualHook: string;
@@ -20,7 +20,23 @@ export interface CapitalMission {
   };
 }
 
+export const CAPITAL_ROUTE_IDS: CapitalRouteId[] = ['sudeste', 'sul'];
+
+export const CAPITAL_ROUTE_META: Record<CapitalRouteId, { name: string; label: string; description: string }> = {
+  sudeste: {
+    name: 'Sudeste',
+    label: 'Metrópoles e serras',
+    description: 'São Paulo, Rio de Janeiro, Belo Horizonte e Vitória em fases urbanas e costeiras.',
+  },
+  sul: {
+    name: 'Sul',
+    label: 'Araucárias, ilhas e pampas',
+    description: 'Curitiba e Florianópolis já estão jogáveis, com Porto Alegre planejada na sequência.',
+  },
+};
+
 export const CAPITAL_ROUTE_ID: CapitalRouteId = 'sudeste';
+export const SUL_CAPITAL_ROUTE_ID: CapitalRouteId = 'sul';
 
 export const CAPITAL_MISSIONS: CapitalMission[] = [
   {
@@ -99,5 +115,61 @@ export const CAPITAL_MISSIONS: CapitalMission[] = [
       explanation: 'Vitória é a capital do Espírito Santo.',
     },
   },
+  {
+    id: 'curitiba',
+    route: SUL_CAPITAL_ROUTE_ID,
+    city: 'Curitiba',
+    state: 'PR',
+    title: 'Araucárias e Cidade Planejada',
+    scenery: 'curitiba',
+    summary: 'Parques lineares, tubos de ônibus, clima frio e araucárias formam uma fase urbana verde e estratégica.',
+    challenge: 'Conecte mobilidade, drenagem, parques e clima subtropical antes que a neblina trave a cidade.',
+    visualHook: 'Jardim Botânico, araucárias, tubos de transporte, chuva fina e corredores verdes.',
+    collectLabel: 'marcos verdes',
+    clues: ['Jardim Botânico', 'Araucárias', 'Transporte integrado'],
+    question: {
+      statement: 'Curitiba é a capital de qual estado?',
+      choices: ['Paraná', 'Santa Catarina', 'Rio Grande do Sul', 'São Paulo'],
+      answerIndex: 0,
+      explanation: 'Curitiba é a capital do Paraná e é reconhecida por planejamento urbano, parques e transporte coletivo.',
+    },
+  },
+  {
+    id: 'florianopolis',
+    route: SUL_CAPITAL_ROUTE_ID,
+    city: 'Florianópolis',
+    state: 'SC',
+    title: 'Ilha, Dunas e Lagoas',
+    scenery: 'florianopolis',
+    summary: 'Uma capital-ilha com praias, dunas, lagoas, pontes e morros costeiros.',
+    challenge: 'Equilibre turismo, ecossistemas costeiros, mobilidade e crescimento urbano na ilha.',
+    visualHook: 'Ponte, ilha, praias, dunas, lagoas e morros verdes cercados pelo Atlântico.',
+    collectLabel: 'trilhas costeiras',
+    clues: ['Capital-ilha', 'Dunas', 'Lagoa da Conceição'],
+    question: {
+      statement: 'Florianópolis é capital de qual estado?',
+      choices: ['Paraná', 'Santa Catarina', 'Rio Grande do Sul', 'Mato Grosso do Sul'],
+      answerIndex: 1,
+      explanation: 'Florianópolis é a capital de Santa Catarina e se destaca por sua geografia insular e costeira.',
+    },
+  },
+  {
+    id: 'porto-alegre',
+    route: SUL_CAPITAL_ROUTE_ID,
+    city: 'Porto Alegre',
+    state: 'RS',
+    title: 'Guaíba, Pampas e Metrópole',
+    scenery: 'porto-alegre',
+    summary: 'A cidade se abre para o Guaíba, com áreas urbanas, parques, ilhas e influência dos pampas.',
+    challenge: 'Conecte lago, drenagem, mobilidade, memória urbana e clima subtropical no extremo sul do Brasil.',
+    visualHook: 'Pôr do sol no Guaíba, parques urbanos, orla, ilhas e céu amplo dos pampas.',
+    collectLabel: 'rotas do Guaíba',
+    clues: ['Lago Guaíba', 'Orla', 'Pampas'],
+    question: {
+      statement: 'Porto Alegre é capital de qual estado?',
+      choices: ['Santa Catarina', 'Paraná', 'Rio Grande do Sul', 'Goiás'],
+      answerIndex: 2,
+      explanation: 'Porto Alegre é a capital do Rio Grande do Sul e uma das principais metrópoles do Sul.',
+    },
+  },
 ];
-

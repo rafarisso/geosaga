@@ -3489,6 +3489,51 @@ button:focus-visible {
 
 .capital-route-score strong { color: #ffe26b; font-size: 1.5rem; }
 
+.capital-region-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  max-width: 88rem;
+  margin: 0 auto 1rem;
+}
+
+.capital-region-tabs button {
+  min-width: 0;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.8rem;
+  color: #eaf6f2;
+  background: rgba(7, 26, 32, 0.58);
+  text-align: left;
+  cursor: pointer;
+}
+
+.capital-region-tabs button.active {
+  border-color: rgba(255, 226, 107, 0.72);
+  background: rgba(255, 226, 107, 0.12);
+  box-shadow: 0 0 0 2px rgba(255, 226, 107, 0.16);
+}
+
+.capital-region-tabs strong,
+.capital-region-tabs span,
+.capital-region-tabs small {
+  display: block;
+}
+
+.capital-region-tabs span {
+  margin-top: 0.14rem;
+  color: #b9d3cd;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.capital-region-tabs small {
+  margin-top: 0.35rem;
+  color: #ffe26b;
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
 .capital-route-map {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

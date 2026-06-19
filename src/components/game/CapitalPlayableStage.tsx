@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import colossoCurralBoss from '../../assets/bosses/capital-belo-horizonte-boss-colosso-curral.png';
 import caosMetropoleBoss from '../../assets/bosses/capital-sao-paulo-boss-caos-metropole.png';
+import neblinaAraucariasBoss from '../../assets/bosses/capital-curitiba-boss-neblina-araucarias.png';
+import tormentaIlhaBoss from '../../assets/bosses/capital-florianopolis-boss-tormenta-ilha.png';
 import sombraBaiaBoss from '../../assets/bosses/capital-rio-boss-sombra-baia.png';
 import sentinelaManguezalBoss from '../../assets/bosses/capital-vitoria-boss-sentinela-manguezal.png';
 import beloHorizonteStageBg from '../../assets/backgrounds/capital-belo-horizonte-stage-bg.png';
+import curitibaStageBg from '../../assets/backgrounds/capital-curitiba-stage-bg.png';
+import florianopolisStageBg from '../../assets/backgrounds/capital-florianopolis-stage-bg.png';
 import rioStageBg from '../../assets/backgrounds/capital-rio-de-janeiro-stage-bg.png';
 import saoPauloStageBg from '../../assets/backgrounds/capital-sao-paulo-stage-bg.png';
 import vitoriaStageBg from '../../assets/backgrounds/capital-vitoria-stage-bg.png';
@@ -15,6 +19,7 @@ import { isMuted, playSound, setMuted } from '../../game/soundEngine';
 import { useDeviceMode } from '../../hooks/useDeviceMode';
 import { useGameLoop } from '../../hooks/useGameLoop';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
+import { shuffleQuestionChoices, type AnswerIndex } from '../../utils/questionChoices';
 import { MobileControls } from './MobileControls';
 import { Player } from './Player';
 import {
@@ -42,6 +47,8 @@ const CAPITAL_STAGE_BACKGROUNDS: Partial<Record<CapitalId, string>> = {
   'rio-de-janeiro': rioStageBg,
   'belo-horizonte': beloHorizonteStageBg,
   vitoria: vitoriaStageBg,
+  curitiba: curitibaStageBg,
+  florianopolis: florianopolisStageBg,
 };
 
 const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
@@ -49,6 +56,8 @@ const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
   'rio-de-janeiro': sombraBaiaBoss,
   'belo-horizonte': colossoCurralBoss,
   vitoria: sentinelaManguezalBoss,
+  curitiba: neblinaAraucariasBoss,
+  florianopolis: tormentaIlhaBoss,
 };
 
 interface CapitalPlayableStageProps {
@@ -81,6 +90,7 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
   const sfxRef = useRef({ hp: view.hp, enemies: view.enemies.length, objectives: view.objectiveCount, boss: false });
   const questionDeckRef = useRef<CapitalSpecialQuestion[]>([]);
   const lastQuestionIdRef = useRef<string | null>(null);
+  const lastAnswerIndexRef = useRef<AnswerIndex | null>(null);
 
   const { isTouch, isPortrait } = useDeviceMode();
   const needsRotate = isTouch && isPortrait;
@@ -125,6 +135,7 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
     victorySavedRef.current = false;
     sfxRef.current = { hp: fresh.view().hp, enemies: fresh.view().enemies.length, objectives: 0, boss: false };
     renderElapsedRef.current = 0;
+    lastAnswerIndexRef.current = null;
   }
 
   function chooseGuardian(next: RegionId) {
@@ -182,7 +193,9 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
     }
     const next = questionDeckRef.current.pop() ?? bank[0]!;
     lastQuestionIdRef.current = next.id;
-    return next;
+    const shuffled = shuffleQuestionChoices(next, lastAnswerIndexRef.current);
+    lastAnswerIndexRef.current = shuffled.answerIndex;
+    return shuffled;
   }
 
   function handleStep(dt: number): boolean {
