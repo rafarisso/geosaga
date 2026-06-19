@@ -1,5 +1,6 @@
 import { useState, type CSSProperties } from 'react';
 import capitalsSudesteBg from '../assets/backgrounds/capitals-sudeste-cinematic-bg.png';
+import centroOesteCinematicBg from '../assets/backgrounds/centro-oeste-cinematic-bg.png';
 import sulCinematicBg from '../assets/backgrounds/sul-cinematic-bg.png';
 import { CapitalPlayableStage } from '../components/game/CapitalPlayableStage';
 import { PLAYABLE_CAPITAL_IDS } from '../components/game/capitalStageEngine';
@@ -8,6 +9,7 @@ import type { CapitalId, CapitalMissionResult, CapitalRouteId, GameProgress } fr
 
 interface CapitalChallengeScreenProps {
   progress: GameProgress;
+  initialCapitalId?: CapitalId | null;
   onBack: () => void;
   onCompleteMission: (result: CapitalMissionResult) => void;
 }
@@ -17,6 +19,7 @@ const PLAYABLE_CAPITALS = new Set<CapitalId>(PLAYABLE_CAPITAL_IDS);
 const CAPITAL_ROUTE_BACKGROUNDS: Record<CapitalRouteId, string> = {
   sudeste: capitalsSudesteBg,
   sul: sulCinematicBg,
+  'centro-oeste': centroOesteCinematicBg,
 };
 
 function isPlayableCapital(id: CapitalId): boolean {
@@ -30,11 +33,17 @@ function firstMissionIdForRoute(route: CapitalRouteId): CapitalId {
     ?? CAPITAL_MISSIONS[0]!;
   return mission.id;
 }
+function missionRouteForCapital(capital: CapitalId | null | undefined): CapitalRouteId | null {
+  const mission = capital ? CAPITAL_MISSIONS.find((item) => item.id === capital) : undefined;
+  return mission?.route ?? null;
+}
 
-export function CapitalChallengeScreen({ progress, onBack, onCompleteMission }: CapitalChallengeScreenProps) {
-  const initialRoute = progress.completedCapitalRoutes.includes('sudeste') ? 'sul' : DEFAULT_ROUTE;
+export function CapitalChallengeScreen({ progress, initialCapitalId, onBack, onCompleteMission }: CapitalChallengeScreenProps) {
+  const requestedRoute = missionRouteForCapital(initialCapitalId);
+  const initialRoute = requestedRoute ?? (progress.completedCapitalRoutes.includes('sudeste') ? 'sul' : DEFAULT_ROUTE);
+  const initialMissionId = requestedRoute ? initialCapitalId! : firstMissionIdForRoute(initialRoute);
   const [selectedRouteId, setSelectedRouteId] = useState<CapitalRouteId>(initialRoute);
-  const [selectedId, setSelectedId] = useState<CapitalId>(() => firstMissionIdForRoute(initialRoute));
+  const [selectedId, setSelectedId] = useState<CapitalId>(initialMissionId);
 
   const routeMissions = CAPITAL_MISSIONS.filter((mission) => mission.route === selectedRouteId);
   const selected = routeMissions.find((mission) => mission.id === selectedId) ?? routeMissions[0] ?? CAPITAL_MISSIONS[0]!;

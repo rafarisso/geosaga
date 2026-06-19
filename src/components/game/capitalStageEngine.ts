@@ -30,7 +30,7 @@ type PickupKind = 'geo' | 'heal' | 'boost';
 type ParticleKind = 'damage' | 'spark' | 'text';
 export type CapitalStepOutcome = 'playing' | 'requestSpecial' | 'victory' | 'defeat';
 
-export const PLAYABLE_CAPITAL_IDS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis'];
+export const PLAYABLE_CAPITAL_IDS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia'];
 
 export interface CapitalEnemyDefinition {
   id: string;
@@ -747,7 +747,160 @@ export const CAPITAL_STAGE_DEFINITIONS: Partial<Record<CapitalId, CapitalStageDe
       { id: 'dunas-restinga', label: 'Dunas e restinga', concept: 'Ecossistema costeiro', x: 2420, y: 330 },
     ],
   },
-};
+  'porto-alegre': {
+    capital: 'porto-alegre',
+    route: 'sul',
+    city: 'Porto Alegre',
+    introTitle: 'Porto Alegre: Crepúsculo do Guaíba',
+    introObjective:
+      'Atravesse a orla, ilhas, parques e canais urbanos para conter o Crepúsculo do Guaíba.',
+    finishLabel: 'Restaurar a orla do Guaíba',
+    gateHint: 'Colete os 3 marcos e derrote os impactos de enchentes, poluição hídrica, mobilidade e pressão sobre ilhas.',
+    victoryTitle: 'Porto Alegre concluída',
+    victoryBody:
+      'Você conectou Guaíba, orla, ilhas, parques urbanos, drenagem, pampas e metrópole em uma leitura geográfica completa.',
+    boss: {
+      name: 'Crepúsculo do Guaíba',
+      hp: 455,
+      damage: 18,
+      attackTimer: 1.14,
+      spawnText: 'O Crepúsculo do Guaíba avançou pela orla!',
+      pressureText: 'Cheia em pressão!',
+      victoryText: 'Porto Alegre restaurada!',
+    },
+    enemies: [
+      {
+        id: 'rs-orla-flow',
+        kind: 'traffic',
+        name: 'Orla Travada',
+        concept: 'Mobilidade metropolitana',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 106,
+        damage: 13,
+        phase: 0.3,
+        attackTimer: 1.05,
+      },
+      {
+        id: 'rs-river-smog',
+        kind: 'smog',
+        name: 'Bruma do Guaíba',
+        concept: 'Qualidade da água',
+        baseX: 1180,
+        feetY: CAPITAL_GROUND_Y - 76,
+        hp: 94,
+        damage: 11,
+        phase: 1.42,
+        attackTimer: 1.24,
+      },
+      {
+        id: 'rs-flood-gate',
+        kind: 'flood',
+        name: 'Cheia Repentina',
+        concept: 'Drenagem e enchentes',
+        baseX: 1700,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 118,
+        damage: 15,
+        phase: 2.04,
+        attackTimer: 0.92,
+      },
+      {
+        id: 'rs-island-heat',
+        kind: 'heat',
+        name: 'Concreto da Orla',
+        concept: 'Urbanização costeira',
+        baseX: 2280,
+        feetY: CAPITAL_GROUND_Y - 28,
+        hp: 128,
+        damage: 14,
+        phase: 3.12,
+        attackTimer: 1.3,
+      },
+    ],
+    objectives: [
+      { id: 'orla-guaiba', label: 'Orla do Guaíba', concept: 'Paisagem urbana', x: 430, y: 338 },
+      { id: 'ilhas-delta', label: 'Ilhas do delta', concept: 'Ambiente hídrico', x: 1460, y: 336 },
+      { id: 'parques-urbanos', label: 'Parques urbanos', concept: 'Qualidade ambiental', x: 2420, y: 330 },
+    ],
+  },
+  brasilia: {
+    capital: 'brasilia',
+    route: 'centro-oeste',
+    city: 'Brasília',
+    introTitle: 'Brasília: Eixo do Cerrado',
+    introObjective:
+      'Atravesse o Eixo Monumental, o Cerrado e o Lago Paranoá para conter o Eixo do Cerrado.',
+    finishLabel: 'Restaurar a capital federal',
+    gateHint: 'Colete os 3 marcos e derrote os impactos de clima seco, expansão urbana, mobilidade planejada e pressão hídrica.',
+    victoryTitle: 'Brasília concluída',
+    victoryBody:
+      'Você conectou cidade planejada, Cerrado, Eixo Monumental, Lago Paranoá, clima seco e expansão urbana em uma leitura geográfica completa.',
+    boss: {
+      name: 'Eixo do Cerrado',
+      hp: 450,
+      damage: 18,
+      attackTimer: 1.18,
+      spawnText: 'O Eixo do Cerrado rachou o Planalto Central!',
+      pressureText: 'Seca em pressão!',
+      victoryText: 'Brasília restaurada!',
+    },
+    enemies: [
+      {
+        id: 'df-axis-flow',
+        kind: 'traffic',
+        name: 'Eixo Congestionado',
+        concept: 'Cidade planejada',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 104,
+        damage: 13,
+        phase: 0.32,
+        attackTimer: 1.08,
+      },
+      {
+        id: 'df-dry-haze',
+        kind: 'smog',
+        name: 'Poeira do Cerrado',
+        concept: 'Clima seco',
+        baseX: 1180,
+        feetY: CAPITAL_GROUND_Y - 78,
+        hp: 92,
+        damage: 11,
+        phase: 1.5,
+        attackTimer: 1.26,
+      },
+      {
+        id: 'df-paranoa-water',
+        kind: 'flood',
+        name: 'Canal do Paranoá',
+        concept: 'Gestão da água',
+        baseX: 1700,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 116,
+        damage: 14,
+        phase: 2.1,
+        attackTimer: 0.96,
+      },
+      {
+        id: 'df-heat-island',
+        kind: 'heat',
+        name: 'Asfalto Vermelho',
+        concept: 'Ilha de calor',
+        baseX: 2280,
+        feetY: CAPITAL_GROUND_Y - 28,
+        hp: 126,
+        damage: 14,
+        phase: 3.16,
+        attackTimer: 1.34,
+      },
+    ],
+    objectives: [
+      { id: 'eixo-monumental', label: 'Eixo Monumental', concept: 'Planejamento urbano', x: 430, y: 338 },
+      { id: 'lago-paranoa', label: 'Lago Paranoá', concept: 'Recursos hídricos', x: 1460, y: 336 },
+      { id: 'cerrado-df', label: 'Cerrado', concept: 'Bioma do Planalto', x: 2420, y: 330 },
+    ],
+  },};
 
 export function getCapitalStageDefinition(capital: CapitalId): CapitalStageDefinition {
   const definition = CAPITAL_STAGE_DEFINITIONS[capital];

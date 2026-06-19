@@ -3,11 +3,15 @@ import colossoCurralBoss from '../../assets/bosses/capital-belo-horizonte-boss-c
 import caosMetropoleBoss from '../../assets/bosses/capital-sao-paulo-boss-caos-metropole.png';
 import neblinaAraucariasBoss from '../../assets/bosses/capital-curitiba-boss-neblina-araucarias.png';
 import tormentaIlhaBoss from '../../assets/bosses/capital-florianopolis-boss-tormenta-ilha.png';
+import crepusculoGuaibaBoss from '../../assets/bosses/capital-porto-alegre-boss-crepusculo-guaiba.png';
+import eixoCerradoBoss from '../../assets/bosses/capital-brasilia-boss-eixo-cerrado.png';
 import sombraBaiaBoss from '../../assets/bosses/capital-rio-boss-sombra-baia.png';
 import sentinelaManguezalBoss from '../../assets/bosses/capital-vitoria-boss-sentinela-manguezal.png';
 import beloHorizonteStageBg from '../../assets/backgrounds/capital-belo-horizonte-stage-bg.png';
 import curitibaStageBg from '../../assets/backgrounds/capital-curitiba-stage-bg.png';
 import florianopolisStageBg from '../../assets/backgrounds/capital-florianopolis-stage-bg.png';
+import portoAlegreStageBg from '../../assets/backgrounds/capital-porto-alegre-stage-bg.png';
+import brasiliaStageBg from '../../assets/backgrounds/capital-brasilia-stage-bg.png';
 import rioStageBg from '../../assets/backgrounds/capital-rio-de-janeiro-stage-bg.png';
 import saoPauloStageBg from '../../assets/backgrounds/capital-sao-paulo-stage-bg.png';
 import vitoriaStageBg from '../../assets/backgrounds/capital-vitoria-stage-bg.png';
@@ -49,6 +53,8 @@ const CAPITAL_STAGE_BACKGROUNDS: Partial<Record<CapitalId, string>> = {
   vitoria: vitoriaStageBg,
   curitiba: curitibaStageBg,
   florianopolis: florianopolisStageBg,
+  'porto-alegre': portoAlegreStageBg,
+  brasilia: brasiliaStageBg,
 };
 
 const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
@@ -58,6 +64,8 @@ const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
   vitoria: sentinelaManguezalBoss,
   curitiba: neblinaAraucariasBoss,
   florianopolis: tormentaIlhaBoss,
+  'porto-alegre': crepusculoGuaibaBoss,
+  brasilia: eixoCerradoBoss,
 };
 
 interface CapitalPlayableStageProps {

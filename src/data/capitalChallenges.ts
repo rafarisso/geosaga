@@ -6,7 +6,7 @@ export interface CapitalMission {
   city: string;
   state: string;
   title: string;
-  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre';
+  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia';
   summary: string;
   challenge: string;
   visualHook: string;
@@ -20,7 +20,7 @@ export interface CapitalMission {
   };
 }
 
-export const CAPITAL_ROUTE_IDS: CapitalRouteId[] = ['sudeste', 'sul'];
+export const CAPITAL_ROUTE_IDS: CapitalRouteId[] = ['sudeste', 'sul', 'centro-oeste'];
 
 export const CAPITAL_ROUTE_META: Record<CapitalRouteId, { name: string; label: string; description: string }> = {
   sudeste: {
@@ -31,12 +31,18 @@ export const CAPITAL_ROUTE_META: Record<CapitalRouteId, { name: string; label: s
   sul: {
     name: 'Sul',
     label: 'Araucárias, ilhas e pampas',
-    description: 'Curitiba e Florianópolis já estão jogáveis, com Porto Alegre planejada na sequência.',
+    description: 'Curitiba, Florianópolis e Porto Alegre completam a rota das capitais do Sul.',
+  },
+  'centro-oeste': {
+    name: 'Centro-Oeste',
+    label: 'Cerrado e capital federal',
+    description: 'Brasília inicia a rota do Centro-Oeste, conectando planejamento urbano, Cerrado e Lago Paranoá.',
   },
 };
 
 export const CAPITAL_ROUTE_ID: CapitalRouteId = 'sudeste';
 export const SUL_CAPITAL_ROUTE_ID: CapitalRouteId = 'sul';
+export const CENTRO_OESTE_CAPITAL_ROUTE_ID: CapitalRouteId = 'centro-oeste';
 
 export const CAPITAL_MISSIONS: CapitalMission[] = [
   {
@@ -170,6 +176,25 @@ export const CAPITAL_MISSIONS: CapitalMission[] = [
       choices: ['Santa Catarina', 'Paraná', 'Rio Grande do Sul', 'Goiás'],
       answerIndex: 2,
       explanation: 'Porto Alegre é a capital do Rio Grande do Sul e uma das principais metrópoles do Sul.',
+    },
+  },
+  {
+    id: 'brasilia',
+    route: CENTRO_OESTE_CAPITAL_ROUTE_ID,
+    city: 'Brasília',
+    state: 'DF',
+    title: 'Cerrado, Eixo Monumental e Lago Paranoá',
+    scenery: 'brasilia',
+    summary: 'A capital federal combina cidade planejada, Cerrado, grandes eixos viários, arquitetura moderna e pressão sobre recursos hídricos.',
+    challenge: 'Equilibre expansão urbana, clima seco, mobilidade planejada, Cerrado e gestão da água no Planalto Central.',
+    visualHook: 'Eixo Monumental, céu amplo do Cerrado, ipês, Lago Paranoá, concreto modernista e solo vermelho.',
+    collectLabel: 'marcos do Cerrado',
+    clues: ['Eixo Monumental', 'Lago Paranoá', 'Cerrado'],
+    question: {
+      statement: 'Brasília é capital de qual unidade federativa?',
+      choices: ['Distrito Federal', 'Goiás', 'Mato Grosso', 'Minas Gerais'],
+      answerIndex: 0,
+      explanation: 'Brasília é a capital federal do Brasil e fica no Distrito Federal, no Centro-Oeste.',
     },
   },
 ];

@@ -22,6 +22,7 @@ const CAPITAL_LINK_IDS: CapitalId[] = [
   'curitiba',
   'florianopolis',
   'porto-alegre',
+  'brasilia',
 ];
 
 function isCapitalLinkId(value: string | null): value is CapitalId {
@@ -117,6 +118,7 @@ export default function App() {
       <div className="app-shell">
         <CapitalChallengeScreen
           progress={progress}
+          initialCapitalId={initialNavigation.capital}
           onBack={() => setScreen('regions')}
           onCompleteMission={completeCapitalMission}
         />
