@@ -5,20 +5,24 @@ import neblinaAraucariasBoss from '../../assets/bosses/capital-curitiba-boss-neb
 import tormentaIlhaBoss from '../../assets/bosses/capital-florianopolis-boss-tormenta-ilha.png';
 import crepusculoGuaibaBoss from '../../assets/bosses/capital-porto-alegre-boss-crepusculo-guaiba.png';
 import comitivaPlanicieBoss from '../../assets/bosses/capital-campo-grande-boss-comitiva-planicie.png';
+import imperadorRessacaBoss from '../../assets/bosses/capital-fortaleza-boss-imperador-ressaca.png';
 import fornoPantanalBoss from '../../assets/bosses/capital-cuiaba-boss-forno-pantanal.png';
 import eixoCerradoBoss from '../../assets/bosses/capital-brasilia-boss-eixo-cerrado.png';
 import regenteCerradoUrbanoBoss from '../../assets/bosses/capital-goiania-boss-regente-cerrado-urbano.png';
+import senhorAlagadoBoss from '../../assets/bosses/capital-recife-boss-senhor-alagado.png';
 import trovejanteParedaoBoss from '../../assets/bosses/capital-salvador-boss-trovejante-paredao.png';
 import sombraBaiaBoss from '../../assets/bosses/capital-rio-boss-sombra-baia.png';
 import sentinelaManguezalBoss from '../../assets/bosses/capital-vitoria-boss-sentinela-manguezal.png';
 import beloHorizonteStageBg from '../../assets/backgrounds/capital-belo-horizonte-stage-bg.png';
 import curitibaStageBg from '../../assets/backgrounds/capital-curitiba-stage-bg.png';
 import florianopolisStageBg from '../../assets/backgrounds/capital-florianopolis-stage-bg.png';
+import fortalezaStageBg from '../../assets/backgrounds/capital-fortaleza-stage-bg.png';
 import portoAlegreStageBg from '../../assets/backgrounds/capital-porto-alegre-stage-bg.png';
 import brasiliaStageBg from '../../assets/backgrounds/capital-brasilia-stage-bg.png';
 import campoGrandeStageBg from '../../assets/backgrounds/capital-campo-grande-stage-bg.png';
 import cuiabaStageBg from '../../assets/backgrounds/capital-cuiaba-stage-bg.png';
 import goianiaStageBg from '../../assets/backgrounds/capital-goiania-stage-bg.png';
+import recifeStageBg from '../../assets/backgrounds/capital-recife-stage-bg.png';
 import rioStageBg from '../../assets/backgrounds/capital-rio-de-janeiro-stage-bg.png';
 import salvadorStageBg from '../../assets/backgrounds/capital-salvador-stage-bg.png';
 import saoPauloStageBg from '../../assets/backgrounds/capital-sao-paulo-stage-bg.png';
@@ -35,10 +39,18 @@ import cuiabaBafoEnemy from '../../assets/enemies/capital-cuiaba-enemy-bafo-calo
 import cuiabaFumacaEnemy from '../../assets/enemies/capital-cuiaba-enemy-fumaca-cerrado.png';
 import cuiabaPonteEnemy from '../../assets/enemies/capital-cuiaba-enemy-ponte-travada.png';
 import cuiabaRioEnemy from '../../assets/enemies/capital-cuiaba-enemy-rio-assoreado.png';
+import fortalezaDunaEnemy from '../../assets/enemies/capital-fortaleza-enemy-duna-avancando.png';
+import fortalezaOrlaEnemy from '../../assets/enemies/capital-fortaleza-enemy-orla-lotada.png';
+import fortalezaRessacaEnemy from '../../assets/enemies/capital-fortaleza-enemy-ressaca-urbana.png';
+import fortalezaVentoEnemy from '../../assets/enemies/capital-fortaleza-enemy-vento-cortante.png';
 import goianiaAvenidaEnemy from '../../assets/enemies/capital-goiania-enemy-avenida-travada.png';
 import goianiaBrumaEnemy from '../../assets/enemies/capital-goiania-enemy-bruma-seca.png';
 import goianiaCalorEnemy from '../../assets/enemies/capital-goiania-enemy-ilha-calor-verde.png';
 import goianiaCorregoEnemy from '../../assets/enemies/capital-goiania-enemy-corrego-canalizado.png';
+import recifeMangueEnemy from '../../assets/enemies/capital-recife-enemy-mangue-contaminado.png';
+import recifeMormacoEnemy from '../../assets/enemies/capital-recife-enemy-mormaco-urbano.png';
+import recifeOndaEnemy from '../../assets/enemies/capital-recife-enemy-onda-capibaribe.png';
+import recifePonteEnemy from '../../assets/enemies/capital-recife-enemy-ponte-travada.png';
 import carroParedaoEnemy from '../../assets/enemies/capital-salvador-enemy-carro-paredao.png';
 import ladeiraTravadaEnemy from '../../assets/enemies/capital-salvador-enemy-ladeira-travada.png';
 import mareBaiaEnemy from '../../assets/enemies/capital-salvador-enemy-mare-baia.png';
@@ -100,6 +112,8 @@ const CAPITAL_STAGE_BACKGROUNDS: Partial<Record<CapitalId, string>> = {
   cuiaba: cuiabaStageBg,
   'campo-grande': campoGrandeStageBg,
   salvador: salvadorStageBg,
+  recife: recifeStageBg,
+  fortaleza: fortalezaStageBg,
 };
 const CAPITAL_ENEMY_IMAGES: Partial<Record<string, string>> = {
   'df-axis-flow': brasiliaEixoEnemy,
@@ -122,6 +136,14 @@ const CAPITAL_ENEMY_IMAGES: Partial<Record<string, string>> = {
   'ba-soundwave': ondaGraveEnemy,
   'ba-tide': mareBaiaEnemy,
   'ba-slope': ladeiraTravadaEnemy,
+  'pe-onda-capibaribe': recifeOndaEnemy,
+  'pe-ponte-travada': recifePonteEnemy,
+  'pe-mangue-contaminado': recifeMangueEnemy,
+  'pe-mormaco-urbano': recifeMormacoEnemy,
+  'ce-ressaca-urbana': fortalezaRessacaEnemy,
+  'ce-vento-cortante': fortalezaVentoEnemy,
+  'ce-orla-lotada': fortalezaOrlaEnemy,
+  'ce-duna-avancando': fortalezaDunaEnemy,
 };
 const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
   'sao-paulo': caosMetropoleBoss,
@@ -136,6 +158,8 @@ const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
   cuiaba: fornoPantanalBoss,
   'campo-grande': comitivaPlanicieBoss,
   salvador: trovejanteParedaoBoss,
+  recife: senhorAlagadoBoss,
+  fortaleza: imperadorRessacaBoss,
 };
 
 interface CapitalPlayableStageProps {

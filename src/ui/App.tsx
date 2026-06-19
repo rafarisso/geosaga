@@ -27,6 +27,8 @@ const CAPITAL_LINK_IDS: CapitalId[] = [
   'cuiaba',
   'campo-grande',
   'salvador',
+  'recife',
+  'fortaleza',
 ];
 
 function isCapitalLinkId(value: string | null): value is CapitalId {

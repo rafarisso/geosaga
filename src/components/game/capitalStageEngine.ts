@@ -30,7 +30,7 @@ type PickupKind = 'geo' | 'heal' | 'boost';
 type ParticleKind = 'damage' | 'spark' | 'text';
 export type CapitalStepOutcome = 'playing' | 'requestSpecial' | 'victory' | 'defeat';
 
-export const PLAYABLE_CAPITAL_IDS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia', 'goiania', 'cuiaba', 'campo-grande', 'salvador'];
+export const PLAYABLE_CAPITAL_IDS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia', 'goiania', 'cuiaba', 'campo-grande', 'salvador', 'recife', 'fortaleza'];
 
 export interface CapitalEnemyDefinition {
   id: string;
@@ -1131,7 +1131,8 @@ export const CAPITAL_STAGE_DEFINITIONS: Partial<Record<CapitalId, CapitalStageDe
       { id: 'cerrado-ms', label: 'Cerrado sul-mato-grossense', concept: 'Bioma e transicao', x: 1460, y: 336 },
       { id: 'portal-pantanal-ms', label: 'Portal do Pantanal', concept: 'Paisagem regional', x: 2420, y: 330 },
     ],
-  },  salvador: {
+  },
+  salvador: {
     capital: 'salvador',
     route: 'nordeste',
     city: 'Salvador',
@@ -1206,6 +1207,160 @@ export const CAPITAL_STAGE_DEFINITIONS: Partial<Record<CapitalId, CapitalStageDe
       { id: 'baia-todos-santos', label: 'Baia de Todos-os-Santos', concept: 'Baia e porto', x: 430, y: 338 },
       { id: 'cidade-alta-baixa', label: 'Cidade Alta/Baixa', concept: 'Relevo urbano', x: 1460, y: 336 },
       { id: 'elevador-lacerda', label: 'Elevador Lacerda', concept: 'Mobilidade vertical', x: 2420, y: 330 },
+    ],
+  },
+  recife: {
+    capital: 'recife',
+    route: 'nordeste',
+    city: 'Recife',
+    introTitle: 'Recife: Senhor do Alagado',
+    introObjective:
+      'Atravesse o Capibaribe, as pontes e os manguezais urbanos para conter o Senhor do Alagado.',
+    finishLabel: 'Restaurar rios, pontes e mangue',
+    gateHint: 'Colete os 3 marcos e derrote onda do Capibaribe, ponte travada, mangue contaminado e mormaco urbano para liberar o chefe.',
+    victoryTitle: 'Recife concluida',
+    victoryBody:
+      'Voce conectou rios, pontes, Recife Antigo, manguezais, drenagem, maritimidade e mobilidade em uma leitura geografica de Recife.',
+    boss: {
+      name: 'Senhor do Alagado',
+      hp: 465,
+      damage: 19,
+      attackTimer: 1.07,
+      spawnText: 'O Senhor do Alagado levantou as aguas do Capibaribe!',
+      pressureText: 'Cheia urbana em pressao maxima!',
+      victoryText: 'Recife restaurada!',
+    },
+    enemies: [
+      {
+        id: 'pe-onda-capibaribe',
+        kind: 'flood',
+        name: 'Onda do Capibaribe',
+        concept: 'Rios e alagamentos',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 112,
+        damage: 14,
+        phase: 0.3,
+        attackTimer: 0.96,
+      },
+      {
+        id: 'pe-ponte-travada',
+        kind: 'traffic',
+        name: 'Ponte Travada',
+        concept: 'Mobilidade entre rios',
+        baseX: 1160,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 114,
+        damage: 13,
+        phase: 1.28,
+        attackTimer: 1.1,
+      },
+      {
+        id: 'pe-mangue-contaminado',
+        kind: 'smog',
+        name: 'Mangue Contaminado',
+        concept: 'Ecossistema costeiro',
+        baseX: 1700,
+        feetY: CAPITAL_GROUND_Y - 72,
+        hp: 102,
+        damage: 13,
+        phase: 2.1,
+        attackTimer: 0.98,
+      },
+      {
+        id: 'pe-mormaco-urbano',
+        kind: 'heat',
+        name: 'Mormaco Urbano',
+        concept: 'Calor e umidade',
+        baseX: 2280,
+        feetY: CAPITAL_GROUND_Y - 30,
+        hp: 124,
+        damage: 14,
+        phase: 3.2,
+        attackTimer: 1.24,
+      },
+    ],
+    objectives: [
+      { id: 'rio-capibaribe', label: 'Rio Capibaribe', concept: 'Rios urbanos', x: 430, y: 338 },
+      { id: 'pontes-recife', label: 'Pontes historicas', concept: 'Cidade sobre rios', x: 1460, y: 336 },
+      { id: 'manguezais-recife', label: 'Manguezais urbanos', concept: 'Ecossistema costeiro', x: 2420, y: 330 },
+    ],
+  },
+  fortaleza: {
+    capital: 'fortaleza',
+    route: 'nordeste',
+    city: 'Fortaleza',
+    introTitle: 'Fortaleza: Imperador da Ressaca',
+    introObjective:
+      'Atravesse Praia de Iracema, Beira-Mar e as dunas costeiras para conter o Imperador da Ressaca.',
+    finishLabel: 'Restaurar a orla cearense',
+    gateHint: 'Colete os 3 marcos e derrote ressaca urbana, vento cortante, orla lotada e duna avancando para liberar o chefe.',
+    victoryTitle: 'Fortaleza concluida',
+    victoryBody:
+      'Voce conectou orla urbana, ventos costeiros, dunas, turismo, mobilidade, ressaca e planejamento ambiental em uma leitura geografica de Fortaleza.',
+    boss: {
+      name: 'Imperador da Ressaca',
+      hp: 468,
+      damage: 19,
+      attackTimer: 1.04,
+      spawnText: 'O Imperador da Ressaca levantou o Atlantico contra a orla!',
+      pressureText: 'Vento e ressaca em pressao maxima!',
+      victoryText: 'Fortaleza restaurada!',
+    },
+    enemies: [
+      {
+        id: 'ce-ressaca-urbana',
+        kind: 'tide',
+        name: 'Ressaca Urbana',
+        concept: 'Dinamica costeira',
+        baseX: 620,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 116,
+        damage: 14,
+        phase: 0.24,
+        attackTimer: 0.92,
+      },
+      {
+        id: 'ce-vento-cortante',
+        kind: 'smog',
+        name: 'Vento Cortante',
+        concept: 'Ventos costeiros',
+        baseX: 1160,
+        feetY: CAPITAL_GROUND_Y - 82,
+        hp: 96,
+        damage: 12,
+        phase: 1.32,
+        attackTimer: 1.02,
+      },
+      {
+        id: 'ce-orla-lotada',
+        kind: 'traffic',
+        name: 'Orla Lotada',
+        concept: 'Uso da orla',
+        baseX: 1700,
+        feetY: CAPITAL_GROUND_Y,
+        hp: 118,
+        damage: 14,
+        phase: 2.08,
+        attackTimer: 1.12,
+      },
+      {
+        id: 'ce-duna-avancando',
+        kind: 'heat',
+        name: 'Duna Avancando',
+        concept: 'Dunas costeiras',
+        baseX: 2280,
+        feetY: CAPITAL_GROUND_Y - 30,
+        hp: 126,
+        damage: 14,
+        phase: 3.18,
+        attackTimer: 1.28,
+      },
+    ],
+    objectives: [
+      { id: 'praia-iracema', label: 'Praia de Iracema', concept: 'Orla urbana', x: 430, y: 338 },
+      { id: 'ponte-ingleses', label: 'Ponte dos Ingleses', concept: 'Paisagem costeira', x: 1460, y: 336 },
+      { id: 'dunas-cearenses', label: 'Dunas costeiras', concept: 'Dinamica litoranea', x: 2420, y: 330 },
     ],
   },
 };
@@ -1440,7 +1595,7 @@ export class CapitalStageEngine {
   }
 
   private activateBoss(): void {
-    if (this.boss.active) return;
+    if (this.boss.active || this.boss.hp <= 0) return;
     this.boss.active = true;
     this.boss.x = Math.max(this.player.x + 520, CAPITAL_STAGE_W - 460);
     this.boss.feetY = CAPITAL_GROUND_Y - 4;
@@ -1759,6 +1914,8 @@ export class CapitalStageEngine {
       else this.player.state = 'idle';
     }
 
+    if (this.boss.hp <= 0) return 'victory';
+
     if (
       this.player.x > CAPITAL_STAGE_W - 780
       && this.objectives.every((objective) => objective.collected)
@@ -1774,7 +1931,7 @@ export class CapitalStageEngine {
       this.player.hp = 0;
       return 'defeat';
     }
-    if (!this.boss.active && this.boss.hp <= 0) return 'victory';
+    if (this.boss.hp <= 0) return 'victory';
     return 'playing';
   }
 

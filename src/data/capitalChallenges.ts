@@ -6,7 +6,7 @@ export interface CapitalMission {
   city: string;
   state: string;
   title: string;
-  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia' | 'goiania' | 'cuiaba' | 'campo-grande' | 'salvador';
+  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia' | 'goiania' | 'cuiaba' | 'campo-grande' | 'salvador' | 'recife' | 'fortaleza';
   summary: string;
   challenge: string;
   visualHook: string;
@@ -40,8 +40,8 @@ export const CAPITAL_ROUTE_META: Record<CapitalRouteId, { name: string; label: s
   },
   nordeste: {
     name: 'Nordeste',
-    label: 'Litoral, historia e sertao',
-    description: 'Salvador abre a rota do Nordeste com ladeira, baia, som urbano e geografia costeira.',
+    label: 'Litoral, historia, ventos e sertao',
+    description: 'Salvador, Recife e Fortaleza avancam a rota do Nordeste com baia, rios, pontes, orla, vento, dunas e geografia costeira.',
   },
 };
 
@@ -259,7 +259,8 @@ export const CAPITAL_MISSIONS: CapitalMission[] = [
       answerIndex: 2,
       explanation: 'Campo Grande e a capital de Mato Grosso do Sul e um importante centro urbano proximo ao Pantanal.',
     },
-  },  {
+  },
+  {
     id: 'salvador',
     route: NORDESTE_CAPITAL_ROUTE_ID,
     city: 'Salvador',
@@ -276,6 +277,44 @@ export const CAPITAL_MISSIONS: CapitalMission[] = [
       choices: ['Bahia', 'Sergipe', 'Pernambuco', 'Alagoas'],
       answerIndex: 0,
       explanation: 'Salvador e a capital da Bahia e uma das capitais mais antigas e importantes do litoral brasileiro.',
+    },
+  },
+  {
+    id: 'recife',
+    route: NORDESTE_CAPITAL_ROUTE_ID,
+    city: 'Recife',
+    state: 'PE',
+    title: 'Rios, Pontes e Mangue',
+    scenery: 'recife',
+    summary: 'Recife mistura Capibaribe, pontes historicas, Recife Antigo, manguezais, costa urbana e desafios de drenagem.',
+    challenge: 'Atravesse rios, pontes e areas de mangue enquanto enfrenta alagamento, mobilidade travada, poluicao e mormaco urbano.',
+    visualHook: 'Capibaribe refletindo pontes, casario historico, skyline moderno, mangue nas margens e luz tropical depois da chuva.',
+    collectLabel: 'marcos do Capibaribe',
+    clues: ['Rio Capibaribe', 'Pontes historicas', 'Manguezais urbanos'],
+    question: {
+      statement: 'Recife e a capital de qual estado brasileiro?',
+      choices: ['Paraiba', 'Pernambuco', 'Alagoas', 'Rio Grande do Norte'],
+      answerIndex: 1,
+      explanation: 'Recife e a capital de Pernambuco e uma das principais metropoles litoraneas do Nordeste.',
+    },
+  },
+  {
+    id: 'fortaleza',
+    route: NORDESTE_CAPITAL_ROUTE_ID,
+    city: 'Fortaleza',
+    state: 'CE',
+    title: 'Orla, Vento e Dunas',
+    scenery: 'fortaleza',
+    summary: 'Fortaleza combina Praia de Iracema, Beira-Mar, Ponte dos Ingleses, vento constante, dunas costeiras e pressao urbana sobre a orla.',
+    challenge: 'Atravesse a orla enfrentando ressaca urbana, vento cortante, lotacao costeira e duna avancando sem perder os marcos da paisagem.',
+    visualHook: 'Mar turquesa, pier historico, calcadao costeiro, skyline, ceu de ventos fortes e dunas ao fundo no por do sol.',
+    collectLabel: 'marcos da orla cearense',
+    clues: ['Praia de Iracema', 'Ponte dos Ingleses', 'Dunas costeiras'],
+    question: {
+      statement: 'Fortaleza e capital de qual estado brasileiro?',
+      choices: ['Rio Grande do Norte', 'Ceara', 'Piaui', 'Maranhao'],
+      answerIndex: 1,
+      explanation: 'Fortaleza e a capital do Ceara e uma das principais metropoles litoraneas do Nordeste.',
     },
   },
 ];

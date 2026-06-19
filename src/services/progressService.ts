@@ -20,7 +20,7 @@ export const EMPTY_PROGRESS: GameProgress = {
 };
 
 const ALL_REGIONS: RegionId[] = ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'];
-const ALL_CAPITALS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia', 'goiania', 'cuiaba', 'campo-grande', 'salvador'];
+const ALL_CAPITALS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia', 'goiania', 'cuiaba', 'campo-grande', 'salvador', 'recife', 'fortaleza'];
 const ALL_CAPITAL_ROUTES: CapitalRouteId[] = ['sudeste', 'sul', 'centro-oeste', 'nordeste'];
 
 function isRegionId(value: unknown): value is RegionId {

@@ -14,7 +14,9 @@ export type CapitalId =
   | 'goiania'
   | 'cuiaba'
   | 'campo-grande'
-  | 'salvador';
+  | 'salvador'
+  | 'recife'
+  | 'fortaleza';
 
 export type Difficulty = 1 | 2 | 3;
 
