@@ -6,7 +6,7 @@ export interface CapitalMission {
   city: string;
   state: string;
   title: string;
-  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia' | 'goiania' | 'cuiaba' | 'campo-grande' | 'salvador' | 'recife' | 'fortaleza';
+  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia' | 'goiania' | 'cuiaba' | 'campo-grande' | 'salvador' | 'recife' | 'fortaleza' | 'natal' | 'joao-pessoa' | 'maceio';
   summary: string;
   challenge: string;
   visualHook: string;
@@ -41,7 +41,7 @@ export const CAPITAL_ROUTE_META: Record<CapitalRouteId, { name: string; label: s
   nordeste: {
     name: 'Nordeste',
     label: 'Litoral, historia, ventos e sertao',
-    description: 'Salvador, Recife e Fortaleza avancam a rota do Nordeste com baia, rios, pontes, orla, vento, dunas e geografia costeira.',
+    description: 'Salvador, Recife, Fortaleza, Natal, Joao Pessoa e Maceio avancam a rota do Nordeste com baia, rios, pontes, orla, vento, dunas, falesias, piscinas naturais e geografia costeira.',
   },
 };
 
@@ -315,6 +315,63 @@ export const CAPITAL_MISSIONS: CapitalMission[] = [
       choices: ['Rio Grande do Norte', 'Ceara', 'Piaui', 'Maranhao'],
       answerIndex: 1,
       explanation: 'Fortaleza e a capital do Ceara e uma das principais metropoles litoraneas do Nordeste.',
+    },
+  },
+  {
+    id: 'natal',
+    route: NORDESTE_CAPITAL_ROUTE_ID,
+    city: 'Natal',
+    state: 'RN',
+    title: 'Corrida das Dunas',
+    scenery: 'natal',
+    summary: 'Natal combina Ponta Negra, Morro do Careca, dunas, vento constante, orla urbana e turismo costeiro em uma fase de corrida em faixas.',
+    challenge: 'Atravesse dunas e orla em alta velocidade, lendo vento, maresia, ocupacao costeira e protecao ambiental para derrotar a Tita da Falesia.',
+    visualHook: 'Ponta Negra ao por do sol, Morro do Careca, buggy nas dunas, vento levantando areia e mar azul no horizonte.',
+    collectLabel: 'marcos das dunas',
+    clues: ['Morro do Careca', 'Ponta Negra', 'Parque das Dunas'],
+    question: {
+      statement: 'Natal e capital de qual estado brasileiro?',
+      choices: ['Rio Grande do Norte', 'Ceara', 'Paraiba', 'Pernambuco'],
+      answerIndex: 0,
+      explanation: 'Natal e a capital do Rio Grande do Norte e tem forte relacao com litoral, dunas, turismo e ventos costeiros.',
+    },
+  },
+  {
+    id: 'joao-pessoa',
+    route: NORDESTE_CAPITAL_ROUTE_ID,
+    city: 'Joao Pessoa',
+    state: 'PB',
+    title: 'Mare do Amanhecer',
+    scenery: 'joao-pessoa',
+    summary: 'Joao Pessoa combina Ponta do Seixas, Cabo Branco, falesias, manguezais, maritimidade e turismo costeiro em uma fase de mare dinamica.',
+    challenge: 'Atravesse a orla lendo o ciclo da mare, protegendo manguezais e controlando a erosao costeira para derrotar a Sombra da Falesia.',
+    visualHook: 'Nascer do sol no ponto mais oriental do Brasil, falesias claras, mar calmo, recifes e mangue iluminado.',
+    collectLabel: 'marcos do amanhecer',
+    clues: ['Ponta do Seixas', 'Cabo Branco', 'Manguezais'],
+    question: {
+      statement: 'Joao Pessoa e capital de qual estado brasileiro?',
+      choices: ['Pernambuco', 'Paraiba', 'Rio Grande do Norte', 'Alagoas'],
+      answerIndex: 1,
+      explanation: 'Joao Pessoa e a capital da Paraiba e uma das capitais mais orientais das Americas.',
+    },
+  },
+  {
+    id: 'maceio',
+    route: NORDESTE_CAPITAL_ROUTE_ID,
+    city: 'Maceio',
+    state: 'AL',
+    title: 'Jangada nas Piscinas Naturais',
+    scenery: 'maceio',
+    summary: 'Maceio combina Ponta Verde, Pajucara, piscinas naturais, recifes, Lagoa Mundau e turismo costeiro em uma fase de navegacao por canais de mare.',
+    challenge: 'Navegue de jangada pelos canais seguros, respeite a mare, proteja recifes e lagoa, e finalize o Guardiao Afogado da Lagoa com conhecimento geografico.',
+    visualHook: 'Mar turquesa, jangadas, recifes rasos, coqueiros, areia clara, skyline costeiro e reflexos da Lagoa Mundau.',
+    collectLabel: 'marcos das aguas claras',
+    clues: ['Pajucara', 'Ponta Verde', 'Lagoa Mundau'],
+    question: {
+      statement: 'Maceio e capital de qual estado brasileiro?',
+      choices: ['Sergipe', 'Alagoas', 'Pernambuco', 'Paraiba'],
+      answerIndex: 1,
+      explanation: 'Maceio e a capital de Alagoas e se destaca por praias, recifes, lagoas e turismo costeiro.',
     },
   },
 ];

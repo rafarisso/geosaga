@@ -29,7 +29,15 @@ const CAPITAL_LINK_IDS: CapitalId[] = [
   'salvador',
   'recife',
   'fortaleza',
+  'natal',
+  'joao-pessoa',
+  'maceio',
 ];
+
+function normalizeCapitalLink(value: string | null): string | null {
+  if (!value) return null;
+  return value.split('http://')[0].split('https://')[0].trim();
+}
 
 function isCapitalLinkId(value: string | null): value is CapitalId {
   return !!value && CAPITAL_LINK_IDS.includes(value as CapitalId);
@@ -39,7 +47,7 @@ function readInitialNavigation(): { screen: Screen; capital: CapitalId | null } 
   if (typeof window === 'undefined') return { screen: 'start', capital: null };
 
   const params = new URLSearchParams(window.location.search);
-  const capital = params.get('capital');
+  const capital = normalizeCapitalLink(params.get('capital'));
   if (params.get('screen') === 'capitals' || capital) {
     return { screen: 'capitals', capital: isCapitalLinkId(capital) ? capital : null };
   }

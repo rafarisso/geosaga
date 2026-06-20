@@ -3,6 +3,9 @@ import capitalsSudesteBg from '../assets/backgrounds/capitals-sudeste-cinematic-
 import centroOesteCinematicBg from '../assets/backgrounds/centro-oeste-cinematic-bg.png';
 import nordesteCinematicBg from '../assets/backgrounds/nordeste-cinematic-bg.png';
 import sulCinematicBg from '../assets/backgrounds/sul-cinematic-bg.png';
+import { CapitalDuneRunnerStage } from '../components/game/CapitalDuneRunnerStage';
+import { CapitalLagoonStage } from '../components/game/CapitalLagoonStage';
+import { CapitalTideStage } from '../components/game/CapitalTideStage';
 import { CapitalPlayableStage } from '../components/game/CapitalPlayableStage';
 import { PLAYABLE_CAPITAL_IDS } from '../components/game/capitalStageEngine';
 import { CAPITAL_MISSIONS, CAPITAL_ROUTE_IDS, CAPITAL_ROUTE_META } from '../data/capitalChallenges';
@@ -118,12 +121,35 @@ export function CapitalChallengeScreen({ progress, initialCapitalId, onBack, onC
       </section>
 
       {isPlayableCapital(selected.id) ? (
-        <CapitalPlayableStage
-          key={selected.id}
-          mission={selected}
-          completed={selectedCompleted}
-          onComplete={onCompleteMission}
-        />
+        selected.id === 'natal' ? (
+          <CapitalDuneRunnerStage
+            key={selected.id}
+            mission={selected}
+            completed={selectedCompleted}
+            onComplete={onCompleteMission}
+          />
+        ) : selected.id === 'joao-pessoa' ? (
+          <CapitalTideStage
+            key={selected.id}
+            mission={selected}
+            completed={selectedCompleted}
+            onComplete={onCompleteMission}
+          />
+        ) : selected.id === 'maceio' ? (
+          <CapitalLagoonStage
+            key={selected.id}
+            mission={selected}
+            completed={selectedCompleted}
+            onComplete={onCompleteMission}
+          />
+        ) : (
+          <CapitalPlayableStage
+            key={selected.id}
+            mission={selected}
+            completed={selectedCompleted}
+            onComplete={onCompleteMission}
+          />
+        )
       ) : (
         <section className="capital-planned-stage">
           <div>

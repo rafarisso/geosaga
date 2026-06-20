@@ -16,7 +16,10 @@ export type CapitalId =
   | 'campo-grande'
   | 'salvador'
   | 'recife'
-  | 'fortaleza';
+  | 'fortaleza'
+  | 'natal'
+  | 'joao-pessoa'
+  | 'maceio';
 
 export type Difficulty = 1 | 2 | 3;
 
