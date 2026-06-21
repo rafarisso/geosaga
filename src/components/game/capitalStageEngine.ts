@@ -30,7 +30,7 @@ type PickupKind = 'geo' | 'heal' | 'boost';
 type ParticleKind = 'damage' | 'spark' | 'text';
 export type CapitalStepOutcome = 'playing' | 'requestSpecial' | 'victory' | 'defeat';
 
-export const PLAYABLE_CAPITAL_IDS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia', 'goiania', 'cuiaba', 'campo-grande', 'salvador', 'recife', 'fortaleza', 'natal', 'joao-pessoa', 'maceio'];
+export const PLAYABLE_CAPITAL_IDS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia', 'goiania', 'cuiaba', 'campo-grande', 'salvador', 'recife', 'fortaleza', 'natal', 'joao-pessoa', 'maceio', 'aracaju', 'teresina', 'sao-luis'];
 
 export interface CapitalEnemyDefinition {
   id: string;

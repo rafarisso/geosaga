@@ -6,7 +6,7 @@ export interface CapitalMission {
   city: string;
   state: string;
   title: string;
-  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia' | 'goiania' | 'cuiaba' | 'campo-grande' | 'salvador' | 'recife' | 'fortaleza' | 'natal' | 'joao-pessoa' | 'maceio';
+  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia' | 'goiania' | 'cuiaba' | 'campo-grande' | 'salvador' | 'recife' | 'fortaleza' | 'natal' | 'joao-pessoa' | 'maceio' | 'aracaju' | 'teresina' | 'sao-luis';
   summary: string;
   challenge: string;
   visualHook: string;
@@ -41,7 +41,7 @@ export const CAPITAL_ROUTE_META: Record<CapitalRouteId, { name: string; label: s
   nordeste: {
     name: 'Nordeste',
     label: 'Litoral, historia, ventos e sertao',
-    description: 'Salvador, Recife, Fortaleza, Natal, Joao Pessoa e Maceio avancam a rota do Nordeste com baia, rios, pontes, orla, vento, dunas, falesias, piscinas naturais e geografia costeira.',
+    description: 'Salvador, Recife, Fortaleza, Natal, Joao Pessoa, Maceio, Aracaju, Teresina e Sao Luis fecham a rota do Nordeste com baia, rios, pontes, orla, vento, dunas, falesias, piscinas naturais, estuario, calor urbano, geografia fluvial, ilha, patrimonio e mare.',
   },
 };
 
@@ -372,6 +372,64 @@ export const CAPITAL_MISSIONS: CapitalMission[] = [
       choices: ['Sergipe', 'Alagoas', 'Pernambuco', 'Paraiba'],
       answerIndex: 1,
       explanation: 'Maceio e a capital de Alagoas e se destaca por praias, recifes, lagoas e turismo costeiro.',
+    },
+  },
+
+  {
+    id: 'aracaju',
+    route: NORDESTE_CAPITAL_ROUTE_ID,
+    city: 'Aracaju',
+    state: 'SE',
+    title: 'Patrulha da Orla',
+    scenery: 'aracaju',
+    summary: 'Aracaju combina Orla de Atalaia, Rio Sergipe, manguezais, ciclovia, ponte e planejamento costeiro em uma fase de patrulha por faixas.',
+    challenge: 'Patrulhe ciclovia, calcadao e manguezal, enfrentando residuos, drenagem urbana, calor da orla e assoreamento para derrotar o Senhor do Estuario.',
+    visualHook: 'Orla de Atalaia ao por do sol, Arcos da Orla, mar, Rio Sergipe, manguezal e ponte em um cenario costeiro vibrante.',
+    collectLabel: 'marcos do estuario',
+    clues: ['Orla de Atalaia', 'Rio Sergipe', 'Manguezais'],
+    question: {
+      statement: 'Aracaju e capital de qual estado brasileiro?',
+      choices: ['Alagoas', 'Bahia', 'Sergipe', 'Pernambuco'],
+      answerIndex: 2,
+      explanation: 'Aracaju e a capital de Sergipe e se destaca por orla planejada, rios, manguezais e relacao com o Atlantico.',
+    },
+  },
+  {
+    id: 'teresina',
+    route: NORDESTE_CAPITAL_ROUTE_ID,
+    city: 'Teresina',
+    state: 'PI',
+    title: 'Travessia dos Dois Rios',
+    scenery: 'teresina',
+    summary: 'Teresina combina Rio Parnaiba, Rio Poti, Ponte Estaiada, parques urbanos, calor intenso e a identidade de Cidade Verde em uma fase de travessia por faixas.',
+    challenge: 'Atravesse avenida quente, ponte e beira-rio, controlando calor, mobilidade, agua parada e ilhas de calor para derrotar o Forno do Meio-Norte.',
+    visualHook: 'Por do sol quente, encontro dos rios Parnaiba e Poti, Ponte Estaiada, parques ribeirinhos, skyline urbano e atmosfera de calor realista.',
+    collectLabel: 'marcos dos dois rios',
+    clues: ['Rio Parnaiba', 'Rio Poti', 'Ponte Estaiada'],
+    question: {
+      statement: 'Teresina e capital de qual estado brasileiro?',
+      choices: ['Piaui', 'Maranhao', 'Ceara', 'Tocantins'],
+      answerIndex: 0,
+      explanation: 'Teresina e a capital do Piaui e se destaca pela relacao com os rios Parnaiba e Poti.',
+    },
+  },
+  {
+    id: 'sao-luis',
+    route: NORDESTE_CAPITAL_ROUTE_ID,
+    city: 'Sao Luis',
+    state: 'MA',
+    title: 'Mare dos Azulejos',
+    scenery: 'sao-luis',
+    summary: 'Sao Luis combina Centro Historico, fachadas de azulejos, Baia de Sao Marcos, manguezais, ilha costeira e mare forte em uma fase patrimonial e oceanica.',
+    challenge: 'Leia a mare, proteja os azulejos, atravesse ladeiras e manguezais, e derrote o Barao da Mare Alta com conhecimento geografico.',
+    visualHook: 'Centro historico com casarões azulejados, ruas de pedra, reflexos azuis, Baia de Sao Marcos, manguezais e por do sol umido sobre a ilha.',
+    collectLabel: 'marcos da ilha dos azulejos',
+    clues: ['Centro Historico', 'Baia de Sao Marcos', 'Azulejos'],
+    question: {
+      statement: 'Sao Luis e capital de qual estado brasileiro?',
+      choices: ['Maranhao', 'Piaui', 'Para', 'Ceara'],
+      answerIndex: 0,
+      explanation: 'Sao Luis e a capital do Maranhao e se destaca por sua ilha, seu centro historico e sua relacao com a Baia de Sao Marcos.',
     },
   },
 ];

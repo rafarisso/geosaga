@@ -4,7 +4,10 @@ import centroOesteCinematicBg from '../assets/backgrounds/centro-oeste-cinematic
 import nordesteCinematicBg from '../assets/backgrounds/nordeste-cinematic-bg.png';
 import sulCinematicBg from '../assets/backgrounds/sul-cinematic-bg.png';
 import { CapitalDuneRunnerStage } from '../components/game/CapitalDuneRunnerStage';
+import { CapitalEstuaryStage } from '../components/game/CapitalEstuaryStage';
 import { CapitalLagoonStage } from '../components/game/CapitalLagoonStage';
+import { CapitalRiverHeatStage } from '../components/game/CapitalRiverHeatStage';
+import { CapitalAzulejoTideStage } from '../components/game/CapitalAzulejoTideStage';
 import { CapitalTideStage } from '../components/game/CapitalTideStage';
 import { CapitalPlayableStage } from '../components/game/CapitalPlayableStage';
 import { PLAYABLE_CAPITAL_IDS } from '../components/game/capitalStageEngine';
@@ -137,6 +140,27 @@ export function CapitalChallengeScreen({ progress, initialCapitalId, onBack, onC
           />
         ) : selected.id === 'maceio' ? (
           <CapitalLagoonStage
+            key={selected.id}
+            mission={selected}
+            completed={selectedCompleted}
+            onComplete={onCompleteMission}
+          />
+        ) : selected.id === 'aracaju' ? (
+          <CapitalEstuaryStage
+            key={selected.id}
+            mission={selected}
+            completed={selectedCompleted}
+            onComplete={onCompleteMission}
+          />
+        ) : selected.id === 'teresina' ? (
+          <CapitalRiverHeatStage
+            key={selected.id}
+            mission={selected}
+            completed={selectedCompleted}
+            onComplete={onCompleteMission}
+          />
+        ) : selected.id === 'sao-luis' ? (
+          <CapitalAzulejoTideStage
             key={selected.id}
             mission={selected}
             completed={selectedCompleted}

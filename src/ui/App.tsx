@@ -32,6 +32,9 @@ const CAPITAL_LINK_IDS: CapitalId[] = [
   'natal',
   'joao-pessoa',
   'maceio',
+  'aracaju',
+  'teresina',
+  'sao-luis',
 ];
 
 function normalizeCapitalLink(value: string | null): string | null {

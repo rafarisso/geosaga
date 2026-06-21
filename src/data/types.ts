@@ -19,7 +19,10 @@ export type CapitalId =
   | 'fortaleza'
   | 'natal'
   | 'joao-pessoa'
-  | 'maceio';
+  | 'maceio'
+  | 'aracaju'
+  | 'teresina'
+  | 'sao-luis';
 
 export type Difficulty = 1 | 2 | 3;
 
