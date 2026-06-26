@@ -20,8 +20,8 @@ export const EMPTY_PROGRESS: GameProgress = {
 };
 
 const ALL_REGIONS: RegionId[] = ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'];
-const ALL_CAPITALS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia', 'goiania', 'cuiaba', 'campo-grande', 'salvador', 'recife', 'fortaleza', 'natal', 'joao-pessoa', 'maceio', 'aracaju', 'teresina', 'sao-luis'];
-const ALL_CAPITAL_ROUTES: CapitalRouteId[] = ['sudeste', 'sul', 'centro-oeste', 'nordeste'];
+const ALL_CAPITALS: CapitalId[] = ['sao-paulo', 'rio-de-janeiro', 'belo-horizonte', 'vitoria', 'curitiba', 'florianopolis', 'porto-alegre', 'brasilia', 'goiania', 'cuiaba', 'campo-grande', 'salvador', 'recife', 'fortaleza', 'natal', 'joao-pessoa', 'maceio', 'aracaju', 'teresina', 'sao-luis', 'belem', 'manaus', 'boa-vista', 'macapa', 'porto-velho', 'rio-branco', 'palmas'];
+const ALL_CAPITAL_ROUTES: CapitalRouteId[] = ['sudeste', 'sul', 'centro-oeste', 'nordeste', 'norte'];
 
 function isRegionId(value: unknown): value is RegionId {
   return ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'].includes(String(value));

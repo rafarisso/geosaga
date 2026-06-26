@@ -1,5 +1,6 @@
 import { useState, type CSSProperties } from 'react';
 import capitalsSudesteBg from '../assets/backgrounds/capitals-sudeste-cinematic-bg.png';
+import norteCinematicBg from '../assets/backgrounds/norte-cinematic-bg.png';
 import centroOesteCinematicBg from '../assets/backgrounds/centro-oeste-cinematic-bg.png';
 import nordesteCinematicBg from '../assets/backgrounds/nordeste-cinematic-bg.png';
 import sulCinematicBg from '../assets/backgrounds/sul-cinematic-bg.png';
@@ -28,6 +29,7 @@ const CAPITAL_ROUTE_BACKGROUNDS: Record<CapitalRouteId, string> = {
   sul: sulCinematicBg,
   'centro-oeste': centroOesteCinematicBg,
   nordeste: nordesteCinematicBg,
+  norte: norteCinematicBg,
 };
 
 function isPlayableCapital(id: CapitalId): boolean {

@@ -6,7 +6,7 @@ export interface CapitalMission {
   city: string;
   state: string;
   title: string;
-  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia' | 'goiania' | 'cuiaba' | 'campo-grande' | 'salvador' | 'recife' | 'fortaleza' | 'natal' | 'joao-pessoa' | 'maceio' | 'aracaju' | 'teresina' | 'sao-luis';
+  scenery: 'sao-paulo' | 'rio' | 'belo-horizonte' | 'vitoria' | 'curitiba' | 'florianopolis' | 'porto-alegre' | 'brasilia' | 'goiania' | 'cuiaba' | 'campo-grande' | 'salvador' | 'recife' | 'fortaleza' | 'natal' | 'joao-pessoa' | 'maceio' | 'aracaju' | 'teresina' | 'sao-luis' | 'belem' | 'manaus' | 'boa-vista' | 'macapa' | 'porto-velho' | 'rio-branco' | 'palmas';
   summary: string;
   challenge: string;
   visualHook: string;
@@ -20,7 +20,7 @@ export interface CapitalMission {
   };
 }
 
-export const CAPITAL_ROUTE_IDS: CapitalRouteId[] = ['sudeste', 'sul', 'centro-oeste', 'nordeste'];
+export const CAPITAL_ROUTE_IDS: CapitalRouteId[] = ['sudeste', 'sul', 'centro-oeste', 'nordeste', 'norte'];
 
 export const CAPITAL_ROUTE_META: Record<CapitalRouteId, { name: string; label: string; description: string }> = {
   sudeste: {
@@ -43,12 +43,18 @@ export const CAPITAL_ROUTE_META: Record<CapitalRouteId, { name: string; label: s
     label: 'Litoral, historia, ventos e sertao',
     description: 'Salvador, Recife, Fortaleza, Natal, Joao Pessoa, Maceio, Aracaju, Teresina e Sao Luis fecham a rota do Nordeste com baia, rios, pontes, orla, vento, dunas, falesias, piscinas naturais, estuario, calor urbano, geografia fluvial, ilha, patrimonio e mare.',
   },
+  norte: {
+    name: 'Norte',
+    label: 'Rios, floresta e cidades amazonicas',
+    description: 'Belem, Manaus, Boa Vista, Macapa, Porto Velho, Rio Branco e Palmas entram em uma expedicao fluvial com rotas, correntezas, marcos e chefes ligados a geografia da Amazonia e do Tocantins.',
+  },
 };
 
 export const CAPITAL_ROUTE_ID: CapitalRouteId = 'sudeste';
 export const SUL_CAPITAL_ROUTE_ID: CapitalRouteId = 'sul';
 export const CENTRO_OESTE_CAPITAL_ROUTE_ID: CapitalRouteId = 'centro-oeste';
 export const NORDESTE_CAPITAL_ROUTE_ID: CapitalRouteId = 'nordeste';
+export const NORTE_CAPITAL_ROUTE_ID: CapitalRouteId = 'norte';
 
 export const CAPITAL_MISSIONS: CapitalMission[] = [
   {
@@ -430,6 +436,139 @@ export const CAPITAL_MISSIONS: CapitalMission[] = [
       choices: ['Maranhao', 'Piaui', 'Para', 'Ceara'],
       answerIndex: 0,
       explanation: 'Sao Luis e a capital do Maranhao e se destaca por sua ilha, seu centro historico e sua relacao com a Baia de Sao Marcos.',
+    },
+  },
+  {
+    id: 'belem',
+    route: NORTE_CAPITAL_ROUTE_ID,
+    city: 'Belem',
+    state: 'PA',
+    title: 'Portais do Estuario Amazonico',
+    scenery: 'belem',
+    summary: 'Belem combina Baia do Guajara, Ver-o-Peso, ilhas, manguezais, chuva equatorial e cultura ribeirinha urbana.',
+    challenge: 'Navegue pelo estuario, escolha canais seguros, colete marcos da cidade e use conhecimento para conter a Mare do Mercado.',
+    visualHook: 'Mercado Ver-o-Peso, chuva tropical, barcos coloridos, baia larga, ilhas verdes e luz dourada depois do temporal.',
+    collectLabel: 'marcos do estuario',
+    clues: ['Ver-o-Peso', 'Baia do Guajara', 'Ilhas e rios'],
+    question: {
+      statement: 'Belem e capital de qual estado brasileiro?',
+      choices: ['Amazonas', 'Para', 'Amapa', 'Maranhao'],
+      answerIndex: 1,
+      explanation: 'Belem e a capital do Para e uma das principais metropoles da Amazonia oriental.',
+    },
+  },
+  {
+    id: 'manaus',
+    route: NORTE_CAPITAL_ROUTE_ID,
+    city: 'Manaus',
+    state: 'AM',
+    title: 'Encontro das Aguas',
+    scenery: 'manaus',
+    summary: 'Manaus une Rio Negro, Rio Solimoes, porto, floresta ao redor, Teatro Amazonas e zona urbana no coracao da Amazonia.',
+    challenge: 'Alterne entre aguas escuras e barrentas, controle correnteza e logistica fluvial para derrotar o Monstro do Encontro.',
+    visualHook: 'Encontro das Aguas visto em perspectiva, barcos, skyline tropical, floresta densa e luz umida sobre o Rio Negro.',
+    collectLabel: 'marcos dos grandes rios',
+    clues: ['Rio Negro', 'Rio Solimoes', 'Encontro das Aguas'],
+    question: {
+      statement: 'Manaus e capital de qual estado brasileiro?',
+      choices: ['Amazonas', 'Roraima', 'Para', 'Acre'],
+      answerIndex: 0,
+      explanation: 'Manaus e a capital do Amazonas e se localiza em area estrategica da bacia amazonica.',
+    },
+  },
+  {
+    id: 'boa-vista',
+    route: NORTE_CAPITAL_ROUTE_ID,
+    city: 'Boa Vista',
+    state: 'RR',
+    title: 'Lavrado e Rio Branco',
+    scenery: 'boa-vista',
+    summary: 'Boa Vista se destaca pelo planejamento radial, pelo Rio Branco, pelo lavrado roraimense e pela posicao mais ao norte do Brasil.',
+    challenge: 'Cruze rio, savana amazonica e eixos planejados enquanto identifica fronteira, clima e relevo do extremo norte.',
+    visualHook: 'Avenidas radiais, Rio Branco largo, ceu aberto, lavrado, buritizais e serras distantes no horizonte.',
+    collectLabel: 'marcos do lavrado',
+    clues: ['Rio Branco', 'Lavrado', 'Extremo norte'],
+    question: {
+      statement: 'Boa Vista e capital de qual estado brasileiro?',
+      choices: ['Rondonia', 'Amapa', 'Roraima', 'Tocantins'],
+      answerIndex: 2,
+      explanation: 'Boa Vista e a capital de Roraima e fica na porcao mais setentrional entre as capitais brasileiras.',
+    },
+  },
+  {
+    id: 'macapa',
+    route: NORTE_CAPITAL_ROUTE_ID,
+    city: 'Macapa',
+    state: 'AP',
+    title: 'Linha do Equador',
+    scenery: 'macapa',
+    summary: 'Macapa combina Rio Amazonas, Fortaleza de Sao Jose, areas de ressaca, porto e a Linha do Equador atravessando a cidade.',
+    challenge: 'Equilibre hemisferios, ressacas urbanas e margem do Amazonas para derrotar o Guardiao do Marco Zero.',
+    visualHook: 'Marco Zero do Equador, Fortaleza de Sao Jose, margem do Rio Amazonas, ceu dramatico e areas alagadas urbanas.',
+    collectLabel: 'marcos do Equador',
+    clues: ['Marco Zero', 'Rio Amazonas', 'Fortaleza de Sao Jose'],
+    question: {
+      statement: 'Macapa e capital de qual estado brasileiro?',
+      choices: ['Amapa', 'Para', 'Amazonas', 'Roraima'],
+      answerIndex: 0,
+      explanation: 'Macapa e a capital do Amapa e e conhecida pela passagem da Linha do Equador.',
+    },
+  },
+  {
+    id: 'porto-velho',
+    route: NORTE_CAPITAL_ROUTE_ID,
+    city: 'Porto Velho',
+    state: 'RO',
+    title: 'Madeira-Mamore em Pressao',
+    scenery: 'porto-velho',
+    summary: 'Porto Velho se organiza junto ao Rio Madeira, a memoria da Estrada de Ferro Madeira-Mamore, portos, cheias e energia.',
+    challenge: 'Desvie de troncos, balsas e cheias do Madeira enquanto conecta historia ferroviaria, hidrovias e ocupacao amazonica.',
+    visualHook: 'Rio Madeira barrento, trilhos antigos, guindastes, floresta ribeirinha, vapor quente e por do sol avermelhado.',
+    collectLabel: 'marcos do Madeira',
+    clues: ['Rio Madeira', 'Madeira-Mamore', 'Hidrovias'],
+    question: {
+      statement: 'Porto Velho e capital de qual estado brasileiro?',
+      choices: ['Acre', 'Rondonia', 'Mato Grosso', 'Amazonas'],
+      answerIndex: 1,
+      explanation: 'Porto Velho e a capital de Rondonia e tem forte relacao com o Rio Madeira.',
+    },
+  },
+  {
+    id: 'rio-branco',
+    route: NORTE_CAPITAL_ROUTE_ID,
+    city: 'Rio Branco',
+    state: 'AC',
+    title: 'Seringais da Amazonia Ocidental',
+    scenery: 'rio-branco',
+    summary: 'Rio Branco combina Rio Acre, memoria dos seringais, pontes urbanas, floresta ocidental e desafios de cheias sazonais.',
+    challenge: 'Atravesse pontes, igarapes e areas de varzea recuperando a leitura da Amazonia ocidental antes que a cheia domine.',
+    visualHook: 'Rio Acre sinuoso, passarela iluminada, casas ribeirinhas, floresta densa e atmosfera de chuva no fim da tarde.',
+    collectLabel: 'marcos do Acre',
+    clues: ['Rio Acre', 'Seringais', 'Amazonia ocidental'],
+    question: {
+      statement: 'Rio Branco e capital de qual estado brasileiro?',
+      choices: ['Rondonia', 'Amazonas', 'Acre', 'Para'],
+      answerIndex: 2,
+      explanation: 'Rio Branco e a capital do Acre e cresceu associada ao Rio Acre e a historia da borracha.',
+    },
+  },
+  {
+    id: 'palmas',
+    route: NORTE_CAPITAL_ROUTE_ID,
+    city: 'Palmas',
+    state: 'TO',
+    title: 'Cerrado, Lago e Capital Planejada',
+    scenery: 'palmas',
+    summary: 'Palmas fecha a rota do Norte com urbanismo planejado, Lago de Palmas, Rio Tocantins, calor, Cerrado e conexao com o Jalapao.',
+    challenge: 'Controle calor, lago, avenidas largas e Cerrado para mostrar que o Norte tambem tem paisagens alem da floresta densa.',
+    visualHook: 'Lago ao entardecer, Ponte Fernando Henrique Cardoso, avenidas planejadas, cerrado dourado e serras distantes.',
+    collectLabel: 'marcos do Tocantins',
+    clues: ['Lago de Palmas', 'Rio Tocantins', 'Capital planejada'],
+    question: {
+      statement: 'Palmas e capital de qual estado brasileiro?',
+      choices: ['Tocantins', 'Goias', 'Para', 'Maranhao'],
+      answerIndex: 0,
+      explanation: 'Palmas e a capital do Tocantins, estado da Regiao Norte criado pela Constituicao de 1988.',
     },
   },
 ];

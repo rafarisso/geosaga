@@ -1,15 +1,17 @@
 import { useState } from 'react';
-import type { CapitalId, GameDifficulty, QuizResult, RegionId } from '../data/types';
+import { CAPITAL_MISSIONS } from '../data/capitalChallenges';
+import type { CapitalId, CapitalMissionResult, GameDifficulty, QuizResult, RegionId } from '../data/types';
 import { gameEvents, EVENTS } from '../game/events';
 import { useProgress } from '../hooks/useProgress';
 import { GameStage } from '../components/game/GameStage';
 import { CapitalChallengeScreen } from './CapitalChallengeScreen';
+import { CapitalFinaleScreen } from './CapitalFinaleScreen';
 import { MasteryCelebrationScreen } from './MasteryCelebrationScreen';
 import { QuizPanel } from './QuizPanel';
 import { RegionSelectScreen } from './RegionSelectScreen';
 import { StartScreen } from './StartScreen';
 
-type Screen = 'start' | 'regions' | 'stage' | 'mastery' | 'capitals';
+type Screen = 'start' | 'regions' | 'stage' | 'mastery' | 'capitals' | 'capital-finale';
 
 const ALL_REGIONS: RegionId[] = ['norte', 'nordeste', 'centro-oeste', 'sudeste', 'sul'];
 
@@ -35,6 +37,13 @@ const CAPITAL_LINK_IDS: CapitalId[] = [
   'aracaju',
   'teresina',
   'sao-luis',
+  'belem',
+  'manaus',
+  'boa-vista',
+  'macapa',
+  'porto-velho',
+  'rio-branco',
+  'palmas',
 ];
 
 function normalizeCapitalLink(value: string | null): string | null {
@@ -101,6 +110,15 @@ export default function App() {
     }
   }
 
+  function handleCapitalMissionComplete(result: CapitalMissionResult) {
+    const completedAfter = new Set(result.completed ? [...progress.completedCapitals, result.capital] : progress.completedCapitals);
+    completeCapitalMission(result);
+
+    if (result.completed && CAPITAL_MISSIONS.every((mission) => completedAfter.has(mission.id))) {
+      setScreen('capital-finale');
+    }
+  }
+
   if (screen === 'stage' && stageRegion) {
     return (
       <div className="app-shell">
@@ -137,7 +155,20 @@ export default function App() {
           progress={progress}
           initialCapitalId={initialNavigation.capital}
           onBack={() => setScreen('regions')}
-          onCompleteMission={completeCapitalMission}
+          onCompleteMission={handleCapitalMissionComplete}
+        />
+      </div>
+    );
+  }
+
+
+  if (screen === 'capital-finale') {
+    return (
+      <div className="app-shell">
+        <CapitalFinaleScreen
+          progress={progress}
+          onBackToCapitals={() => setScreen('capitals')}
+          onBackToStart={() => setScreen('start')}
         />
       </div>
     );

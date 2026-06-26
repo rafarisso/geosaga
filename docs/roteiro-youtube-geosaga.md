@@ -11,7 +11,7 @@ Ele esta dividido em quatro usos principais:
 - **Base para slides:** traz uma sugestao de sequencia de apresentacao, slide por slide.
 - **Memorial do processo criativo:** registra escolhas de prompt, geracao de imagens, ajustes de jogabilidade e melhorias feitas ao longo do desenvolvimento.
 
-> Observacao de estado atual: este documento descreve o projeto no momento atual do desenvolvimento. A fase de Aracaju foi implementada e validada localmente, mas ainda nao foi commitada nem enviada para producao no momento desta redacao.
+> Observacao de estado atual: este documento descreve o projeto com a campanha das 27 capitais concluida, incluindo a Regiao Norte, Palmas e a tela final de encerramento com contato do projeto.
 
 ---
 
@@ -138,24 +138,17 @@ A proposta e percorrer as capitais por regiao, usando cenarios mais especificos 
 | Sudeste | Sao Paulo, Rio de Janeiro, Belo Horizonte, Vitoria | Completa |
 | Sul | Curitiba, Florianopolis, Porto Alegre | Completa |
 | Centro-Oeste | Brasilia, Goiania, Cuiaba, Campo Grande | Completa |
-| Nordeste | Salvador, Recife, Fortaleza, Natal, Joao Pessoa, Maceio, Aracaju | Em andamento |
-| Norte | Ainda nao implantada | Pendente |
+| Nordeste | Salvador, Recife, Fortaleza, Natal, Joao Pessoa, Maceio, Aracaju, Teresina, Sao Luis | Completa |
+| Norte | Belem, Manaus, Boa Vista, Macapa, Porto Velho, Rio Branco, Palmas | Completa |
 
-## Capitais restantes para completar o Brasil
+A campanha principal das capitais chegou ao ciclo completo: 27 capitais jogaveis, incluindo Brasilia. O jogador percorre todas as regioes e, ao concluir a ultima capital, recebe uma tela final de encerramento com resumo da campanha, estrelas, pontuacao e contato do projeto.
 
-Considerando as capitais ja implementadas, ainda faltam:
+## Encerramento da campanha
 
-- Teresina
-- Sao Luis
-- Belem
-- Manaus
-- Boa Vista
-- Macapa
-- Porto Velho
-- Rio Branco
-- Palmas
+A tela final aparece quando todas as 27 capitais foram concluidas. Ela reforca a conquista do jogador, fecha a jornada de aprendizagem e apresenta a assinatura:
 
-Ao final, a campanha tera 27 capitais jogaveis, incluindo Brasilia.
+- Desenvolvedor e Prof Rafael de Geografia
+- risso_rafa@hotmail.com
 
 ---
 
@@ -1164,15 +1157,15 @@ Depois da gravacao:
 
 ## Medio prazo
 
-- Iniciar a Regiao Norte.
+- Polir visualmente a Regiao Norte em testes com alunos.
 - Criar uma fase com mecanica de surf em uma capital litoranea.
 - Criar mais poderes especiais por guardiao.
 - Adicionar recompensas apos concluir regioes.
-- Melhorar tela de parabens e progressao da campanha.
+- Evoluir a tela final com conquistas, tempo de campanha e chamada para revisao.
 
 ## Longo prazo
 
-- Completar as 27 capitais.
+- Criar expansoes alem das 27 capitais, como desafios de revisao e missoes especiais.
 - Adicionar ranking local.
 - Adicionar conquistas.
 - Criar modo revisao para estudar perguntas.
@@ -1236,5 +1229,5 @@ A direcao atual e tornar cada capital unica, combinando:
 - quiz integrado ao combate;
 - progressao por regioes.
 
-O jogo ja possui regioes completas e uma campanha de capitais em expansao. O proximo grande marco e concluir o Nordeste, iniciar a Regiao Norte e continuar variando a jogabilidade para que as 27 capitais nao sejam apenas repeticoes visuais.
+O jogo ja possui regioes completas e a campanha das 27 capitais concluida. O proximo grande marco e validar a experiencia com jogadores, otimizar os assets e continuar criando variacoes de jogabilidade para futuras expansoes.
 

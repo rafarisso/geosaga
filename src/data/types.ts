@@ -1,6 +1,6 @@
 export type RegionId = 'norte' | 'nordeste' | 'centro-oeste' | 'sudeste' | 'sul';
 
-export type CapitalRouteId = 'sudeste' | 'sul' | 'centro-oeste' | 'nordeste';
+export type CapitalRouteId = 'sudeste' | 'sul' | 'centro-oeste' | 'nordeste' | 'norte';
 
 export type CapitalId =
   | 'sao-paulo'
@@ -22,7 +22,14 @@ export type CapitalId =
   | 'maceio'
   | 'aracaju'
   | 'teresina'
-  | 'sao-luis';
+  | 'sao-luis'
+  | 'belem'
+  | 'manaus'
+  | 'boa-vista'
+  | 'macapa'
+  | 'porto-velho'
+  | 'rio-branco'
+  | 'palmas';
 
 export type Difficulty = 1 | 2 | 3;
 

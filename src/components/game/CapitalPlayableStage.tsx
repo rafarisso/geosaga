@@ -13,7 +13,21 @@ import senhorAlagadoBoss from '../../assets/bosses/capital-recife-boss-senhor-al
 import trovejanteParedaoBoss from '../../assets/bosses/capital-salvador-boss-trovejante-paredao.png';
 import sombraBaiaBoss from '../../assets/bosses/capital-rio-boss-sombra-baia.png';
 import sentinelaManguezalBoss from '../../assets/bosses/capital-vitoria-boss-sentinela-manguezal.png';
+import mareDoMercadoBoss from '../../assets/bosses/capital-belem-boss-mare-do-mercado.png';
+import guardiaoAguasEscurasBoss from '../../assets/bosses/capital-manaus-boss-guardiao-aguas-escuras.png';
+import sentinelaLavradoBoss from '../../assets/bosses/capital-boa-vista-boss-sentinela-lavrado.png';
+import colossoLinhaBoss from '../../assets/bosses/capital-macapa-boss-colosso-linha.png';
+import locomotivaMadeiraBoss from '../../assets/bosses/capital-porto-velho-boss-locomotiva-madeira.png';
+import seringalSombrioBoss from '../../assets/bosses/capital-rio-branco-boss-seringal-sombrio.png';
+import solTocantinsBoss from '../../assets/bosses/capital-palmas-boss-sol-tocantins.png';
 import beloHorizonteStageBg from '../../assets/backgrounds/capital-belo-horizonte-stage-bg.png';
+import belemStageBg from '../../assets/backgrounds/capital-belem-stage-bg.png';
+import manausStageBg from '../../assets/backgrounds/capital-manaus-stage-bg.png';
+import boaVistaStageBg from '../../assets/backgrounds/capital-boa-vista-stage-bg.png';
+import macapaStageBg from '../../assets/backgrounds/capital-macapa-stage-bg.png';
+import portoVelhoStageBg from '../../assets/backgrounds/capital-porto-velho-stage-bg.png';
+import rioBrancoStageBg from '../../assets/backgrounds/capital-rio-branco-stage-bg.png';
+import palmasStageBg from '../../assets/backgrounds/capital-palmas-stage-bg.png';
 import curitibaStageBg from '../../assets/backgrounds/capital-curitiba-stage-bg.png';
 import florianopolisStageBg from '../../assets/backgrounds/capital-florianopolis-stage-bg.png';
 import fortalezaStageBg from '../../assets/backgrounds/capital-fortaleza-stage-bg.png';
@@ -55,6 +69,34 @@ import carroParedaoEnemy from '../../assets/enemies/capital-salvador-enemy-carro
 import ladeiraTravadaEnemy from '../../assets/enemies/capital-salvador-enemy-ladeira-travada.png';
 import mareBaiaEnemy from '../../assets/enemies/capital-salvador-enemy-mare-baia.png';
 import ondaGraveEnemy from '../../assets/enemies/capital-salvador-enemy-onda-grave.png';
+import belemBarcoLotadoEnemy from '../../assets/enemies/capital-belem-enemy-barco-lotado.png';
+import belemCanalContaminadoEnemy from '../../assets/enemies/capital-belem-enemy-canal-contaminado.png';
+import belemChuvaRepentinaEnemy from '../../assets/enemies/capital-belem-enemy-chuva-repentina.png';
+import belemMareCruzadaEnemy from '../../assets/enemies/capital-belem-enemy-mare-cruzada.png';
+import manausCalorUmidoEnemy from '../../assets/enemies/capital-manaus-enemy-calor-umido.png';
+import manausEncontroTurvoEnemy from '../../assets/enemies/capital-manaus-enemy-encontro-turvo.png';
+import manausIgarapeSufocadoEnemy from '../../assets/enemies/capital-manaus-enemy-igarape-sufocado.png';
+import manausPortoEnferrujadoEnemy from '../../assets/enemies/capital-manaus-enemy-porto-enferrujado.png';
+import boaVistaAvenidaRadialEnemy from '../../assets/enemies/capital-boa-vista-enemy-avenida-radial.png';
+import boaVistaFronteiraNebulosaEnemy from '../../assets/enemies/capital-boa-vista-enemy-fronteira-nebulosa.png';
+import boaVistaPoeiraLavradoEnemy from '../../assets/enemies/capital-boa-vista-enemy-poeira-lavrado.png';
+import boaVistaRioBrancoSecanteEnemy from '../../assets/enemies/capital-boa-vista-enemy-rio-branco-secante.png';
+import macapaLamaVarzeaEnemy from '../../assets/enemies/capital-macapa-enemy-lama-varzea.png';
+import macapaLinhaEquadorEnemy from '../../assets/enemies/capital-macapa-enemy-linha-equador.png';
+import macapaMuralhaEncharcadaEnemy from '../../assets/enemies/capital-macapa-enemy-muralha-encharcada.png';
+import macapaRessacaAmazonicaEnemy from '../../assets/enemies/capital-macapa-enemy-ressaca-amazonica.png';
+import portoVelhoCorrenteMadeiraEnemy from '../../assets/enemies/capital-porto-velho-enemy-corrente-madeira.png';
+import portoVelhoFumacaLogisticaEnemy from '../../assets/enemies/capital-porto-velho-enemy-fumaca-logistica.png';
+import portoVelhoGuindasteFantasmaEnemy from '../../assets/enemies/capital-porto-velho-enemy-guindaste-fantasma.png';
+import portoVelhoTrilhoTorcidoEnemy from '../../assets/enemies/capital-porto-velho-enemy-trilho-torcido.png';
+import rioBrancoChuvaFronteiraEnemy from '../../assets/enemies/capital-rio-branco-enemy-chuva-fronteira.png';
+import rioBrancoPassarelaFantasmaEnemy from '../../assets/enemies/capital-rio-branco-enemy-passarela-fantasma.png';
+import rioBrancoRioAcreBarrentoEnemy from '../../assets/enemies/capital-rio-branco-enemy-rio-acre-barrento.png';
+import rioBrancoSeringueiraVivaEnemy from '../../assets/enemies/capital-rio-branco-enemy-seringueira-viva.png';
+import palmasAvenidaPlanejadaEnemy from '../../assets/enemies/capital-palmas-enemy-avenida-planejada.png';
+import palmasCalorCerradoEnemy from '../../assets/enemies/capital-palmas-enemy-calor-cerrado.png';
+import palmasLagoInquietoEnemy from '../../assets/enemies/capital-palmas-enemy-lago-inquieto.png';
+import palmasVentoSerraEnemy from '../../assets/enemies/capital-palmas-enemy-vento-serra.png';
 import { CHARACTERS } from '../../data/characters';
 import type { CapitalMission } from '../../data/capitalChallenges';
 import { CAPITAL_SPECIAL_QUESTIONS, type CapitalSpecialQuestion } from '../../data/capitalQuestions';
@@ -97,6 +139,7 @@ function defaultGuardianForRoute(route: CapitalMission['route']): RegionId {
   if (route === 'sul') return 'sul';
   if (route === 'centro-oeste') return 'centro-oeste';
   if (route === 'nordeste') return 'nordeste';
+  if (route === 'norte') return 'norte';
   return 'sudeste';
 }
 const CAPITAL_STAGE_BACKGROUNDS: Partial<Record<CapitalId, string>> = {
@@ -114,6 +157,13 @@ const CAPITAL_STAGE_BACKGROUNDS: Partial<Record<CapitalId, string>> = {
   salvador: salvadorStageBg,
   recife: recifeStageBg,
   fortaleza: fortalezaStageBg,
+  belem: belemStageBg,
+  manaus: manausStageBg,
+  'boa-vista': boaVistaStageBg,
+  macapa: macapaStageBg,
+  'porto-velho': portoVelhoStageBg,
+  'rio-branco': rioBrancoStageBg,
+  palmas: palmasStageBg,
 };
 const CAPITAL_ENEMY_IMAGES: Partial<Record<string, string>> = {
   'df-axis-flow': brasiliaEixoEnemy,
@@ -144,6 +194,34 @@ const CAPITAL_ENEMY_IMAGES: Partial<Record<string, string>> = {
   'ce-vento-cortante': fortalezaVentoEnemy,
   'ce-orla-lotada': fortalezaOrlaEnemy,
   'ce-duna-avancando': fortalezaDunaEnemy,
+  'pa-mare-cruzada': belemMareCruzadaEnemy,
+  'pa-barco-lotado': belemBarcoLotadoEnemy,
+  'pa-chuva-repentina': belemChuvaRepentinaEnemy,
+  'pa-canal-contaminado': belemCanalContaminadoEnemy,
+  'am-encontro-turvo': manausEncontroTurvoEnemy,
+  'am-porto-enferrujado': manausPortoEnferrujadoEnemy,
+  'am-calor-umido': manausCalorUmidoEnemy,
+  'am-igarape-sufocado': manausIgarapeSufocadoEnemy,
+  'rr-avenida-radial': boaVistaAvenidaRadialEnemy,
+  'rr-rio-branco-secante': boaVistaRioBrancoSecanteEnemy,
+  'rr-poeira-lavrado': boaVistaPoeiraLavradoEnemy,
+  'rr-fronteira-nebulosa': boaVistaFronteiraNebulosaEnemy,
+  'ap-linha-equador': macapaLinhaEquadorEnemy,
+  'ap-muralha-encharcada': macapaMuralhaEncharcadaEnemy,
+  'ap-ressaca-amazonica': macapaRessacaAmazonicaEnemy,
+  'ap-lama-varzea': macapaLamaVarzeaEnemy,
+  'ro-trilho-torcido': portoVelhoTrilhoTorcidoEnemy,
+  'ro-corrente-madeira': portoVelhoCorrenteMadeiraEnemy,
+  'ro-guindaste-fantasma': portoVelhoGuindasteFantasmaEnemy,
+  'ro-fumaca-logistica': portoVelhoFumacaLogisticaEnemy,
+  'ac-rio-acre-barrento': rioBrancoRioAcreBarrentoEnemy,
+  'ac-seringueira-viva': rioBrancoSeringueiraVivaEnemy,
+  'ac-passarela-fantasma': rioBrancoPassarelaFantasmaEnemy,
+  'ac-chuva-fronteira': rioBrancoChuvaFronteiraEnemy,
+  'to-calor-cerrado': palmasCalorCerradoEnemy,
+  'to-lago-inquieto': palmasLagoInquietoEnemy,
+  'to-avenida-planejada': palmasAvenidaPlanejadaEnemy,
+  'to-vento-serra': palmasVentoSerraEnemy,
 };
 const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
   'sao-paulo': caosMetropoleBoss,
@@ -160,6 +238,13 @@ const CAPITAL_STAGE_BOSS_IMAGES: Partial<Record<CapitalId, string>> = {
   salvador: trovejanteParedaoBoss,
   recife: senhorAlagadoBoss,
   fortaleza: imperadorRessacaBoss,
+  belem: mareDoMercadoBoss,
+  manaus: guardiaoAguasEscurasBoss,
+  'boa-vista': sentinelaLavradoBoss,
+  macapa: colossoLinhaBoss,
+  'porto-velho': locomotivaMadeiraBoss,
+  'rio-branco': seringalSombrioBoss,
+  palmas: solTocantinsBoss,
 };
 
 interface CapitalPlayableStageProps {
@@ -420,7 +505,7 @@ export function CapitalPlayableStage({ mission, completed, onComplete }: Capital
               const enemyImage = CAPITAL_ENEMY_IMAGES[enemy.id];
               return (
                 <div
-                  className={`capital-enemy capital-enemy-${enemy.kind} ${enemyImage ? 'has-image' : ''} ${enemy.slowed ? 'slowed' : ''}`}
+                  className={`capital-enemy capital-enemy-${enemy.kind} capital-enemy-id-${enemy.id} ${enemyImage ? 'has-image' : ''} ${enemy.slowed ? 'slowed' : ''}`}
                   key={enemy.id}
                   style={{
                     left: enemy.x,

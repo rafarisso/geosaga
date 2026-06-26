@@ -3442,6 +3442,163 @@ button:focus-visible {
 .capital-unlock-card h2 { margin: 0.35rem 0; font-size: 1.35rem; }
 .capital-unlock-card p { margin: 0; color: #cfe5df; line-height: 1.45; }
 
+.capital-finale-screen {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(22rem, 0.74fr) minmax(18rem, 0.26fr);
+  align-items: end;
+  gap: clamp(1rem, 3vw, 2rem);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: clamp(1.3rem, 5vw, 4.5rem);
+  color: #f7fbef;
+  background: #041419;
+}
+
+.capital-finale-screen::before {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  content: "";
+  background-image:
+    linear-gradient(90deg, rgba(2, 12, 16, 0.92) 0 37%, rgba(2, 12, 16, 0.48) 58%, rgba(2, 12, 16, 0.26) 100%),
+    var(--capital-finale-bg);
+  background-position: center;
+  background-size: cover;
+  filter: saturate(1.14) contrast(1.08);
+}
+
+.capital-finale-screen::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  background:
+    linear-gradient(180deg, rgba(3, 14, 18, 0.04), rgba(3, 14, 18, 0.84)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 78px);
+  pointer-events: none;
+}
+
+.capital-finale-hero {
+  width: min(56rem, 100%);
+}
+
+.capital-finale-hero h1 {
+  max-width: 52rem;
+  margin: 0.35rem 0 1rem;
+  font-size: clamp(2.4rem, 7vw, 6.4rem);
+  line-height: 0.94;
+}
+
+.capital-finale-hero p {
+  max-width: 44rem;
+  margin: 0 0 1.35rem;
+  color: #d8ebe3;
+  font-size: clamp(0.98rem, 1.7vw, 1.18rem);
+  font-weight: 750;
+  line-height: 1.62;
+}
+
+.capital-finale-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+  max-width: 50rem;
+  margin-bottom: 1rem;
+}
+
+.capital-finale-stats div {
+  min-width: 0;
+  padding: 0.82rem;
+  border: 1px solid rgba(255, 226, 107, 0.28);
+  border-radius: 0.55rem;
+  background: rgba(5, 28, 34, 0.68);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.capital-finale-stats strong {
+  display: block;
+  color: #ffe26b;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1;
+}
+
+.capital-finale-stats span {
+  display: block;
+  margin-top: 0.35rem;
+  color: #aed0c7;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.capital-finale-routes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  max-width: 50rem;
+  margin-bottom: 1.25rem;
+}
+
+.capital-finale-routes span {
+  padding: 0.5rem 0.78rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  color: #b9d5cd;
+  background: rgba(4, 22, 28, 0.68);
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.capital-finale-routes span.done {
+  border-color: rgba(255, 226, 107, 0.58);
+  color: #fff4a0;
+  background: rgba(255, 226, 107, 0.14);
+}
+
+.capital-finale-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.capital-finale-signature {
+  justify-self: end;
+  width: min(24rem, 100%);
+  padding: 1rem;
+  border: 1px solid rgba(255, 226, 107, 0.32);
+  border-radius: 0.7rem;
+  background: rgba(4, 20, 26, 0.78);
+  backdrop-filter: blur(12px);
+}
+
+.capital-finale-signature span,
+.capital-finale-signature strong,
+.capital-finale-signature a {
+  display: block;
+}
+
+.capital-finale-signature span {
+  color: #ffe26b;
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.capital-finale-signature strong {
+  margin-top: 0.35rem;
+  font-size: 1.06rem;
+}
+
+.capital-finale-signature a {
+  margin-top: 0.35rem;
+  color: #d8f5ed;
+  font-weight: 850;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
 .capital-screen {
   padding:
     max(clamp(1rem, 3vw, 2.4rem), env(safe-area-inset-top))
@@ -4086,6 +4243,13 @@ button:focus-visible {
   transform: scaleX(-1);
 }
 
+.capital-enemy-id-pa-mare-cruzada.has-image .capital-enemy-image,
+.capital-enemy-id-pa-barco-lotado.has-image .capital-enemy-image,
+.capital-enemy-id-pa-chuva-repentina.has-image .capital-enemy-image,
+.capital-enemy-id-pa-canal-contaminado.has-image .capital-enemy-image {
+  transform: none;
+}
+
 .capital-enemy.has-image .capital-enemy-core,
 .capital-enemy.has-image .capital-enemy-face {
   display: none;
@@ -4673,6 +4837,7 @@ button:focus-visible {
 
 @media (max-width: 980px) {
   .mastery-screen,
+  .capital-finale-screen,
   .capital-mission {
     grid-template-columns: 1fr;
   }
@@ -4680,6 +4845,15 @@ button:focus-visible {
   .mastery-screen {
     overflow-y: auto;
     padding-bottom: 12rem;
+  }
+
+  .capital-finale-screen {
+    align-items: start;
+    overflow-y: auto;
+  }
+
+  .capital-finale-signature {
+    justify-self: start;
   }
 
   .mastery-guardians {
@@ -4708,12 +4882,14 @@ button:focus-visible {
 
 @media (max-width: 720px) {
   .mastery-stats,
+  .capital-finale-stats,
   .capital-route-map,
   .capital-choices {
     grid-template-columns: 1fr;
   }
 
-  .mastery-hero h1 {
+  .mastery-hero h1,
+  .capital-finale-hero h1 {
     font-size: clamp(2.1rem, 12vw, 3.6rem);
   }
 
@@ -4726,6 +4902,7 @@ button:focus-visible {
   }
 
   .capital-route-complete,
+  .capital-finale-actions,
   .master-banner {
     flex-direction: column;
   }
